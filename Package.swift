@@ -12,6 +12,7 @@ let package = Package(
         .library(name: "ValetCore", targets: ["ValetCore"]),
         .executable(name: "ValetApp", targets: ["ValetApp"]),
         .executable(name: "valet", targets: ["ValetCLI"]),
+        .executable(name: "valet-probe", targets: ["valet-probe"]),
     ],
     dependencies: [
         .package(url: "https://github.com/apple/swift-argument-parser", from: "1.5.0"),
@@ -35,6 +36,16 @@ let package = Package(
                 .product(name: "ArgumentParser", package: "swift-argument-parser"),
             ],
             path: "Sources/ValetCLI",
+            swiftSettings: swiftSettings
+        ),
+        // Milestone 1 spike. Delete once ValetCore's scanner replaces it.
+        .executableTarget(
+            name: "valet-probe",
+            dependencies: [
+                "ValetCore",
+                .product(name: "ArgumentParser", package: "swift-argument-parser"),
+            ],
+            path: "Sources/valet-probe",
             swiftSettings: swiftSettings
         ),
         .testTarget(
