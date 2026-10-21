@@ -11,6 +11,8 @@ struct ProbeOutput: Codable, Sendable {
     var accessibilityHost: String?
     var screens: [ScreenGeometry]
     var frontmostApp: FrontmostApp?
+    /// macOS 27's overflow arrow, present only when icons don't fit.
+    var overflowButton: OverflowButton?
     var options: Options
     var summary: Summary
     var apps: [AppResult]
@@ -33,6 +35,12 @@ struct FrontmostApp: Codable, Sendable {
     var menuTitles: [String]
     /// Union of the app's menu bar item frames.
     var menusFrame: Frame?
+}
+
+struct OverflowButton: Codable, Sendable {
+    /// Localized; "Show Hidden Menu Bar Items" in English.
+    var description: String?
+    var frame: Frame
 }
 
 struct Options: Codable, Sendable {
@@ -99,6 +107,8 @@ struct Item: Codable, Sendable {
     var screenIndex: Int?
     var hidden: Bool
     var hiddenReasons: [HiddenReason]
+    /// True for macOS 27's overflow arrow itself. It's listed but not counted as an icon.
+    var isOverflowButton: Bool?
     var actions: [String]
     var attributeNames: [String]
     /// Stringified values of attributes outside the known set, to spot anything new on macOS 27.

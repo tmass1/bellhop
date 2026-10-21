@@ -57,8 +57,10 @@ struct Probe: AsyncParsableCommand {
         }
         var results: [AppResult] = []
         for info in apps {
-            results.append(await prober.probe(info, screens: snapshot.screens, appMenus: frontmost?.menusFrame))
+            results.append(await prober.probe(info, screens: snapshot.screens))
         }
+        let overflow = Self.overflowButton(in: results)
+        Self.classify(&results, screens: snapshot.screens, appMenus: frontmost?.menusFrame, overflow: overflow)
 
         let result = ProbeOutput(
             capturedAt: Date.now.ISO8601Format(),
@@ -67,6 +69,7 @@ struct Probe: AsyncParsableCommand {
             accessibilityHost: host,
             screens: snapshot.screens,
             frontmostApp: frontmost,
+            overflowButton: overflow,
             options: Options(maxDepth: maxDepth, allProcesses: allProcesses, app: app, delay: delay, timeout: timeout),
             summary: Self.summarize(results, totalMs: (clock.now - start).milliseconds),
             apps: results
@@ -115,8 +118,42 @@ struct Probe: AsyncParsableCommand {
         return file.path
     }
 
+    // MARK: Visibility
+
+    /// macOS 27's "Show Hidden Menu Bar Items" arrow: the AXButton MenuBarAgent puts in the extras menu bar. Matched by
+    /// owner and role, not its localized description.
+    private static func overflowButton(in apps: [AppResult]) -> OverflowButton? {
+        for app in apps where app.bundleID == "com.apple.MenuBarAgent" {
+            if let item = app.items.first(where: { $0.role == "AXButton" }), let frame = item.frame {
+                return OverflowButton(description: item.description, frame: frame)
+            }
+        }
+        return nil
+    }
+
+    private static func classify(
+        _ apps: inout [AppResult], screens: [ScreenGeometry], appMenus: Frame?, overflow: OverflowButton?
+    ) {
+        for appIndex in apps.indices {
+            for itemIndex in apps[appIndex].items.indices {
+                var item = apps[appIndex].items[itemIndex]
+                if let frame = item.frame, frame == overflow?.frame, item.role == "AXButton" {
+                    item.isOverflowButton = true
+                } else if let frame = item.frame {
+                    item.hiddenReasons = Visibility.hiddenReasons(
+                        for: frame, screens: screens, appMenus: appMenus, overflowButton: overflow?.frame
+                    )
+                } else {
+                    item.hiddenReasons = [.offScreen]
+                }
+                item.hidden = !item.hiddenReasons.isEmpty
+                apps[appIndex].items[itemIndex] = item
+            }
+        }
+    }
+
     private static func summarize(_ apps: [AppResult], totalMs: Double) -> Summary {
-        let items = apps.flatMap(\.items)
+        let items = apps.flatMap(\.items).filter { $0.isOverflowButton != true }
         var hiddenByReason: [String: Int] = [:]
         var menuStatusCounts: [String: Int] = [:]
         for item in items {

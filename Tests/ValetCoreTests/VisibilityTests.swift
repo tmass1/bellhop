@@ -67,3 +67,37 @@ private let screens = [external, builtIn]
     let item = Frame(x: 1200, y: 0, width: 30, height: 30)
     #expect(Visibility.hiddenReasons(for: item, screens: screens, appMenus: nil).isEmpty)
 }
+
+// Captured on macOS 27 with the built-in display as the only screen: six icons collapsed behind the arrow at 981.5.
+private let laptopOnly = [
+    ScreenGeometry(
+        index: 0, name: "Built-in", frame: Frame(x: 0, y: 0, width: 1728, height: 1117), menuBarHeight: 33,
+        notch: Frame(x: 771.5, y: 0, width: 185, height: 32)
+    ),
+]
+private let overflowArrow = Frame(x: 981.5, y: 1, width: 17.5, height: 30)
+
+@Test func itemsLeftOfOverflowArrowAreCollapsed() {
+    let devServer = Frame(x: 958, y: 4.5, width: 41, height: 24)
+    #expect(Visibility.hiddenReasons(
+        for: devServer, screens: laptopOnly, appMenus: nil, overflowButton: overflowArrow
+    ) == [.collapsedBehindOverflow])
+    let burn = Frame(x: 926, y: 4.5, width: 73, height: 24)
+    #expect(Visibility.hiddenReasons(
+        for: burn, screens: laptopOnly, appMenus: nil, overflowButton: overflowArrow
+    ) == [.underNotch, .collapsedBehindOverflow])
+}
+
+@Test func itemsRightOfOverflowArrowAreVisible() {
+    let dropbox = Frame(x: 1005, y: 4.5, width: 38, height: 24)
+    #expect(Visibility.hiddenReasons(
+        for: dropbox, screens: laptopOnly, appMenus: nil, overflowButton: overflowArrow
+    ).isEmpty)
+}
+
+@Test func overflowArrowOnAnotherScreenDoesntCollapseItems() {
+    let item = Frame(x: 900, y: 0, width: 30, height: 30)
+    #expect(Visibility.hiddenReasons(
+        for: item, screens: screens, appMenus: nil, overflowButton: Frame(x: 4000, y: 0, width: 18, height: 30)
+    ).isEmpty)
+}

@@ -56,7 +56,7 @@ actor Prober {
 
     // MARK: Extras
 
-    func probe(_ app: AppInfo, screens: [ScreenGeometry], appMenus: Frame?) -> AppResult {
+    func probe(_ app: AppInfo, screens: [ScreenGeometry]) -> AppResult {
         let clock = ContinuousClock()
         let start = clock.now
         let appElement = element(for: app.pid)
@@ -71,7 +71,7 @@ actor Prober {
             let children = AX.elements(AX.values(bar as! AXUIElement, [kAXChildrenAttribute])[kAXChildrenAttribute])
             var budget = maxMenuItemsPerApp
             result.items = children.enumerated().map { index, el in
-                item(el, index: index, screens: screens, appMenus: appMenus, budget: &budget)
+                item(el, index: index, screens: screens, budget: &budget)
             }
         case .failure(let failure):
             result.extrasStatus = Self.status(for: failure.code)
@@ -83,14 +83,13 @@ actor Prober {
     }
 
     private func item(
-        _ el: AXUIElement, index: Int, screens: [ScreenGeometry], appMenus: Frame?, budget: inout Int
+        _ el: AXUIElement, index: Int, screens: [ScreenGeometry], budget: inout Int
     ) -> Item {
         let outer = AX.values(el, Self.itemAttributes)
         var frame: Frame?
         if let origin = AX.point(outer[kAXPositionAttribute]), let size = AX.size(outer[kAXSizeAttribute]) {
             frame = Frame(CGRect(origin: origin, size: size))
         }
-        let reasons = frame.map { Visibility.hiddenReasons(for: $0, screens: screens, appMenus: appMenus) } ?? []
 
         // macOS 27's MenuBarAgent wraps each system item in an AXGroup (AXHostingView); the real item is its child.
         // Read labels, actions and the menu from that child, but keep the wrapper's frame.
@@ -122,8 +121,9 @@ actor Prober {
             subrole: AX.string(values[kAXSubroleAttribute]),
             frame: frame,
             screenIndex: frame.flatMap { Visibility.screen(containing: $0, in: screens)?.index },
-            hidden: frame == nil || !reasons.isEmpty,
-            hiddenReasons: frame == nil ? [.offScreen] : reasons,
+            // Filled in by `Probe.classify` once every app is read and the overflow arrow is known.
+            hidden: false,
+            hiddenReasons: [],
             actions: AX.actionNames(element),
             attributeNames: attributeNames,
             extraAttributes: extras,

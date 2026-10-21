@@ -17,17 +17,21 @@ enum Report {
             let end = front.menusFrame.map { " · menus end at x \(int($0.maxX))" } ?? ""
             Swift.print("Frontmost: \(front.name)\(end)")
         }
+        if let overflow = output.overflowButton {
+            Swift.print("Overflow arrow at x \(int(overflow.frame.x)): icons left of it are collapsed")
+        }
         Swift.print("")
 
-        let header = [pad("x", 7), pad("App", 24), pad("Item", 30), pad("Size", 9), pad("Hidden", 22), "Menu"]
+        let header = [pad("x", 7), pad("App", 24), pad("Item", 30), pad("Size", 9), pad("Hidden", 35), "Menu"]
         Swift.print(header.joined(separator: " "))
-        Swift.print(String(repeating: "─", count: 112))
+        Swift.print(String(repeating: "─", count: 125))
         for (app, item) in rows {
             let x = item.frame.map { int($0.x) } ?? "—"
             let size = item.frame.map { "\(int($0.width))×\(int($0.height))" } ?? "—"
-            let hidden = item.hidden ? item.hiddenReasons.map(\.rawValue).joined(separator: ",") : ""
+            let hidden = item.isOverflowButton == true ? "(overflow arrow)"
+                : item.hiddenReasons.map(\.rawValue).joined(separator: ",")
             let menu = item.menu.status == "readable" ? "\(item.menu.itemCount) items" : "not while closed"
-            Swift.print([pad(x, 7), pad(app.name, 24), pad(item.label, 30), pad(size, 9), pad(hidden, 22), menu]
+            Swift.print([pad(x, 7), pad(app.name, 24), pad(item.label, 30), pad(size, 9), pad(hidden, 35), menu]
                 .joined(separator: " "))
         }
 

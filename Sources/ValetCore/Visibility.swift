@@ -57,6 +57,9 @@ public enum HiddenReason: String, Codable, Sendable, CaseIterable {
     case underNotch
     /// The item starts left of the end of the frontmost app's menus, on the same screen, so the menus cover it.
     case behindAppMenus
+    /// macOS 27+: the item sits left of Apple's "Show Hidden Menu Bar Items" arrow, which collapses everything
+    /// that doesn't fit. Collapsed items report frames piled up just left of the arrow.
+    case collapsedBehindOverflow
 }
 
 public enum Visibility {
@@ -66,8 +69,12 @@ public enum Visibility {
     }
 
     /// Every reason an item is hidden; empty means it's visible.
-    /// - Parameter appMenus: the union of the frontmost app's menu bar item frames, if known.
-    public static func hiddenReasons(for item: Frame, screens: [ScreenGeometry], appMenus: Frame?) -> [HiddenReason] {
+    /// - Parameters:
+    ///   - appMenus: the union of the frontmost app's menu bar item frames, if known.
+    ///   - overflowButton: the frame of macOS 27's overflow arrow, when it's showing. Don't pass it for the arrow itself.
+    public static func hiddenReasons(
+        for item: Frame, screens: [ScreenGeometry], appMenus: Frame?, overflowButton: Frame? = nil
+    ) -> [HiddenReason] {
         var reasons: [HiddenReason] = []
         if item.width <= 1 || item.height <= 1 {
             reasons.append(.zeroSize)
@@ -84,6 +91,10 @@ public enum Visibility {
         if let appMenus, Visibility.screen(containing: appMenus, in: screens)?.index == screen.index,
            item.minX < appMenus.maxX {
             reasons.append(.behindAppMenus)
+        }
+        if let overflowButton, Visibility.screen(containing: overflowButton, in: screens)?.index == screen.index,
+           item.minX < overflowButton.minX {
+            reasons.append(.collapsedBehindOverflow)
         }
         return reasons
     }
