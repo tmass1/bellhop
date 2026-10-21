@@ -10,12 +10,14 @@ The full plan, including scope, architecture, risks and milestones, is in `docs/
 ## Stack
 
 - Swift 6, Swift Package Manager. AppKit shell with SwiftUI views. No `.xcodeproj` in the repo.
-- Targets:
+- Targets (folder names avoid `Valet`/`valet` because macOS disks are case-insensitive):
   - `ValetCore`: library, no UI. All Accessibility work lives here.
-  - `Valet`: the app (status item, palette, settings).
-  - `valet`: the CLI (swift-argument-parser). It talks to the running app over a Unix socket.
+  - `ValetApp`: the app (status item, palette, settings). `scripts/bundle.sh` packages it as `dist/Valet.app`.
+  - `ValetCLI`: the `valet` CLI (swift-argument-parser). It talks to the running app over a Unix socket.
   - `valet-probe`: throwaway spike tool for milestone 1. Delete it once ValetCore replaces it.
   - `ValetCoreTests`: unit tests.
+- The repo lives in Dropbox. `.build` and `dist` carry `com.dropbox.ignored`; don't run git on both Macs at once.
+- Bundle ID `com.tommymassaro.valet`. Dev builds sign with the Developer ID cert (Makefile default for `CODESIGN_IDENTITY`).
 - Dependencies: KeyboardShortcuts (sindresorhus), swift-argument-parser, Sparkle 2 (from v0.1). Ask before adding any others.
 
 ## Commands

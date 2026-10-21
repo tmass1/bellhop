@@ -1,0 +1,30 @@
+included:
+  - Sources
+  - Tests
+  - Package.swift
+excluded:
+  - .build
+  - dist
+
+disabled_rules:
+  - trailing_comma  # Swift style: trailing commas keep diffs to one line
+
+line_length:
+  warning: 120
+  error: 160
+  ignores_comments: true
+
+type_name:
+  excluded: [AX]
+
+identifier_name:
+  excluded: [x, y, w, h, id, ms, ax, el]
+
+type_body_length:
+  warning: 300
+file_length:
+  warning: 500
+function_body_length:
+  warning: 60
+cyclomatic_complexity:
+  warning: 15
