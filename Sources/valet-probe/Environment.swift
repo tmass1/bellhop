@@ -103,18 +103,25 @@ enum System {
         return Hardware(model: sysctlString("hw.model") ?? "unknown", arch: arch)
     }
 
-    /// The app macOS charges Accessibility to: the nearest ancestor process that's a regular app (the terminal).
-    @MainActor
+    /// The app bundle macOS charges Accessibility to: the nearest ancestor whose executable lives in a `.app`.
+    /// That's usually the terminal, but launchers can hand responsibility to a helper bundle (Claude Code's
+    /// `claude.app` sits under Application Support, not /Applications), so report the path, not a display name.
     static func accessibilityHost() -> String? {
         var pid = getppid()
         while pid > 1 {
-            if let app = NSRunningApplication(processIdentifier: pid), app.activationPolicy == .regular {
-                return app.localizedName
+            if let path = executablePath(of: pid), let range = path.range(of: ".app/Contents/MacOS/") {
+                return String(path[..<range.lowerBound]) + ".app"
             }
             guard let parent = parentPID(of: pid) else { break }
             pid = parent
         }
-        return ProcessInfo.processInfo.environment["TERM_PROGRAM"]
+        return nil
+    }
+
+    private static func executablePath(of pid: pid_t) -> String? {
+        var buffer = [CChar](repeating: 0, count: 4 * Int(MAXPATHLEN))
+        guard proc_pidpath(pid, &buffer, UInt32(buffer.count)) > 0 else { return nil }
+        return String(utf8String: buffer)
     }
 
     private static func parentPID(of pid: pid_t) -> pid_t? {

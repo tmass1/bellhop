@@ -85,21 +85,35 @@ actor Prober {
     private func item(
         _ el: AXUIElement, index: Int, screens: [ScreenGeometry], appMenus: Frame?, budget: inout Int
     ) -> Item {
-        let values = AX.values(el, Self.itemAttributes)
+        let outer = AX.values(el, Self.itemAttributes)
         var frame: Frame?
-        if let origin = AX.point(values[kAXPositionAttribute]), let size = AX.size(values[kAXSizeAttribute]) {
+        if let origin = AX.point(outer[kAXPositionAttribute]), let size = AX.size(outer[kAXSizeAttribute]) {
             frame = Frame(CGRect(origin: origin, size: size))
         }
         let reasons = frame.map { Visibility.hiddenReasons(for: $0, screens: screens, appMenus: appMenus) } ?? []
-        let attributeNames = AX.attributeNames(el)
 
+        // macOS 27's MenuBarAgent wraps each system item in an AXGroup (AXHostingView); the real item is its child.
+        // Read labels, actions and the menu from that child, but keep the wrapper's frame.
+        var element = el
+        var values = outer
+        var wrapperRole: String?
+        if AX.string(outer[kAXRoleAttribute]) == kAXGroupRole,
+           let inner = AX.elements(outer[kAXChildrenAttribute]).first {
+            wrapperRole = [AX.string(outer[kAXRoleAttribute]), AX.string(outer[kAXSubroleAttribute])]
+                .compactMap { $0 }.joined(separator: "/")
+            element = inner
+            values = AX.values(inner, Self.itemAttributes)
+        }
+
+        let attributeNames = AX.attributeNames(element)
         var extras: [String: String] = [:]
         for name in attributeNames where !Self.knownAttributes.contains(name) {
-            if case .success(let value) = AX.value(el, name) { extras[name] = AX.describe(value) }
+            if case .success(let value) = AX.value(element, name) { extras[name] = AX.describe(value) }
         }
 
         return Item(
             index: index,
+            wrapperRole: wrapperRole,
             title: AX.string(values[kAXTitleAttribute]),
             description: AX.string(values[kAXDescriptionAttribute]),
             identifier: AX.string(values[kAXIdentifierAttribute]),
@@ -110,7 +124,7 @@ actor Prober {
             screenIndex: frame.flatMap { Visibility.screen(containing: $0, in: screens)?.index },
             hidden: frame == nil || !reasons.isEmpty,
             hiddenReasons: frame == nil ? [.offScreen] : reasons,
-            actions: AX.actionNames(el),
+            actions: AX.actionNames(element),
             attributeNames: attributeNames,
             extraAttributes: extras,
             menu: menu(children: AX.elements(values[kAXChildrenAttribute]), budget: &budget)

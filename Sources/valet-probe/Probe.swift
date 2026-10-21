@@ -36,7 +36,7 @@ struct Probe: AsyncParsableCommand {
     var quiet = false
 
     mutating func run() async throws {
-        let host = await MainActor.run { System.accessibilityHost() }
+        let host = System.accessibilityHost()
         guard checkAccess(host: host) else { throw ExitCode(2) }
 
         if delay > 0 {
@@ -81,12 +81,14 @@ struct Probe: AsyncParsableCommand {
         // Passing the prompt option adds the host app to the Accessibility list, switched off, so it's easy to find.
         let options = ["AXTrustedCheckOptionPrompt": true] as CFDictionary
         if AXIsProcessTrustedWithOptions(options) { return true }
-        let name = host ?? "your terminal app"
+        let name = host.map { URL(fileURLWithPath: $0).deletingPathExtension().lastPathComponent }
+            ?? "your terminal app"
+        let location = host.map { "\n     It's at \($0)" } ?? ""
         print("""
         valet-probe needs Accessibility access, which macOS grants to \(name), the app it runs inside.
 
           1. Open System Settings › Privacy & Security › Accessibility.
-          2. Turn on \(name). If it isn't listed, click + and add it.
+          2. Turn on \(name). If it isn't listed, click + and add it.\(location)
           3. Run make probe again.
         """)
         if openSettings,
@@ -133,8 +135,9 @@ struct Probe: AsyncParsableCommand {
                 .filter { $0.items.contains { $0.menu.status != "readable" } }
                 .map(\.name),
             appsWithErrors: apps
-                .filter { $0.extrasStatus != "ok" && $0.extrasStatus != "none" }
+                .filter { !["ok", "none", "cannotComplete"].contains($0.extrasStatus) }
                 .map { "\($0.name) (\($0.extrasStatus))" },
+            cannotCompleteCount: apps.filter { $0.extrasStatus == "cannotComplete" }.count,
             totalMs: totalMs,
             slowestApps: apps.sorted { $0.ms > $1.ms }.prefix(5).map { Timing(name: $0.name, ms: $0.ms) }
         )

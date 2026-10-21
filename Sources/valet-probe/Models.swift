@@ -52,6 +52,8 @@ struct Summary: Codable, Sendable {
     var menuStatusCounts: [String: Int]
     var appsWithoutClosedMenu: [String]
     var appsWithErrors: [String]
+    /// Processes that didn't answer, usually helpers with no Accessibility server. Normal in large numbers.
+    var cannotCompleteCount: Int
     var totalMs: Double
     var slowestApps: [Timing]
 }
@@ -84,6 +86,9 @@ struct AppResult: Codable, Sendable {
 
 struct Item: Codable, Sendable {
     var index: Int
+    /// Set when the menu bar child was a wrapper (macOS 27 MenuBarAgent: `AXGroup/AXHostingView`) and the fields
+    /// below come from the item inside it.
+    var wrapperRole: String?
     var title: String?
     var description: String?
     var identifier: String?
@@ -100,8 +105,10 @@ struct Item: Codable, Sendable {
     var extraAttributes: [String: String]
     var menu: MenuResult
 
-    /// The best human label: title, then description, then identifier.
-    var label: String { title ?? description ?? identifier ?? "(unlabeled)" }
+    /// The best human label: title, description, the tooltip's first line (many apps only set that), identifier.
+    var label: String {
+        title ?? description ?? help?.split(separator: "\n").first.map(String.init) ?? identifier ?? "(unlabeled)"
+    }
 }
 
 struct MenuResult: Codable, Sendable {
