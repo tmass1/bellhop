@@ -1,0 +1,417 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Probe Viewer</title>
+<!--
+  Dev tool for milestone 1: draws the menu bar from valet-probe's JSON so it can be checked against the real one.
+  Run `make viewer`, then open http://localhost:8765/tools/probe-viewer/. No network calls beyond that local server.
+-->
+<style>
+  :root {
+    --bg: #f5f5f7;
+    --panel: #ffffff;
+    --text: #1d1d1f;
+    --muted: #6e6e73;
+    --hairline: rgba(0, 0, 0, 0.1);
+    --bar: rgba(255, 255, 255, 0.82);
+    --bar-edge: rgba(0, 0, 0, 0.12);
+    --desktop: linear-gradient(180deg, #c9d6e8 0%, #e4e9f1 100%);
+    --icon: rgba(0, 0, 0, 0.07);
+    --icon-edge: rgba(0, 0, 0, 0.28);
+    --menus: rgba(0, 0, 0, 0.05);
+    --notch: #000000;
+    --collapsed: #e8790c;
+    --collapsed-bg: rgba(232, 121, 12, 0.16);
+    --notch-hit: #d92d20;
+    --notch-hit-bg: rgba(217, 45, 32, 0.15);
+    --arrow: #0a66d6;
+    --arrow-bg: rgba(10, 102, 214, 0.16);
+    --focus: #0a66d6;
+    --row-hover: rgba(0, 0, 0, 0.04);
+    --mono: ui-monospace, "SF Mono", Menlo, monospace;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #1c1c1e;
+      --panel: #2c2c2e;
+      --text: #f5f5f7;
+      --muted: #98989d;
+      --hairline: rgba(255, 255, 255, 0.12);
+      --bar: rgba(40, 40, 42, 0.86);
+      --bar-edge: rgba(255, 255, 255, 0.12);
+      --desktop: linear-gradient(180deg, #2a3446 0%, #1e2330 100%);
+      --icon: rgba(255, 255, 255, 0.08);
+      --icon-edge: rgba(255, 255, 255, 0.35);
+      --menus: rgba(255, 255, 255, 0.06);
+      --collapsed: #ff9f0a;
+      --collapsed-bg: rgba(255, 159, 10, 0.2);
+      --notch-hit: #ff453a;
+      --notch-hit-bg: rgba(255, 69, 58, 0.2);
+      --arrow: #409cff;
+      --arrow-bg: rgba(64, 156, 255, 0.2);
+      --focus: #409cff;
+      --row-hover: rgba(255, 255, 255, 0.05);
+    }
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--text);
+    font: 13px/1.45 -apple-system, BlinkMacSystemFont, "SF Pro Text", "Helvetica Neue", sans-serif;
+    -webkit-font-smoothing: antialiased;
+  }
+  main { max-width: 1200px; margin: 0 auto; padding: 20px 16px 48px; }
+  header { display: flex; flex-wrap: wrap; align-items: baseline; gap: 8px 16px; margin-bottom: 16px; }
+  h1 { font-size: 20px; font-weight: 600; margin: 0; letter-spacing: -0.01em; }
+  .meta { color: var(--muted); }
+  .controls { margin-left: auto; display: flex; gap: 8px; align-items: center; }
+  select, button {
+    font: inherit; color: var(--text); background: var(--panel);
+    border: 1px solid var(--hairline); border-radius: 6px; padding: 3px 8px;
+  }
+  button[aria-pressed="true"] { background: var(--focus); border-color: var(--focus); color: #fff; }
+  .segmented { display: inline-flex; }
+  .segmented button { border-radius: 0; margin-left: -1px; }
+  .segmented button:first-child { border-radius: 6px 0 0 6px; margin-left: 0; }
+  .segmented button:last-child { border-radius: 0 6px 6px 0; }
+
+  .chips { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 16px; }
+  .chip { background: var(--panel); border: 1px solid var(--hairline); border-radius: 8px; padding: 8px 12px; min-width: 92px; }
+  .chip b { display: block; font-size: 18px; font-weight: 600; font-variant-numeric: tabular-nums; }
+  .chip span { color: var(--muted); font-size: 12px; }
+
+  section.screen { background: var(--panel); border: 1px solid var(--hairline); border-radius: 10px; margin-bottom: 16px; overflow: hidden; }
+  .screen-head { display: flex; flex-wrap: wrap; gap: 4px 12px; padding: 10px 14px; border-bottom: 1px solid var(--hairline); }
+  .screen-head h2 { font-size: 13px; font-weight: 600; margin: 0; }
+  .viewport { overflow-x: auto; background: var(--desktop); }
+  .canvas { position: relative; }
+  .bar { position: absolute; left: 0; top: 0; right: 0; background: var(--bar); border-bottom: 1px solid var(--bar-edge); backdrop-filter: blur(20px); }
+  .shape { position: absolute; border-radius: 4px; }
+  .menus { background: var(--menus); color: var(--muted); font-size: 11px; display: flex; align-items: center; padding-left: 6px; overflow: hidden; white-space: nowrap; }
+  .notch { background: var(--notch); border-radius: 0 0 10px 10px; }
+  .item { background: var(--icon); border: 1px solid var(--icon-edge); cursor: pointer; transition: transform 0.12s ease; }
+  .item.collapsed { background: var(--collapsed-bg); border-color: var(--collapsed); }
+  .item.notch-hit { background: var(--notch-hit-bg); border-color: var(--notch-hit); }
+  .item.arrow { background: var(--arrow-bg); border-color: var(--arrow); border-style: dashed; }
+  .item.active { outline: 2px solid var(--focus); outline-offset: 1px; z-index: 5; }
+  .tick { position: absolute; bottom: 4px; font: 10px var(--mono); color: var(--muted); transform: translateX(-50%); }
+  .legend { display: flex; flex-wrap: wrap; gap: 12px; padding: 8px 14px; border-top: 1px solid var(--hairline); color: var(--muted); font-size: 12px; }
+  .swatch { display: inline-block; width: 12px; height: 12px; border-radius: 3px; vertical-align: -2px; margin-right: 5px; border: 1px solid var(--icon-edge); background: var(--icon); }
+  .swatch.collapsed { border-color: var(--collapsed); background: var(--collapsed-bg); }
+  .swatch.notch-hit { border-color: var(--notch-hit); background: var(--notch-hit-bg); }
+  .swatch.arrow { border-color: var(--arrow); background: var(--arrow-bg); border-style: dashed; }
+  .swatch.notch { background: var(--notch); border-color: var(--notch); }
+
+  .table-wrap { background: var(--panel); border: 1px solid var(--hairline); border-radius: 10px; overflow-x: auto; }
+  table { width: 100%; border-collapse: collapse; font-variant-numeric: tabular-nums; }
+  th, td { text-align: left; padding: 6px 10px; border-bottom: 1px solid var(--hairline); white-space: nowrap; }
+  th { color: var(--muted); font-weight: 500; font-size: 12px; position: sticky; top: 0; background: var(--panel); }
+  tbody tr { cursor: pointer; }
+  tbody tr:hover, tbody tr.active { background: var(--row-hover); }
+  tbody tr.active td:first-child { box-shadow: inset 2px 0 var(--focus); }
+  td.num { text-align: right; font-family: var(--mono); font-size: 12px; }
+  td.label { max-width: 280px; overflow: hidden; text-overflow: ellipsis; }
+  .pill { display: inline-block; border-radius: 10px; padding: 0 8px; font-size: 11px; font-weight: 500; margin-right: 4px; }
+  .pill.collapsed { color: var(--collapsed); background: var(--collapsed-bg); }
+  .pill.notch-hit, .pill.other { color: var(--notch-hit); background: var(--notch-hit-bg); }
+  .pill.arrow { color: var(--arrow); background: var(--arrow-bg); }
+  .muted { color: var(--muted); }
+  tr.detail td { white-space: normal; background: var(--bg); }
+  .tree { font-size: 12px; margin: 0; padding-left: 18px; }
+  .tree li { margin: 1px 0; }
+  .tree .sep { list-style: none; border-top: 1px solid var(--hairline); margin: 4px 0; height: 0; }
+  .tree .disabled { color: var(--muted); }
+  .tree .kbd { color: var(--muted); font-family: var(--mono); margin-left: 8px; }
+  .kv { font: 11px var(--mono); color: var(--muted); margin-top: 6px; word-break: break-all; }
+
+  .empty { padding: 48px 16px; text-align: center; color: var(--muted); }
+  .empty code { font-family: var(--mono); }
+</style>
+</head>
+<body>
+<main>
+  <header>
+    <h1>Probe Viewer</h1>
+    <span class="meta" id="meta"></span>
+    <div class="controls">
+      <select id="run" aria-label="Probe run"></select>
+      <div class="segmented" role="group" aria-label="Zoom">
+        <button data-zoom="fit" aria-pressed="false">Fit</button>
+        <button data-zoom="1" aria-pressed="true">1×</button>
+        <button data-zoom="2" aria-pressed="false">2×</button>
+      </div>
+    </div>
+  </header>
+  <div id="app"><div class="empty">Loading probe output…</div></div>
+</main>
+
+<script>
+const OUTPUT_DIR = '/probe-output/';
+const state = { data: null, zoom: '1', active: null, open: new Set() };
+
+const el = (tag, attrs = {}, ...children) => {
+  const node = document.createElement(tag);
+  for (const [key, value] of Object.entries(attrs)) {
+    if (key === 'class') node.className = value;
+    else if (key === 'style') Object.assign(node.style, value);
+    else if (key.startsWith('on')) node.addEventListener(key.slice(2), value);
+    else node.setAttribute(key, value);
+  }
+  for (const child of children.flat()) {
+    if (child != null) node.append(child.nodeType ? child : document.createTextNode(child));
+  }
+  return node;
+};
+
+// Same order as the probe's table: title, description, tooltip's first line, identifier, then the app's name.
+const label = (item, app) =>
+  item.title || item.description || (item.help || '').split('\n')[0] || item.identifier || app.name;
+
+const kind = (item) => {
+  if (item.isOverflowButton) return 'arrow';
+  if (item.hiddenReasons.includes('collapsedBehindOverflow')) return 'collapsed';
+  if (item.hidden) return 'notch-hit';
+  return 'visible';
+};
+
+const PILL_TEXT = {
+  collapsedBehindOverflow: 'collapsed', underNotch: 'under notch', behindAppMenus: 'behind app menus',
+  zeroSize: 'zero size', offScreen: 'off screen',
+};
+
+function rows(data) {
+  return data.apps
+    .flatMap((app) => app.items.map((item) => ({ app, item, key: `${app.pid}:${item.index}` })))
+    .sort((a, b) => (a.item.frame?.x ?? Infinity) - (b.item.frame?.x ?? Infinity));
+}
+
+// MARK: Loading
+
+async function listRuns() {
+  try {
+    const html = await (await fetch(OUTPUT_DIR)).text();
+    const names = [...html.matchAll(/href="([^"]+\.json)"/g)].map((m) => decodeURIComponent(m[1]))
+      .filter((name) => name !== 'latest.json');
+    return names.sort().reverse();
+  } catch {
+    return [];
+  }
+}
+
+async function load(name) {
+  const response = await fetch(OUTPUT_DIR + encodeURIComponent(name), { cache: 'no-store' });
+  if (!response.ok) throw new Error(`${response.status} for ${name}`);
+  state.data = await response.json();
+  state.active = null;
+  state.open.clear();
+  render();
+}
+
+async function start() {
+  const select = document.getElementById('run');
+  const runs = await listRuns();
+  select.replaceChildren(
+    el('option', { value: 'latest.json' }, 'Latest run'),
+    ...runs.map((name) => el('option', { value: name }, name.replace(/\.json$/, '')))
+  );
+  select.addEventListener('change', () => load(select.value).catch(showError));
+  try {
+    await load('latest.json');
+  } catch (error) {
+    showError(error);
+  }
+}
+
+function showError(error) {
+  document.getElementById('app').replaceChildren(el('div', { class: 'empty' },
+    el('p', {}, `Couldn't load probe output (${error.message}).`),
+    el('p', {}, 'Run ', el('code', {}, 'make probe'), ', then ', el('code', {}, 'make viewer'),
+      ' and open ', el('code', {}, 'http://localhost:8765/tools/probe-viewer/'), '.')
+  ));
+}
+
+// MARK: Rendering
+
+function render() {
+  const data = state.data;
+  const all = rows(data);
+  document.getElementById('meta').textContent =
+    `macOS ${data.macOS.version} (${data.macOS.build}) · ${data.hardware.model} · ` +
+    new Date(data.capturedAt).toLocaleString();
+
+  const icons = all.filter((r) => !r.item.isOverflowButton);
+  const s = data.summary;
+  const chips = el('div', { class: 'chips' },
+    chip(s.itemCount, 'icons'),
+    chip(s.appsWithExtras, 'apps with icons'),
+    chip(icons.filter((r) => kind(r.item) === 'visible').length, 'visible'),
+    chip(icons.filter((r) => kind(r.item) === 'collapsed').length, 'collapsed'),
+    chip(s.menuStatusCounts.readable ?? 0, 'menus readable'),
+    chip(`${Math.round(s.totalMs)} ms`, `${s.appsScanned} processes`)
+  );
+
+  const screens = data.screens.filter((screen) => all.some((r) => r.item.screenIndex === screen.index));
+  document.getElementById('app').replaceChildren(
+    chips,
+    ...screens.map((screen) => screenView(screen, all.filter((r) => r.item.screenIndex === screen.index))),
+    tableView(all)
+  );
+  syncZoomButtons();
+}
+
+const chip = (value, caption) => el('div', { class: 'chip' }, el('b', {}, String(value)), el('span', {}, caption));
+
+function screenView(screen, items) {
+  const data = state.data;
+  const barHeight = Math.max(screen.menuBarHeight, 24);
+  const height = barHeight + 22;
+  const viewport = el('div', { class: 'viewport' });
+  const scale = state.zoom === 'fit' ? null : Number(state.zoom);
+  const canvas = el('div', { class: 'canvas' });
+  viewport.append(canvas);
+
+  const draw = () => {
+    const k = scale ?? viewport.clientWidth / screen.frame.width;
+    const px = (v) => `${v * k}px`;
+    const place = (frame) => ({
+      left: px(frame.x - screen.frame.x), top: px(frame.y - screen.frame.y), width: px(frame.width), height: px(frame.height),
+    });
+    canvas.style.width = px(screen.frame.width);
+    canvas.style.height = px(height);
+    canvas.replaceChildren(el('div', { class: 'bar', style: { height: px(barHeight) } }));
+
+    const front = data.frontmostApp;
+    if (front?.menusFrame && screenContains(screen, front.menusFrame)) {
+      canvas.append(el('div', { class: 'shape menus', style: place(front.menusFrame) }, front.menuTitles.join('  ')));
+    }
+    if (screen.notch) canvas.append(el('div', { class: 'shape notch', style: place(screen.notch), title: 'Notch' }));
+    for (const { app, item, key } of items) {
+      if (!item.frame) continue;
+      const node = el('div', {
+        class: `shape item ${kind(item)}${state.active === key ? ' active' : ''}`,
+        style: place(item.frame),
+        title: `${app.name} — ${label(item, app)}\nx ${item.frame.x}, ${item.frame.width}×${item.frame.height}`,
+        'data-key': key,
+        onclick: () => select(key, true),
+      });
+      canvas.append(node);
+    }
+    for (let x = 0; x <= screen.frame.width; x += 200) {
+      canvas.append(el('span', { class: 'tick', style: { left: px(x) } }, String(screen.frame.x + x)));
+    }
+  };
+  requestAnimationFrame(() => {
+    draw();
+    // Icons live at the right end of the bar; start there at 1× and 2×.
+    if (scale) viewport.scrollLeft = viewport.scrollWidth;
+  });
+  if (!scale) new ResizeObserver(draw).observe(viewport);
+
+  const notch = screen.notch ? ` · notch x ${Math.round(screen.notch.x)}–${Math.round(screen.notch.x + screen.notch.width)}` : '';
+  const arrow = data.overflowButton && screenContains(screen, data.overflowButton.frame)
+    ? ` · overflow arrow at x ${Math.round(data.overflowButton.frame.x)}` : '';
+  return el('section', { class: 'screen' },
+    el('div', { class: 'screen-head' },
+      el('h2', {}, `Screen ${screen.index}: ${screen.name}`),
+      el('span', { class: 'muted' }, `${screen.frame.width}×${screen.frame.height}${notch}${arrow}`)
+    ),
+    viewport,
+    el('div', { class: 'legend' },
+      el('span', {}, el('i', { class: 'swatch' }), 'Visible'),
+      el('span', {}, el('i', { class: 'swatch collapsed' }), 'Collapsed behind arrow'),
+      el('span', {}, el('i', { class: 'swatch notch-hit' }), 'Other hidden'),
+      el('span', {}, el('i', { class: 'swatch arrow' }), 'Overflow arrow'),
+      el('span', {}, el('i', { class: 'swatch notch' }), 'Notch'),
+      el('span', {}, 'Collapsed icons report piled-up frames, so they overlap.')
+    )
+  );
+}
+
+function screenContains(screen, frame) {
+  const cx = frame.x + frame.width / 2;
+  const cy = frame.y + frame.height / 2;
+  const f = screen.frame;
+  return cx >= f.x && cx <= f.x + f.width && cy >= f.y && cy <= f.y + f.height;
+}
+
+function tableView(all) {
+  const body = el('tbody');
+  for (const { app, item, key } of all) {
+    const status = item.isOverflowButton
+      ? [el('span', { class: 'pill arrow' }, 'overflow arrow')]
+      : item.hiddenReasons.map((reason) => el('span', {
+        class: `pill ${reason === 'collapsedBehindOverflow' ? 'collapsed' : 'other'}`,
+      }, PILL_TEXT[reason] ?? reason));
+    const menu = item.menu.status === 'readable'
+      ? `${item.menu.itemCount} items` : el('span', { class: 'muted' }, 'not while closed');
+    body.append(el('tr', { class: state.active === key ? 'active' : '', 'data-key': key, onclick: () => select(key, false) },
+      el('td', {}, app.name),
+      el('td', { class: 'label' }, label(item, app)),
+      el('td', { class: 'num' }, item.frame ? String(Math.round(item.frame.x)) : '—'),
+      el('td', { class: 'num' }, item.frame ? `${item.frame.width}×${item.frame.height}` : '—'),
+      el('td', {}, status.length ? status : el('span', { class: 'muted' }, 'visible')),
+      el('td', {}, menu),
+      el('td', { class: 'num' }, `${app.ms} ms`)
+    ));
+    if (state.open.has(key)) body.append(detailRow(app, item));
+  }
+  return el('div', { class: 'table-wrap' }, el('table', {},
+    el('thead', {}, el('tr', {}, ...['App', 'Item', 'x', 'Size', 'Status', 'Menu', 'App time'].map((h) => el('th', {}, h)))),
+    body
+  ));
+}
+
+function detailRow(app, item) {
+  const facts = [
+    app.bundleID && `bundle ${app.bundleID}`, `pid ${app.pid}`, `role ${[item.role, item.subrole].filter(Boolean).join('/')}`,
+    item.wrapperRole && `inside ${item.wrapperRole}`, item.actions.length && `actions ${item.actions.map((a) => a.split('\n')[0]).join(', ')}`,
+    item.help && `tooltip “${item.help.replace(/\n/g, ' · ')}”`,
+  ].filter(Boolean).join('  ·  ');
+  const extras = Object.entries(item.extraAttributes || {}).map(([k, v]) => `${k} = ${v}`).join('\n');
+  return el('tr', { class: 'detail' }, el('td', { colspan: 7 },
+    item.menu.status === 'readable' ? tree(item.menu.items) : el('div', { class: 'muted' }, 'Menu isn’t exposed while closed.'),
+    el('div', { class: 'kv' }, facts),
+    extras ? el('div', { class: 'kv' }, extras) : null
+  ));
+}
+
+function tree(nodes) {
+  return el('ul', { class: 'tree' }, nodes.map((node) => node.isSeparator
+    ? el('li', { class: 'sep' })
+    : el('li', { class: node.enabled === false ? 'disabled' : '' },
+      node.mark ? `${node.mark} ` : '', node.title ?? '(untitled)',
+      node.shortcut ? el('span', { class: 'kbd' }, node.shortcut) : null,
+      node.depthLimited ? el('span', { class: 'kbd' }, '…') : null,
+      node.children?.length ? tree(node.children) : null
+    )));
+}
+
+// MARK: Interaction
+
+function select(key, fromCanvas) {
+  state.active = key;
+  if (state.open.has(key) && !fromCanvas) state.open.delete(key); else state.open.add(key);
+  render();
+  document.querySelector(`tr[data-key="${key}"]`)?.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+}
+
+function syncZoomButtons() {
+  for (const button of document.querySelectorAll('[data-zoom]')) {
+    button.setAttribute('aria-pressed', String(button.dataset.zoom === state.zoom));
+  }
+}
+
+for (const button of document.querySelectorAll('[data-zoom]')) {
+  button.addEventListener('click', () => {
+    state.zoom = button.dataset.zoom;
+    if (state.data) render();
+  });
+}
+
+start();
+</script>
+</body>
+</html>
