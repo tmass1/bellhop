@@ -8,7 +8,14 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
 
     func applicationDidFinishLaunching(_ notification: Notification) {
         let item = NSStatusBar.system.statusItem(withLength: NSStatusItem.squareLength)
-        item.button?.image = NSImage(systemSymbolName: "hanger", accessibilityDescription: "Valet")
+        // Template image from Valet-Icon-Assets: AppKit tints it for light, dark and selected states. Always 18 pt.
+        if let image = Bundle.main.image(forResource: "ValetMenuTemplate") {
+            image.size = NSSize(width: 18, height: 18)
+            image.isTemplate = true
+            item.button?.image = image
+        }
+        item.button?.toolTip = "Valet"
+        item.button?.setAccessibilityLabel("Valet")
         let menu = NSMenu()
         menu.addItem(withTitle: "Quit Valet", action: #selector(NSApplication.terminate(_:)), keyEquivalent: "q")
         item.menu = menu

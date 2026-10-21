@@ -1,0 +1,348 @@
+{
+  "result": "PASS",
+  "png_files_checked": 35,
+  "pngs": [
+    {
+      "file": "AppIcon/Valet-AppIcon-1024.png",
+      "size": [
+        1024,
+        1024
+      ],
+      "mode": "RGBA"
+    },
+    {
+      "file": "AppIcon/Valet-AppIcon-128.png",
+      "size": [
+        128,
+        128
+      ],
+      "mode": "RGBA"
+    },
+    {
+      "file": "AppIcon/Valet-AppIcon-16.png",
+      "size": [
+        16,
+        16
+      ],
+      "mode": "RGBA"
+    },
+    {
+      "file": "AppIcon/Valet-AppIcon-2048.png",
+      "size": [
+        2048,
+        2048
+      ],
+      "mode": "RGBA"
+    },
+    {
+      "file": "AppIcon/Valet-AppIcon-256.png",
+      "size": [
+        256,
+        256
+      ],
+      "mode": "RGBA"
+    },
+    {
+      "file": "AppIcon/Valet-AppIcon-32.png",
+      "size": [
+        32,
+        32
+      ],
+      "mode": "RGBA"
+    },
+    {
+      "file": "AppIcon/Valet-AppIcon-512.png",
+      "size": [
+        512,
+        512
+      ],
+      "mode": "RGBA"
+    },
+    {
+      "file": "AppIcon/Valet-AppIcon-64.png",
+      "size": [
+        64,
+        64
+      ],
+      "mode": "RGBA"
+    },
+    {
+      "file": "Assets.xcassets/AppIcon.appiconset/icon_128x128.png",
+      "size": [
+        128,
+        128
+      ],
+      "mode": "RGBA"
+    },
+    {
+      "file": "Assets.xcassets/AppIcon.appiconset/icon_128x128@2x.png",
+      "size": [
+        256,
+        256
+      ],
+      "mode": "RGBA"
+    },
+    {
+      "file": "Assets.xcassets/AppIcon.appiconset/icon_16x16.png",
+      "size": [
+        16,
+        16
+      ],
+      "mode": "RGBA"
+    },
+    {
+      "file": "Assets.xcassets/AppIcon.appiconset/icon_16x16@2x.png",
+      "size": [
+        32,
+        32
+      ],
+      "mode": "RGBA"
+    },
+    {
+      "file": "Assets.xcassets/AppIcon.appiconset/icon_256x256.png",
+      "size": [
+        256,
+        256
+      ],
+      "mode": "RGBA"
+    },
+    {
+      "file": "Assets.xcassets/AppIcon.appiconset/icon_256x256@2x.png",
+      "size": [
+        512,
+        512
+      ],
+      "mode": "RGBA"
+    },
+    {
+      "file": "Assets.xcassets/AppIcon.appiconset/icon_32x32.png",
+      "size": [
+        32,
+        32
+      ],
+      "mode": "RGBA"
+    },
+    {
+      "file": "Assets.xcassets/AppIcon.appiconset/icon_32x32@2x.png",
+      "size": [
+        64,
+        64
+      ],
+      "mode": "RGBA"
+    },
+    {
+      "file": "Assets.xcassets/AppIcon.appiconset/icon_512x512.png",
+      "size": [
+        512,
+        512
+      ],
+      "mode": "RGBA"
+    },
+    {
+      "file": "Assets.xcassets/AppIcon.appiconset/icon_512x512@2x.png",
+      "size": [
+        1024,
+        1024
+      ],
+      "mode": "RGBA"
+    },
+    {
+      "file": "Assets.xcassets/ValetMenuTemplate.imageset/ValetMenuTemplate.png",
+      "size": [
+        18,
+        18
+      ],
+      "mode": "RGBA"
+    },
+    {
+      "file": "Assets.xcassets/ValetMenuTemplate.imageset/ValetMenuTemplate@2x.png",
+      "size": [
+        36,
+        36
+      ],
+      "mode": "RGBA"
+    },
+    {
+      "file": "MenuBar/ValetMenuTemplate.png",
+      "size": [
+        18,
+        18
+      ],
+      "mode": "RGBA"
+    },
+    {
+      "file": "MenuBar/ValetMenuTemplate@2x.png",
+      "size": [
+        36,
+        36
+      ],
+      "mode": "RGBA"
+    },
+    {
+      "file": "MenuBar/ValetMenuTemplate@3x.png",
+      "size": [
+        54,
+        54
+      ],
+      "mode": "RGBA"
+    },
+    {
+      "file": "Preview.png",
+      "size": [
+        1200,
+        810
+      ],
+      "mode": "RGB"
+    },
+    {
+      "file": "Reference/user-reference.png",
+      "size": [
+        232,
+        236
+      ],
+      "mode": "RGBA"
+    },
+    {
+      "file": "Valet.iconset/icon_128x128.png",
+      "size": [
+        128,
+        128
+      ],
+      "mode": "RGBA"
+    },
+    {
+      "file": "Valet.iconset/icon_128x128@2x.png",
+      "size": [
+        256,
+        256
+      ],
+      "mode": "RGBA"
+    },
+    {
+      "file": "Valet.iconset/icon_16x16.png",
+      "size": [
+        16,
+        16
+      ],
+      "mode": "RGBA"
+    },
+    {
+      "file": "Valet.iconset/icon_16x16@2x.png",
+      "size": [
+        32,
+        32
+      ],
+      "mode": "RGBA"
+    },
+    {
+      "file": "Valet.iconset/icon_256x256.png",
+      "size": [
+        256,
+        256
+      ],
+      "mode": "RGBA"
+    },
+    {
+      "file": "Valet.iconset/icon_256x256@2x.png",
+      "size": [
+        512,
+        512
+      ],
+      "mode": "RGBA"
+    },
+    {
+      "file": "Valet.iconset/icon_32x32.png",
+      "size": [
+        32,
+        32
+      ],
+      "mode": "RGBA"
+    },
+    {
+      "file": "Valet.iconset/icon_32x32@2x.png",
+      "size": [
+        64,
+        64
+      ],
+      "mode": "RGBA"
+    },
+    {
+      "file": "Valet.iconset/icon_512x512.png",
+      "size": [
+        512,
+        512
+      ],
+      "mode": "RGBA"
+    },
+    {
+      "file": "Valet.iconset/icon_512x512@2x.png",
+      "size": [
+        1024,
+        1024
+      ],
+      "mode": "RGBA"
+    }
+  ],
+  "icns_representations": [
+    [
+      512,
+      512,
+      2
+    ],
+    [
+      512,
+      512,
+      1
+    ],
+    [
+      256,
+      256,
+      2
+    ],
+    [
+      256,
+      256,
+      1
+    ],
+    [
+      128,
+      128,
+      2
+    ],
+    [
+      128,
+      128,
+      1
+    ],
+    [
+      32,
+      32,
+      2
+    ],
+    [
+      32,
+      32,
+      1
+    ],
+    [
+      16,
+      16,
+      2
+    ],
+    [
+      16,
+      16,
+      1
+    ]
+  ],
+  "checks": [
+    "PNG dimensions",
+    "transparent app corners",
+    "opaque app interior",
+    "menu RGB is black only",
+    "menu alpha spans transparent to opaque",
+    "asset catalog references and scale dimensions",
+    "ICNS representations decode"
+  ],
+  "limitation": "Not tested in a running Valet app."
+}
