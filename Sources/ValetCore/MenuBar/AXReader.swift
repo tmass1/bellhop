@@ -98,8 +98,8 @@ struct AXReader {
         return result
     }
 
-    func role(of element: any AXElement) -> String? {
-        element.attributes([AXName.role])[AXName.role]?.string
+    func role(of element: any AXElement, attribute: String = AXName.role) -> String? {
+        element.attributes([attribute])[attribute]?.string
     }
 
     func menuChild(of element: any AXElement) -> (any AXElement)? {

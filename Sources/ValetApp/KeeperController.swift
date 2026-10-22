@@ -87,31 +87,48 @@ final class KeeperController: NSObject {
         "ValetKeeper " + id.replacingOccurrences(of: "#", with: " ")
     }
 
-    /// Approved look: the icon's status text when it has one (Burn's "56%"), otherwise the app's icon.
+    /// A keeper shows the app's icon (approved Oct 22, replacing status text: a bare "1" or "3" doesn't say
+    /// which app it is). Status stays in the tooltip.
     private func style(_ id: String) {
         guard let button = items[id]?.button, let icon = icons[id] else { return }
-        button.toolTip = icon.name
+        button.toolTip = icon.statusText.map { "\(icon.name) · \($0)" } ?? icon.name
         button.setAccessibilityLabel(icon.name)
-        if let status = icon.statusText {
-            button.image = nil
-            button.title = status
-        } else {
-            button.title = ""
-            button.image = AppIcons.image(for: icon)
-            button.imagePosition = .imageOnly
-        }
+        button.title = ""
+        button.image = AppIcons.image(for: icon)
+        button.imagePosition = .imageOnly
     }
 
     @objc private func keeperClicked(_ sender: NSStatusBarButton) {
-        guard let id = sender.identifier?.rawValue, let icon = icons[id], let item = items[id] else { return }
-        if let menu = mirror.menu(for: icon) {
-            menu.delegate = self
-            item.menu = menu
-            sender.performClick(nil)
-        } else {
-            // A panel, or a menu that only exists while open: press the real (tucked) icon.
-            mirror.run(icon.name, confirm: false)
+        guard let id = sender.identifier?.rawValue, let icon = icons[id] else { return }
+        if mirror.menu(for: icon) != nil {
+            showMirror(of: icon, id: id)
+            return
         }
+        // A panel, or a menu that only exists while open. The engine reads such a menu once (it then shows here),
+        // or presses the real tucked icon and moves its panel under this keeper.
+        guard let window = sender.window, let screen = window.screen else { return }
+        let x = Double(window.frame.minX)
+        let screenMaxX = Double(screen.frame.maxX)
+        Task {
+            do {
+                let opened = try await engine.open(
+                    icon.name, alignTo: x, screenMaxX: screenMaxX, env: SystemSnapshot.capture()
+                )
+                icons[id] = opened
+                if mirror.menu(for: opened) != nil { showMirror(of: opened, id: id) }
+            } catch let error as ValetError {
+                MenuMirror.alert(error.message)
+            } catch {
+                MenuMirror.alert(error.localizedDescription)
+            }
+        }
+    }
+
+    private func showMirror(of icon: MenuBarIcon, id: String) {
+        guard let item = items[id], let menu = mirror.menu(for: icon) else { return }
+        menu.delegate = self
+        item.menu = menu
+        item.button?.performClick(nil)
     }
 
     // MARK: Status

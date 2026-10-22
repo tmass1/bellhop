@@ -103,6 +103,12 @@ final class FakeElement: AXElement {
 
     func actionNames() -> [String] { actions }
 
+    func setPosition(_ point: CGPoint) -> AXFailure? {
+        log.append("\(name):setPosition(\(Int(point.x)),\(Int(point.y)))")
+        values[AXName.position] = .point(point)
+        return nil
+    }
+
     func perform(_ action: String) -> AXFailure? {
         log.append("\(name):\(action)")
         if let failure = onPerform?(self, action) { return failure }

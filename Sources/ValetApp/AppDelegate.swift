@@ -32,6 +32,10 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         }
 
         let mirror = MenuMirror(engine: engine)
+        mirror.anchor = { [weak self] in
+            guard let window = self?.statusItem.button?.window, let screen = window.screen else { return nil }
+            return (Double(window.frame.minX), Double(screen.frame.maxX))
+        }
         keepers = KeeperController(engine: engine, mirror: mirror)
         divider = DividerController(icon: statusItem, engine: engine)
         divider.leftmostItemMinX = { [weak keepers] in keepers?.leftmostMinX }

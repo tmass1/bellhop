@@ -19,6 +19,8 @@ public actor MenuBarEngine {
     /// Icons that showed no menu when pressed (`.panel` or `.noResponse`). Remembered so we don't press them
     /// again just to look.
     private var noMenu: [String: MenuAvailability] = [:]
+    /// Menus read on demand (opened, read, closed). Kept across scans so they're only read once.
+    private var loadedMenus: [String: [MenuEntry]] = [:]
 
     private let reader = AXReader()
     private let menuOpenTimeout: Duration = .milliseconds(800)
@@ -96,6 +98,8 @@ public actor MenuBarEngine {
             availability = .readable
         } else if let known = noMenu[id] {
             availability = known
+        } else if let loaded = loadedMenus[id] {
+            menu = loaded
         }
         return MenuBarIcon(
             id: id,
@@ -147,9 +151,82 @@ public actor MenuBarEngine {
         }
         var budget = reader.maxMenuItems
         icon.menu = reader.walk(menuElement, depth: 1, budget: &budget).map(\.entry)
+        loadedMenus[icon.id] = icon.menu
         close(menuElement, icon: element)
         update(icon)
         return icon
+    }
+
+    // MARK: Opening icons
+
+    /// Opens an icon on Valet's behalf (from a keeper or the Valet menu). If its menu can be mirrored, it's read
+    /// (once, for menus that only exist while open) and returned for Valet to show. Otherwise the real icon is
+    /// pressed, and a panel it opens is moved so its left edge sits at `x`, kept left of `screenMaxX`: a tucked
+    /// icon's panel would otherwise open behind the notch.
+    public func open(
+        _ query: String, alignTo x: Double, screenMaxX: Double, env: SystemSnapshot
+    ) async throws -> MenuBarIcon {
+        var icon = try MenuPaths.resolveIcon(query, in: try snapshot(env).icons)
+        if icon.menu != nil, icon.menuAvailability != .panel { return icon }
+        guard let element = elements[icon.id] else { throw ValetError.iconNotFound(query) }
+
+        // One press decides it: a menu appears (read it, close it, Valet mirrors it from now on), or a window
+        // appears (a panel: leave it open and move it), or nothing does.
+        let app = system.application(pid: icon.app.pid)
+        let before = windows(of: app).count
+        if let failure = element.perform(AXName.press), failure != .cannotComplete {
+            throw ValetError.pressFailed(icon.name, code: failure.code)
+        }
+        let clock = ContinuousClock()
+        let deadline = clock.now + menuOpenTimeout
+        while clock.now < deadline {
+            if icon.menuAvailability != .panel, let menuElement = reader.menuChild(of: element) {
+                var budget = reader.maxMenuItems
+                icon.menu = reader.walk(menuElement, depth: 1, budget: &budget).map(\.entry)
+                loadedMenus[icon.id] = icon.menu
+                close(menuElement, icon: element)
+                update(icon)
+                return icon
+            }
+            let now = windows(of: app)
+            if now.count < before {
+                // The press closed a panel that was already open (a second click on its keeper).
+                return icon
+            }
+            if now.count > before {
+                noMenu[icon.id] = .panel
+                icon.menuAvailability = .panel
+                update(icon)
+                align(panel(in: now), x: x, screenMaxX: screenMaxX)
+                return icon
+            }
+            try? await Task.sleep(for: .milliseconds(40))
+        }
+        // A known panel that didn't change was likely just slow; don't relabel it.
+        if icon.menuAvailability != .panel {
+            noMenu[icon.id] = .noResponse
+            icon.menuAvailability = .noResponse
+            update(icon)
+        }
+        return icon
+    }
+
+    /// The panel among an app's windows: the system-dialog one if there is one, otherwise the newest.
+    private func panel(in windows: [any AXElement]) -> any AXElement {
+        windows.first { reader.role(of: $0, attribute: AXName.subrole) == AXName.systemDialogSubrole }
+            ?? windows[windows.count - 1]
+    }
+
+    /// Moves a panel so its left edge is at `x`, keeping it on screen.
+    private func align(_ panel: any AXElement, x: Double, screenMaxX: Double) {
+        let values = panel.attributes([AXName.position, AXName.size])
+        guard let origin = values[AXName.position]?.point, let size = values[AXName.size]?.size else { return }
+        let left = min(x, screenMaxX - Double(size.width) - 8)
+        _ = panel.setPosition(CGPoint(x: left, y: origin.y))
+    }
+
+    private func windows(of app: any AXElement) -> [any AXElement] {
+        app.attributes([AXName.windows])[AXName.windows]?.elements ?? []
     }
 
     // MARK: Running

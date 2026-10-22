@@ -5,6 +5,8 @@ import ValetCore
 @MainActor
 final class MenuMirror: NSObject {
     private let engine: MenuBarEngine
+    /// Where panels opened from the Valet menu should go: the left edge of Valet's icon, and its screen's right edge.
+    var anchor: (() -> (x: Double, screenMaxX: Double)?)?
 
     init(engine: MenuBarEngine) {
         self.engine = engine
@@ -20,11 +22,28 @@ final class MenuMirror: NSObject {
         return menu
     }
 
-    /// Makes `item` press the real icon when chosen, which opens its panel or menu in place.
+    /// Makes `item` open the real icon when chosen. A panel it opens is moved under Valet's icon, since the real
+    /// icon may be tucked behind the notch.
     func pressesIcon(_ icon: MenuBarIcon, item: NSMenuItem) {
-        item.action = #selector(runPath(_:))
+        item.action = #selector(openIcon(_:))
         item.target = self
         item.representedObject = icon.name
+    }
+
+    @objc private func openIcon(_ sender: NSMenuItem) {
+        guard let name = sender.representedObject as? String else { return }
+        guard let anchor = anchor?() else { return run(name, confirm: false) }
+        Task {
+            do {
+                _ = try await engine.open(
+                    name, alignTo: anchor.x, screenMaxX: anchor.screenMaxX, env: SystemSnapshot.capture()
+                )
+            } catch let error as ValetError {
+                Self.alert(error.message)
+            } catch {
+                Self.alert(error.localizedDescription)
+            }
+        }
     }
 
     private func entryItem(_ entry: MenuEntry, path: [String]) -> NSMenuItem {

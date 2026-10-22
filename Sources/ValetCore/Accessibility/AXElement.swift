@@ -9,6 +9,8 @@ public protocol AXElement: AnyObject {
     func actionNames() -> [String]
     /// Returns nil on success.
     func perform(_ action: String) -> AXFailure?
+    /// Moves a window (top-left origin, Accessibility coordinates). Returns nil on success.
+    func setPosition(_ point: CGPoint) -> AXFailure?
 }
 
 /// Where elements come from: the live system, or fixtures in tests.
@@ -92,6 +94,7 @@ enum AXName {
     static let extrasMenuBar = "AXExtrasMenuBar"
     static let menuBar = "AXMenuBar"
     static let windows = "AXWindows"
+    static let systemDialogSubrole = "AXSystemDialog"
 
     static let menuRole = "AXMenu"
     static let groupRole = "AXGroup"

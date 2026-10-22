@@ -60,6 +60,13 @@ final class LiveElement: AXElement {
         return (raw as? [String]) ?? []
     }
 
+    func setPosition(_ point: CGPoint) -> AXFailure? {
+        var point = point
+        guard let value = AXValueCreate(.cgPoint, &point) else { return .failure }
+        let err = AXUIElementSetAttributeValue(element, kAXPositionAttribute as CFString, value)
+        return err == .success ? nil : AXFailure(code: err.rawValue)
+    }
+
     func perform(_ action: String) -> AXFailure? {
         let err = AXUIElementPerformAction(element, action as CFString)
         return err == .success ? nil : AXFailure(code: err.rawValue)
