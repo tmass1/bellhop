@@ -4,7 +4,7 @@
 CODESIGN_IDENTITY ?= Developer ID Application: Thomas Massaro (Y5V8Y3BH9A)
 export CODESIGN_IDENTITY
 
-# Extra flags for valet-probe, e.g. make probe ARGS="--delay 5"
+# Extra flags for bellhop-probe, e.g. make probe ARGS="--delay 5"
 ARGS ?=
 
 build:
@@ -17,14 +17,14 @@ lint:
 	swiftlint lint --strict --quiet
 
 run:
-	pkill -x Valet 2>/dev/null || true
+	pkill -x Bellhop 2>/dev/null || true
 	scripts/bundle.sh
-	open dist/Valet.app
+	open dist/Bellhop.app
 
 probe:
 	@mkdir -p .build && xattr -w com.dropbox.ignored 1 .build 2>/dev/null || true
-	swift build -c release --product valet-probe
-	"$$(swift build -c release --show-bin-path)/valet-probe" $(ARGS)
+	swift build -c release --product bellhop-probe
+	"$$(swift build -c release --show-bin-path)/bellhop-probe" $(ARGS)
 
 # Serves the repo on localhost only, for tools/probe-viewer and design/mocks.
 viewer:

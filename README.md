@@ -1,4 +1,4 @@
-# Valet
+# Bellhop
 
 A Mac menu bar app: search and run any menu bar icon, or any item inside its menu, from the keyboard.
 

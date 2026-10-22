@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Copy a valet-probe output into Tests/Fixtures with personal content replaced.
+"""Copy a bellhop-probe output into Tests/Fixtures with personal content replaced.
 
 Menus can hold private data: clipboard history (CopyClip), chat titles (ChatGPT), file counts in tooltips.
 The structure, frames, roles and shortcuts stay intact so tests still exercise real shapes.

@@ -2,17 +2,18 @@
 import PackageDescription
 
 // Target names differ from the product names on purpose: macOS disks are case-insensitive, so an app called
-// `Valet` and a CLI called `valet` can't share a build folder. The bundle script renames the app binary to `Valet`.
+// `Bellhop` and a CLI called `bellhop` can't share a build folder. The bundle script renames the app binary to
+// `Bellhop`.
 let swiftSettings: [SwiftSetting] = [.swiftLanguageMode(.v6)]
 
 let package = Package(
-    name: "Valet",
+    name: "Bellhop",
     platforms: [.macOS(.v14)],
     products: [
-        .library(name: "ValetCore", targets: ["ValetCore"]),
-        .executable(name: "ValetApp", targets: ["ValetApp"]),
-        .executable(name: "valet", targets: ["ValetCLI"]),
-        .executable(name: "valet-probe", targets: ["valet-probe"]),
+        .library(name: "BellhopCore", targets: ["BellhopCore"]),
+        .executable(name: "BellhopApp", targets: ["BellhopApp"]),
+        .executable(name: "bellhop", targets: ["BellhopCLI"]),
+        .executable(name: "bellhop-probe", targets: ["bellhop-probe"]),
     ],
     dependencies: [
         .package(url: "https://github.com/apple/swift-argument-parser", from: "1.5.0"),
@@ -20,42 +21,42 @@ let package = Package(
     ],
     targets: [
         .target(
-            name: "ValetCore",
-            path: "Sources/ValetCore",
+            name: "BellhopCore",
+            path: "Sources/BellhopCore",
             swiftSettings: swiftSettings
         ),
         .executableTarget(
-            name: "ValetApp",
+            name: "BellhopApp",
             dependencies: [
-                "ValetCore",
+                "BellhopCore",
                 .product(name: "KeyboardShortcuts", package: "KeyboardShortcuts"),
             ],
-            path: "Sources/ValetApp",
+            path: "Sources/BellhopApp",
             swiftSettings: swiftSettings
         ),
         .executableTarget(
-            name: "ValetCLI",
+            name: "BellhopCLI",
             dependencies: [
-                "ValetCore",
+                "BellhopCore",
                 .product(name: "ArgumentParser", package: "swift-argument-parser"),
             ],
-            path: "Sources/ValetCLI",
+            path: "Sources/BellhopCLI",
             swiftSettings: swiftSettings
         ),
-        // Milestone 1 spike. Delete once ValetCore's scanner replaces it.
+        // Milestone 1 spike. Delete once BellhopCore's scanner replaces it.
         .executableTarget(
-            name: "valet-probe",
+            name: "bellhop-probe",
             dependencies: [
-                "ValetCore",
+                "BellhopCore",
                 .product(name: "ArgumentParser", package: "swift-argument-parser"),
             ],
-            path: "Sources/valet-probe",
+            path: "Sources/bellhop-probe",
             swiftSettings: swiftSettings
         ),
         .testTarget(
-            name: "ValetCoreTests",
-            dependencies: ["ValetCore"],
-            path: "Tests/ValetCoreTests",
+            name: "BellhopCoreTests",
+            dependencies: ["BellhopCore"],
+            path: "Tests/BellhopCoreTests",
             swiftSettings: swiftSettings
         ),
     ]

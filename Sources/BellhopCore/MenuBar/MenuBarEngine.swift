@@ -1,0 +1,378 @@
+import CoreGraphics
+import Foundation
+
+/// The result of `MenuBarEngine.run`.
+public struct RunResult: Codable, Sendable, Equatable {
+    /// The path as the menu titles it, e.g. "Mark › Settings…".
+    public var path: String
+    /// True when Bellhop had to open the menu to reach the item.
+    public var openedMenu: Bool
+}
+
+/// Scans menu bar icons, reads their menus, and presses items. Every Accessibility call in Bellhop happens inside
+/// this actor, off the main thread.
+public actor MenuBarEngine {
+    private let system: any AccessibilitySystem
+    private var current: MenuBarSnapshot?
+    /// Live elements from the last scan, by icon ID. Valid while the owning process lives.
+    private var elements: [String: any AXElement] = [:]
+    /// Icons that showed no menu when pressed (`.panel` or `.noResponse`). Remembered so we don't press them
+    /// again just to look.
+    private var noMenu: [String: MenuAvailability] = [:]
+    /// Menus read on demand (opened, read, closed). Kept across scans so they're only read once.
+    private var loadedMenus: [String: [MenuEntry]] = [:]
+    /// Processes that had no menu bar icon, and when that was seen. Most running processes never have one, so
+    /// they're skipped for a while; a new process (new pid) is always checked.
+    private var withoutIcons: [Int32: Date] = [:]
+    private let recheckWithoutIconsAfter: TimeInterval = 300
+
+    private let reader = AXReader()
+    private let menuOpenTimeout: Duration = .milliseconds(800)
+
+    public init(system: any AccessibilitySystem) {
+        self.system = system
+    }
+
+    // MARK: Scanning
+
+    /// Reads every menu bar icon. Menus exposed while closed are read too; others are left for `loadMenu`.
+    /// `full` re-checks processes recently seen without icons.
+    public func scan(_ env: SystemSnapshot, full: Bool = false) throws -> MenuBarSnapshot {
+        guard system.isTrusted else { throw BellhopError.notTrusted }
+        let clock = ContinuousClock()
+        let start = clock.now
+
+        var found: [AXReader.FoundIcon] = []
+        var overflowButton: Frame?
+        let now = Date.now
+        let running = Set(env.apps.map(\.pid))
+        withoutIcons = withoutIcons.filter { running.contains($0.key) }
+        for app in env.apps {
+            if !full, let seen = withoutIcons[app.pid], now.timeIntervalSince(seen) < recheckWithoutIconsAfter {
+                continue
+            }
+            guard case .success(.element(let bar)) = system.application(pid: app.pid).attribute(AXName.extrasMenuBar)
+            else {
+                withoutIcons[app.pid] = now
+                continue
+            }
+            withoutIcons[app.pid] = nil
+            for element in bar.attributes([AXName.children])[AXName.children]?.elements ?? [] {
+                let icon = reader.read(element, app: app)
+                // macOS 27's "Show Hidden Menu Bar Items" arrow: matched by owner and role, not its localized label.
+                if app.bundleID == "com.apple.MenuBarAgent", icon.role == AXName.buttonRole {
+                    overflowButton = icon.frame
+                } else {
+                    found.append(icon)
+                }
+            }
+        }
+
+        let appMenus = env.frontmost.flatMap { reader.appMenusFrame(system.application(pid: $0.pid)) }
+        let iconsPerApp = Dictionary(grouping: found, by: \.app.pid).mapValues(\.count)
+        var indexInApp: [Int32: Int] = [:]
+        var icons: [MenuBarIcon] = []
+        elements = [:]
+        for raw in found {
+            let index = indexInApp[raw.app.pid, default: 0]
+            indexInApp[raw.app.pid] = index + 1
+            let id = "\(raw.app.bundleID ?? raw.app.name)#\(index)"
+            elements[id] = raw.element
+            let hiddenReasons = raw.frame.map {
+                Visibility.hiddenReasons(
+                    for: $0, screens: env.screens, appMenus: appMenus, overflowButton: overflowButton,
+                    dividers: env.dividers
+                )
+            } ?? [.offScreen]
+            icons.append(icon(
+                from: raw, id: id, sharesApp: (iconsPerApp[raw.app.pid] ?? 1) > 1,
+                screens: env.screens, hiddenReasons: hiddenReasons
+            ))
+        }
+
+        let snapshot = MenuBarSnapshot(
+            capturedAt: .now,
+            screens: env.screens,
+            overflowButton: overflowButton,
+            icons: icons.sorted { ($0.frame?.x ?? .infinity) < ($1.frame?.x ?? .infinity) },
+            scanMs: (clock.now - start).milliseconds
+        )
+        current = snapshot
+        return snapshot
+    }
+
+    private func icon(
+        from raw: AXReader.FoundIcon, id: String, sharesApp: Bool, screens: [ScreenGeometry],
+        hiddenReasons: [HiddenReason]
+    ) -> MenuBarIcon {
+        let label = raw.title ?? raw.description ?? raw.help ?? raw.app.name
+        var availability = MenuAvailability.onDemand
+        var menu: [MenuEntry]?
+        if let menuElement = raw.menuElement {
+            var budget = reader.maxMenuItems
+            menu = reader.walk(menuElement, depth: 1, budget: &budget).map(\.entry)
+            availability = .readable
+        } else if let known = noMenu[id] {
+            availability = known
+        } else if let loaded = loadedMenus[id] {
+            menu = loaded
+        }
+        return MenuBarIcon(
+            id: id,
+            app: raw.app,
+            name: sharesApp ? label : raw.app.name,
+            label: label,
+            title: raw.title,
+            frame: raw.frame,
+            screenIndex: raw.frame.flatMap { Visibility.screen(containing: $0, in: screens)?.index },
+            hiddenReasons: hiddenReasons,
+            menuAvailability: availability,
+            menu: menu,
+            canPress: raw.actions.contains(AXName.press)
+        )
+    }
+
+    /// The current title of an icon from the last scan, trimmed. Nil if it has none or its app went away.
+    func liveTitle(of id: String) -> String? {
+        guard let element = elements[id] else { return nil }
+        let title = element.attributes([AXName.title])[AXName.title]?.string?
+            .trimmingCharacters(in: .whitespaces)
+        return title?.isEmpty == false ? title : nil
+    }
+
+    /// Right edge of an app's own menus (File, Edit…). On screens without a notch they share the bar with icons.
+    public func appMenusMaxX(pid: Int32) -> Double? {
+        reader.appMenusFrame(system.application(pid: pid))?.maxX
+    }
+
+    /// The last scan if it's recent enough, otherwise a fresh one.
+    public func snapshot(_ env: SystemSnapshot, maxAge: TimeInterval = 5) throws -> MenuBarSnapshot {
+        if let current, current.capturedAt.timeIntervalSinceNow > -maxAge { return current }
+        return try scan(env)
+    }
+
+    // MARK: Menus
+
+    /// Returns the icon with its menu filled in. Menus that only exist while open are opened briefly, read, and
+    /// closed again, so this can flicker; call it only when someone asks for that menu.
+    public func loadMenu(_ query: String, env: SystemSnapshot) async throws -> MenuBarIcon {
+        let snapshot = try self.snapshot(env)
+        var icon = try MenuPaths.resolveIcon(query, in: snapshot.icons)
+        guard icon.menuAvailability == .onDemand, let element = elements[icon.id] else { return icon }
+
+        guard case .menu(let menuElement) = await openMenu(element, of: icon) else {
+            icon.menuAvailability = noMenu[icon.id] ?? .noResponse
+            update(icon)
+            return icon
+        }
+        var budget = reader.maxMenuItems
+        icon.menu = reader.walk(menuElement, depth: 1, budget: &budget).map(\.entry)
+        loadedMenus[icon.id] = icon.menu
+        close(menuElement, icon: element)
+        update(icon)
+        return icon
+    }
+
+    // MARK: Opening icons
+
+    /// Opens an icon on Bellhop's behalf (from a keeper or the Bellhop menu). If its menu can be mirrored, it's read
+    /// (once, for menus that only exist while open) and returned for Bellhop to show. Otherwise the real icon is
+    /// pressed, and a panel it opens is moved so its left edge sits at `x`, kept left of `screenMaxX`: a tucked
+    /// icon's panel would otherwise open behind the notch.
+    public func open(
+        _ query: String, alignTo x: Double, screenMaxX: Double, env: SystemSnapshot
+    ) async throws -> MenuBarIcon {
+        var icon = try MenuPaths.resolveIcon(query, in: try snapshot(env).icons)
+        if icon.menu != nil, icon.menuAvailability != .panel { return icon }
+        guard let element = elements[icon.id] else { throw BellhopError.iconNotFound(query) }
+
+        // One press decides it: a menu appears (read it, close it, Bellhop mirrors it from now on), or a window
+        // appears (a panel: leave it open and move it), or nothing does.
+        let app = system.application(pid: icon.app.pid)
+        let before = windows(of: app).count
+        if let failure = element.perform(AXName.press), failure != .cannotComplete {
+            throw BellhopError.pressFailed(icon.name, code: failure.code)
+        }
+        let clock = ContinuousClock()
+        let deadline = clock.now + menuOpenTimeout
+        while clock.now < deadline {
+            if icon.menuAvailability != .panel, let menuElement = reader.menuChild(of: element) {
+                var budget = reader.maxMenuItems
+                icon.menu = reader.walk(menuElement, depth: 1, budget: &budget).map(\.entry)
+                loadedMenus[icon.id] = icon.menu
+                close(menuElement, icon: element)
+                update(icon)
+                return icon
+            }
+            let now = windows(of: app)
+            if now.count < before {
+                // The press closed a panel that was already open (a second click on its keeper).
+                return icon
+            }
+            if now.count > before {
+                noMenu[icon.id] = .panel
+                icon.menuAvailability = .panel
+                update(icon)
+                align(panel(in: now), x: x, screenMaxX: screenMaxX)
+                return icon
+            }
+            try? await Task.sleep(for: .milliseconds(40))
+        }
+        // A known panel that didn't change was likely just slow; don't relabel it.
+        if icon.menuAvailability != .panel {
+            noMenu[icon.id] = .noResponse
+            icon.menuAvailability = .noResponse
+            update(icon)
+        }
+        return icon
+    }
+
+    /// The panel among an app's windows: the system-dialog one if there is one, otherwise the newest.
+    private func panel(in windows: [any AXElement]) -> any AXElement {
+        windows.first { reader.role(of: $0, attribute: AXName.subrole) == AXName.systemDialogSubrole }
+            ?? windows[windows.count - 1]
+    }
+
+    /// Moves a panel so its left edge is at `x`, keeping it on screen.
+    private func align(_ panel: any AXElement, x: Double, screenMaxX: Double) {
+        let values = panel.attributes([AXName.position, AXName.size])
+        guard let origin = values[AXName.position]?.point, let size = values[AXName.size]?.size else { return }
+        let left = min(x, screenMaxX - Double(size.width) - 8)
+        _ = panel.setPosition(CGPoint(x: left, y: origin.y))
+    }
+
+    private func windows(of app: any AXElement) -> [any AXElement] {
+        app.attributes([AXName.windows])[AXName.windows]?.elements ?? []
+    }
+
+    // MARK: Running
+
+    /// Presses the item at `path` ("Mark › Settings…"), or the icon itself when the path is just its name.
+    public func run(_ path: String, confirm: Bool, env: SystemSnapshot) async throws -> RunResult {
+        let components = MenuPaths.parse(path)
+        guard let first = components.first else { throw BellhopError.badRequest("empty path") }
+        let snapshot = try self.snapshot(env)
+        let icon = try MenuPaths.resolveIcon(first, in: snapshot.icons)
+        guard let iconElement = elements[icon.id] else { throw BellhopError.iconNotFound(first) }
+
+        let titles = Array(components.dropFirst())
+        if titles.isEmpty {
+            if let failure = iconElement.perform(AXName.press), failure != .cannotComplete {
+                throw BellhopError.pressFailed(icon.name, code: failure.code)
+            }
+            return RunResult(path: icon.name, openedMenu: false)
+        }
+
+        switch icon.menuAvailability {
+        case .panel:
+            throw BellhopError.panelApp(icon.name)
+        case .noResponse:
+            throw BellhopError.noResponse(icon.name)
+        case .readable:
+            // Check against the menu we already read before touching anything live.
+            _ = try reader.entry(at: titles, in: icon.menu ?? [], iconName: icon.name, confirm: confirm)
+            guard let menuElement = reader.menuChild(of: iconElement) else { throw BellhopError.panelApp(icon.name) }
+            let (item, actual) = try reader.liveItem(
+                at: titles, in: menuElement, iconName: icon.name, confirm: confirm
+            )
+            // cannotComplete usually means the item's action is still running (a window or alert opening): it worked.
+            let failure = item.perform(AXName.press)
+            if failure == nil || failure == .cannotComplete {
+                return RunResult(path: MenuPaths.join([icon.name] + actual), openedMenu: false)
+            }
+            // Some apps only act on items in an open menu; open it and try once more.
+            return try await pressInOpenMenu(icon: icon, iconElement: iconElement, titles: titles, confirm: confirm)
+        case .onDemand:
+            return try await pressInOpenMenu(icon: icon, iconElement: iconElement, titles: titles, confirm: confirm)
+        }
+    }
+
+    private func pressInOpenMenu(
+        icon: MenuBarIcon, iconElement: any AXElement, titles: [String], confirm: Bool
+    ) async throws -> RunResult {
+        let menuElement: any AXElement
+        switch await openMenu(iconElement, of: icon) {
+        case .menu(let element):
+            menuElement = element
+        case .panel:
+            throw BellhopError.panelApp(icon.name)
+        case .noResponse:
+            throw BellhopError.noResponse(icon.name)
+        }
+        do {
+            let (item, actual) = try reader.liveItem(
+                at: titles, in: menuElement, iconName: icon.name, confirm: confirm
+            )
+            let path = MenuPaths.join([icon.name] + actual)
+            if let failure = item.perform(AXName.press), failure != .cannotComplete {
+                close(menuElement, icon: iconElement)
+                throw BellhopError.pressFailed(path, code: failure.code)
+            }
+            return RunResult(path: path, openedMenu: true)
+        } catch {
+            close(menuElement, icon: iconElement)
+            throw error
+        }
+    }
+
+    // MARK: Opening and closing
+
+    private enum Opened {
+        case menu(any AXElement)
+        case panel
+        case noResponse
+    }
+
+    /// Presses the icon and waits for its menu. A panel shows up instead as a new window in the owning app, usually
+    /// within 100 ms (Claude's quick-entry overlay, Burn's popover); it's closed again right away.
+    private func openMenu(_ element: any AXElement, of icon: MenuBarIcon) async -> Opened {
+        let app = system.application(pid: icon.app.pid)
+        let windowsBefore = windowCount(app)
+        // An open menu holds the owning app in menu tracking, so this press often times out (cannotComplete)
+        // even though it worked.
+        if let failure = element.perform(AXName.press), failure != .cannotComplete {
+            noMenu[icon.id] = .noResponse
+            return .noResponse
+        }
+        let clock = ContinuousClock()
+        let deadline = clock.now + menuOpenTimeout
+        while clock.now < deadline {
+            if let menu = reader.menuChild(of: element) { return .menu(menu) }
+            if windowCount(app) > windowsBefore {
+                noMenu[icon.id] = .panel
+                // Pressing again toggles the panel closed.
+                _ = element.perform(AXName.press)
+                return .panel
+            }
+            try? await Task.sleep(for: .milliseconds(40))
+        }
+        // Nothing opened, so there's nothing to close.
+        noMenu[icon.id] = .noResponse
+        return .noResponse
+    }
+
+    private func windowCount(_ app: any AXElement) -> Int {
+        app.attributes([AXName.windows])[AXName.windows]?.elements.count ?? 0
+    }
+
+    private func close(_ menu: any AXElement, icon: any AXElement) {
+        if menu.perform(AXName.cancel) != nil, reader.menuChild(of: icon) != nil {
+            _ = icon.perform(AXName.press)
+        }
+    }
+
+    private func update(_ icon: MenuBarIcon) {
+        guard var snapshot = current, let index = snapshot.icons.firstIndex(where: { $0.id == icon.id }) else {
+            return
+        }
+        snapshot.icons[index] = icon
+        current = snapshot
+    }
+}
+
+extension Duration {
+    var milliseconds: Double {
+        let (seconds, attoseconds) = components
+        return ((Double(seconds) * 1000 + Double(attoseconds) / 1e15) * 10).rounded() / 10
+    }
+}

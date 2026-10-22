@@ -1,20 +1,20 @@
-# Valet — Menu Bar App Build Plan
+# Bellhop — Menu Bar App Build Plan
 
 Oct 21, 2026 · Tommy Massaro
 
 ## Summary
 
-Valet is a free, open-source Mac menu bar app. It keeps your menu bar tidy on any screen: icons you rarely look at tuck away, and every icon stays one click or keystroke away in a vertical list. Horizontal menu bars run out of room on smaller screens; a vertical list doesn't.
+Bellhop is a free, open-source Mac menu bar app. It keeps your menu bar tidy on any screen: icons you rarely look at tuck away, and every icon stays one click or keystroke away in a vertical list. Horizontal menu bars run out of room on smaller screens; a vertical list doesn't.
 
-macOS 27 (Sept 14, 2026) draws the menu bar as one window with its own overflow arrow, and that broke Bartender, Ice and Hidden Bar. Valet works with the arrow instead of fighting it.
+macOS 27 (Sept 14, 2026) draws the menu bar as one window with its own overflow arrow, and that broke Bartender, Ice and Hidden Bar. Bellhop works with the arrow instead of fighting it.
 
 - **Coat Check:** click the hanger, scan a list, hover to find the menu, click the item.
-- **Valet:** a menu bar with only what you choose, everything else in Valet's menu, and a hotkey to reach any of it.
+- **Bellhop:** a menu bar with only what you choose, everything else in Bellhop's menu, and a hotkey to reach any of it.
 
-Valet makes four bets:
+Bellhop makes four bets:
 
-1. **Condense the menu bar.** Valet's divider tucks every icon to its left behind macOS's own overflow arrow. Nothing is dragged or redrawn.
-2. **A vertical home for every icon.** The Valet menu lists all icons, tucked ones first, each with its real menu mirrored.
+1. **Condense the menu bar.** Bellhop's divider tucks every icon to its left behind macOS's own overflow arrow. Nothing is dragged or redrawn.
+2. **A vertical home for every icon.** The Bellhop menu lists all icons, tucked ones first, each with its real menu mirrored.
 3. **A command palette over the menu bar.** Open any icon, or run an item inside its menu, from the keyboard.
 4. **Scriptable by default.** Every action is available from the CLI, Shortcuts and AI agents (MCP). Live status (VPN, sync, usage) comes along for free.
 
@@ -25,17 +25,17 @@ It keeps Coat Check's best traits:
 - It sends no telemetry.
 - It's MIT licensed.
 
-"Valet" is a working name: a valet parks your things and brings them back on request.
+"Bellhop" is a working name: a bellhop parks your things and brings them back on request.
 
 ## Landscape
 
 Every option today is mouse-driven, and macOS 27 broke most of them. The keyboard and search space is open.
 
-| Option | What it does | Gap Valet fills |
+| Option | What it does | Gap Bellhop fills |
 | --- | --- | --- |
 | [macOS 27 overflow arrow](https://www.macstories.net/stories/macos-27-the-macstories-review/3/) | A double arrow appears when icons don't fit. Clicking it slides the hidden icons out to the left of the notch for a moment. | Mouse only. No search, no access to menu items. macOS 27 and later only. |
 | [Coat Check](https://coatcheckformac.com/) | Lists every icon under a hanger, hidden ones first. Mirrors each app's real menu and presses the item you pick. Has a CLI. Free, MIT. | Browse only, with no search or hotkey. Apple silicon only. [macOS 27 support still untested](https://github.com/coreyhaines31/coatcheck/issues/24). |
-| Ice, Bartender, Thaw | Hide and rearrange icons into sections and layouts. | [Broken by macOS 27](https://badgeify.app/macos-27-golden-gate-menu-bar-changes/), which draws the menu bar as one window. Valet condenses through macOS's own overflow instead, so it works on 27 without private APIs. |
+| Ice, Bartender, Thaw | Hide and rearrange icons into sections and layouts. | [Broken by macOS 27](https://badgeify.app/macos-27-golden-gate-menu-bar-changes/), which draws the menu bar as one window. Bellhop condenses through macOS's own overflow instead, so it works on 27 without private APIs. |
 | [Hidden Bar](https://newreleases.io/project/github/dwarvesf/hidden/release/v1.11) | Collapses icons behind an arrow. v1.11 restored macOS 27 support through a private framework. | Hiding only, with no list, search or menu mirroring. Depends on a private framework on 27. |
 | [ChocolateBar](https://www.producthunt.com/p/chocolatebar/chocolatebar) | Adds a second row under the menu bar for overflow icons. | Takes up screen space and is still mouse-driven. |
 
@@ -45,10 +45,10 @@ macOS 27 also changes the ground underneath this kind of app: the menu bar is no
 
 These are the tie-breakers when a feature decision is unclear.
 
-1. **Keyboard first, mouse friendly.** Every action is reachable without the trackpad, and the Valet menu still works for people who never touch the hotkey.
-2. **Condense, don't rearrange.** Valet only sizes its own divider and draws its own keepers; macOS decides what collapses. Never move, drag or redraw other apps' icons. Never capture the screen.
+1. **Keyboard first, mouse friendly.** Every action is reachable without the trackpad, and the Bellhop menu still works for people who never touch the hotkey.
+2. **Condense, don't rearrange.** Bellhop only sizes its own divider and draws its own keepers; macOS decides what collapses. Never move, drag or redraw other apps' icons. Never capture the screen.
 3. **One permission.** Accessibility only. No Screen Recording, no Input Monitoring.
-4. **Idle until summoned.** No polling loops, with one exception: keepers re-read their own apps' status text every 30 seconds. Everything else happens when Valet's menu or the palette opens.
+4. **Idle until summoned.** No polling loops, with one exception: keepers re-read their own apps' status text every 30 seconds. Everything else happens when Bellhop's menu or the palette opens.
 5. **Native, not themed.** Use AppKit and SwiftUI with system materials. Respect Reduce Motion, Reduce Transparency, and light and dark mode.
 6. **Scriptable by default.** Anything the UI can do, the CLI, Shortcuts and MCP can do too.
 7. **Fail safe.** If macOS changes underneath us, degrade to read-only listing rather than clicking the wrong thing.
@@ -59,21 +59,21 @@ The MVP condenses the menu bar and gives every icon a vertical home, then adds t
 
 | Feature | Phase | Why it matters |
 | --- | --- | --- |
-| Divider: tuck every icon left of it behind macOS's overflow; click Valet to show or hide them | MVP | The core reason to install: a tidy menu bar on a small screen |
-| Keepers: bring chosen tucked icons back as Valet's own items, in any order | MVP | Choose any icons to keep, which no macOS 27 tool can do without faking drags |
-| Valet menu: every icon, tucked ones first, real menus mirrored, real item pressed | MVP | The vertical home, and the mouse path |
+| Divider: tuck every icon left of it behind macOS's overflow; click Bellhop to show or hide them | MVP | The core reason to install: a tidy menu bar on a small screen |
+| Keepers: bring chosen tucked icons back as Bellhop's own items, in any order | MVP | Choose any icons to keep, which no macOS 27 tool can do without faking drags |
+| Bellhop menu: every icon, tucked ones first, real menus mirrored, real item pressed | MVP | The vertical home, and the mouse path |
 | Command palette on a global hotkey | MVP | Reach any icon or item without hunting |
 | Fuzzy search across app names **and** menu item paths | MVP | Typing "awake 1h" finds Midnight Oil › Keep awake for 1 hour |
 | Recents and frecency ranking | MVP | Your top three actions sit at the top before you type |
 | Accessibility onboarding and launch at login | MVP | Without them, first run fails |
-| `valet` CLI with `--json` | MVP | Cheap to add once the core library exists; agents use it right away |
+| `bellhop` CLI with `--json` | MVP | Cheap to add once the core library exists; agents use it right away |
 | Pinned items | v1 | Lets you build your own short list |
 | Live status line per icon (title or value text) | v1 | Read VPN, timer or disk state without opening anything |
 | Notch drop-down panel | v1 | Fixes the problem at the spot that causes it; good portfolio moment |
 | App Intents for Shortcuts ("Run menu bar item") | v1 | Automations and Siri can use it with no extra work |
 | Sparkle updates, DMG, Homebrew cask | v1 | Required before a public launch |
 | Universal binary (Intel on macOS 14 to 26) | v1 | Coat Check doesn't support Intel |
-| MCP server (`valet mcp`) | Later | Lets Claude and other agents list and run menu bar actions |
+| MCP server (`bellhop mcp`) | Later | Lets Claude and other agents list and run menu bar actions |
 | Hotkeys for individual items | Later | Bind ⌃⌥K to one specific action |
 | Better handling for panel-style apps | Later | Coat Check's main limitation; depends on spike results |
 | Custom aliases for items | Later | "vpn" maps to whichever VPN app you use |
@@ -82,47 +82,47 @@ Out of scope: more than one divider or section, rules based on Wi-Fi or Focus, a
 
 ## Interaction design
 
-The Valet menu and the divider are the everyday surfaces. The palette is the keyboard layer over the same data, and the notch panel is a v1 shortcut into it.
+The Bellhop menu and the divider are the everyday surfaces. The palette is the keyboard layer over the same data, and the notch panel is a v1 shortcut into it.
 
 ### Command palette (MVP)
 
 - A floating, non-activating panel in the top third of the active screen, so the app you're in keeps focus. Liquid Glass on macOS 26+.
-- **Hotkey:** ⌃⌥Space by default (a placeholder), changeable in Settings. `valet palette [query]` opens it too.
+- **Hotkey:** ⌃⌥Space by default (a placeholder), changeable in Settings. `bellhop palette [query]` opens it too.
 - **Empty state:** Pinned, then Recent, then Tucked Away, then In the Menu Bar.
 - **Each row:** app icon, path ("Midnight Oil › Keep awake for 1 hour"), and status text right-aligned ("84 GB free").
 - **Keys:**
   - Return runs the item.
   - → drills into an app's menu, ← goes back.
-  - ⌘Return opens the app's icon, as clicking it in the Valet panel would (its menu, mirrored, or its panel).
+  - ⌘Return opens the app's icon, as clicking it in the Bellhop panel would (its menu, mirrored, or its panel).
   - ⌘P pins or unpins.
   - Esc closes.
 - Disabled items appear dimmed. Toggles show their checkmark. Items with their own app shortcut show it in the row.
 - **Destructive items** (Quit, Delete, Sign Out, Reset) need a second Return, so a mistyped search can't quit something.
-- Menus only built when opened aren't searchable until Valet has read them once. When nothing matches, the palette lists them under "Menus Not Read Yet"; → reads one.
+- Menus only built when opened aren't searchable until Bellhop has read them once. When nothing matches, the palette lists them under "Menus Not Read Yet"; → reads one.
 - CopyClip's menu (clipboard history) isn't indexed by default; it can still be opened by name.
 - Opens in about 20 ms with the last scan (the window is built at launch); a fresh scan updates it about 100 ms later.
 
 ### Divider (MVP)
 
-- Valet adds one extra status item, the divider. Icons to its left are tucked; icons to its right stay in the bar.
+- Bellhop adds one extra status item, the divider. Icons to its left are tucked; icons to its right stay in the bar.
 - When collapsed, the divider is wide enough that macOS 27 collapses it and everything left of it behind the overflow arrow. On macOS 14 to 26, the same width pushes those icons off-screen.
-- The divider sits just left of Valet's icon and moves with it, so the rule is one sentence: everything left of Valet is tucked away. You arrange by ⌘-dragging Valet's icon, like any other icon. Valet never moves other icons.
-- While arranging ("Show Tucked Icons", or ⌥-click Valet), the divider is a thin line. The rest of the time it's invisible, collapsed with the icons it tucks.
+- The divider sits just left of Bellhop's icon and moves with it, so the rule is one sentence: everything left of Bellhop is tucked away. You arrange by ⌘-dragging Bellhop's icon, like any other icon. Bellhop never moves other icons.
+- While arranging ("Show Tucked Icons", or ⌥-click Bellhop), the divider is a thin line. The rest of the time it's invisible, collapsed with the icons it tucks.
 
 ### Keepers (MVP)
 
-- Valet sits next to Apple's items, so every third-party icon is tucked. Each icon you keep comes back as a keeper: an item Valet draws itself, just left of Valet's icon, in whatever order you choose.
-- A keeper shows the app's icon. Valet can't copy an app's real menu bar glyph without Screen Recording. Status text moved to the keeper's tooltip: on its own, "1" or "3" doesn't say which app it is.
+- Bellhop sits next to Apple's items, so every third-party icon is tucked. Each icon you keep comes back as a keeper: an item Bellhop draws itself, just left of Bellhop's icon, in whatever order you choose.
+- A keeper shows the app's icon. Bellhop can't copy an app's real menu bar glyph without Screen Recording. Status text moved to the keeper's tooltip: on its own, "1" or "3" doesn't say which app it is.
 - Clicking a keeper opens the app's real menu, mirrored. Panel apps, and menus that only exist while open, press the real tucked icon instead.
-- Choose by dragging in the Valet panel itself: up into "In the Menu Bar" to keep, down into "Tucked Away" to tuck, along the keepers to reorder. Space does the same from the keyboard.
+- Choose by dragging in the Bellhop panel itself: up into "In the Menu Bar" to keep, down into "Tucked Away" to tuck, along the keepers to reorder. Space does the same from the keyboard.
 - Approved Oct 22: app icon (first tried status text with an icon fallback; changed after seeing it in the bar).
 
-### Valet panel (MVP)
+### Bellhop panel (MVP)
 
 - Approved Oct 22: a menu-styled panel rather than a native menu, because native menus can't be dragged in.
 - "In the Menu Bar" first (keepers, draggable and in order, then Apple's items, fixed), then "Tucked Away" in the real bar's order.
-- Resting on Valet's icon for a quarter second opens the panel; clicking opens it too. Opened on hover, it closes again if the pointer leaves without going into it, and only takes the keyboard once you're in it. A click on the icon then keeps it open.
-- Resting on a row opens the app's menu beside it, like a submenu; nested submenus cascade the same way. Valet draws these menus itself, menu-styled: a native menu captures the mouse while open, so rows couldn't be dragged (Oct 22 went to click-to-open for that reason; drawing them ourselves brought hover back the same day). Type-to-select inside an app menu is the one native behavior lost. Menus that only exist while open aren't read on hover, since that flashes the real menu; they open on click. Panel apps open under Valet's icon on click. Keepers' click menus stay native.
+- Resting on Bellhop's icon for a quarter second opens the panel; clicking opens it too. Opened on hover, it closes again if the pointer leaves without going into it, and only takes the keyboard once you're in it. A click on the icon then keeps it open.
+- Resting on a row opens the app's menu beside it, like a submenu; nested submenus cascade the same way. Bellhop draws these menus itself, menu-styled: a native menu captures the mouse while open, so rows couldn't be dragged (Oct 22 went to click-to-open for that reason; drawing them ourselves brought hover back the same day). Type-to-select inside an app menu is the one native behavior lost. Menus that only exist while open aren't read on hover, since that flashes the real menu; they open on click. Panel apps open under Bellhop's icon on click. Keepers' click menus stay native.
 - A "Search…" row at the top shows the hotkey (once the palette exists). That row teaches the palette to mouse users.
 - Keyboard: ↑↓ move, → or Return open (into an app's menu too), ← backs out of one, Space keeps or tucks, Esc closes the menu, then the panel. The app you're in keeps focus.
 
@@ -134,29 +134,29 @@ The Valet menu and the divider are the everyday surfaces. The palette is the key
 
 ### Settings
 
-- Hotkey, appearance (System, Light or Dark, for Valet's own windows and menus), palette density (compact or comfortable), and notch panel on or off.
+- Hotkey, appearance (System, Light or Dark, for Bellhop's own windows and menus), palette density (compact or comfortable), and notch panel on or off.
 - Launch at login, apps to ignore, CLI install.
 - A plain-language privacy page.
 
-Mock the palette, Valet menu, divider and notch panel before writing any UI code (milestone 0).
+Mock the palette, Bellhop menu, divider and notch panel before writing any UI code (milestone 0).
 
 ## Technical architecture
 
-One shared library, ValetCore, does all the Accessibility work. The app, the CLI and Shortcuts are thin layers over it, so every feature can be scripted from day one.
+One shared library, BellhopCore, does all the Accessibility work. The app, the CLI and Shortcuts are thin layers over it, so every feature can be scripted from day one.
 
 ```
-┌─ Valet.app ─────────┐          ┌─ ValetCore (shared library) ─┐
-│  Valet menu         │  direct  │  Scanner                     │  read + press   ┌───────────────────┐
+┌─ Bellhop.app ─────────┐          ┌─ BellhopCore (shared library) ─┐
+│  Bellhop menu         │  direct  │  Scanner                     │  read + press   ┌───────────────────┐
 │  Command palette    │ ───────► │  Visibility                  │ ──────────────► │ Accessibility API │
 │  Notch panel        │          │  Menu mirror                 │                 └─────────┬─────────┘
 └─────────────────────┘          │  Search index                │                           │ reads menus
 ┌─ Outside callers ───┐   IPC    │  Action runner               │                 ┌─────────▼─────────┐
-│  valet CLI + MCP    │ ───────► │                              │                 │ Other apps' icons │
+│  bellhop CLI + MCP    │ ───────► │                              │                 │ Other apps' icons │
 │  Shortcuts actions  │          └──────────────────────────────┘                 └───────────────────┘
 └─────────────────────┘
 ```
 
-The app UI calls ValetCore directly. The CLI and MCP reach it through the running app, so only the app needs the Accessibility permission.
+The app UI calls BellhopCore directly. The CLI and MCP reach it through the running app, so only the app needs the Accessibility permission.
 
 ### Modules
 
@@ -165,14 +165,14 @@ The app UI calls ValetCore directly. The CLI and MCP reach it through the runnin
 - **Menu mirror.** Walks `AXMenu` children into a tree: title, enabled, checkmark (`AXMenuItemMarkChar`), shortcut (`AXMenuItemCmdChar`) and submenus. It reads the top level up front and submenus only when needed.
 - **Search index.** Turns each tree into paths ("Midnight Oil › Keep awake for 1 hour"), fuzzy-matches them, and ranks results by frecency stored in Application Support.
 - **Action runner.** Calls `AXPress` on the real menu item. For panel-style apps it presses the icon itself, and it reports success or failure to the caller.
-- **Divider.** Valet's own second status item. It switches between a normal width and one wide enough to make macOS collapse everything to its left.
-- **Valet.app.** The Valet status item and menu, the divider, a non-activating `NSPanel` for the palette, the notch panel, Settings and onboarding.
-- **Outside callers.** The `valet` CLI and `valet mcp` connect over a Unix socket the app owns. App Intents run inside the app process. Neither needs its own Accessibility permission.
+- **Divider.** Bellhop's own second status item. It switches between a normal width and one wide enough to make macOS collapse everything to its left.
+- **Bellhop.app.** The Bellhop status item and menu, the divider, a non-activating `NSPanel` for the palette, the notch panel, Settings and onboarding.
+- **Outside callers.** The `bellhop` CLI and `bellhop mcp` connect over a Unix socket the app owns. App Intents run inside the app process. Neither needs its own Accessibility permission.
 - **Libraries:** KeyboardShortcuts (sindresorhus) for the hotkey, swift-argument-parser for the CLI, Sparkle 2 for updates, and the official MCP Swift SDK later.
 
 ## Platform, distribution and privacy
 
-Valet ships outside the Mac App Store, signed with a Developer ID and notarized. The sandbox blocks the Accessibility access Valet needs.
+Bellhop ships outside the Mac App Store, signed with a Developer ID and notarized. The sandbox blocks the Accessibility access Bellhop needs.
 
 - **macOS versions:** 14 Sonoma through 27 Golden Gate. Build and test on 27 first, since it's the current release and where competitors broke. Keep a 26 machine for regression testing.
 - **Architectures:** Universal binary (arm64 and x86_64). Intel only matters on macOS 14 to 26, but it costs one build flag.
@@ -180,23 +180,23 @@ Valet ships outside the Mac App Store, signed with a Developer ID and notarized.
   - Until then, use a stable self-signed dev certificate so macOS keeps the Accessibility permission across rebuilds. Coat Check's README flags this.
 - **Updates:** Sparkle 2 with an EdDSA-signed appcast, hosted on Cloudflare alongside the landing page.
 - **Install paths:** a DMG from the site, plus a Homebrew cask in your own tap.
-- **Build system:** a Swift Package plus a Makefile that assembles `Valet.app`, as Coat Check does. There's no `.xcodeproj` to merge, which suits Claude Code. Open it in Xcode when you need the debugger.
+- **Build system:** a Swift Package plus a Makefile that assembles `Bellhop.app`, as Coat Check does. There's no `.xcodeproj` to merge, which suits Claude Code. Open it in Xcode when you need the debugger.
 
 ### Permissions and privacy
 
 - Accessibility is the only permission. Check it with `AXIsProcessTrustedWithOptions`, and deep-link to Privacy & Security › Accessibility.
 - No Screen Recording. Icons in the palette are app icons, not captured pixels.
 - No network calls except Sparkle's update check. No analytics, no accounts.
-- Menu titles and usage counts stay on the Mac, in `~/Library/Application Support/Valet/`.
+- Menu titles and usage counts stay on the Mac, in `~/Library/Application Support/Bellhop/`.
 - The CLI talks to the running app over a local socket that only your user account can access. It never asks for its own permission.
 
 ## Spike results (Oct 21, M5 Max, macOS 27.0.1)
 
 - **Accessibility still lists every icon on macOS 27**, collapsed ones included. Apple's own items now come from `com.apple.MenuBarAgent`, wrapped in an `AXGroup`.
 - **The overflow arrow is visible to Accessibility:** an `AXButton` owned by MenuBarAgent. Icons left of it are collapsed, and report piled-up frames just left of it.
-- **Most menus aren't readable while closed:** 6 of 23 icons. Pressing the rest either opens a menu Valet can read and close (Dropbox), or a panel, which shows up as a new window within about 100 ms (Claude, Burn, PIA).
+- **Most menus aren't readable while closed:** 6 of 23 icons. Pressing the rest either opens a menu Bellhop can read and close (Dropbox), or a panel, which shows up as a new window within about 100 ms (Claude, Burn, PIA).
 - **A divider works on macOS 27.** A wide status item collapses itself and every icon to its left behind the arrow, and removing it restores the bar exactly.
-- **Tucked icons still work through Valet:** it read Dropbox's menu and pressed Tidy › History… while both were collapsed.
+- **Tucked icons still work through Bellhop:** it read Dropbox's menu and pressed Tidy › History… while both were collapsed.
 - **Placing the divider through its saved position preference didn't land where intended,** so the user places it by ⌘-dragging.
 
 ## Risks and spikes
@@ -209,8 +209,8 @@ Valet ships outside the Mac App Store, signed with a Developer ID and notarized.
 | Panel-style apps (popovers) can't be mirrored, and pressing a hidden icon opens the panel in an odd place | Test three popover apps on 27 | On 27, expand Apple's arrow first, then press the icon |
 | An unresponsive app blocks Accessibility calls | Set `AXUIElementSetMessagingTimeout` per app | Skip that app and mark its results stale |
 | Walking every menu of every app is slow | Time a full walk with your real set of apps | Index top-level items eagerly and submenus lazily. Refresh in the background each time the palette opens. |
-| The divider stops collapsing icons in a macOS update, or collapses Valet's own icon | Re-run the divider spike on each macOS beta | Fall back to listing only: the Valet menu still reaches every icon |
-| On macOS 14 to 26 the divider pushes icons off-screen instead, and pressing them opens menus in odd places | Run the divider spike on the M1 | Open the menu from the Valet menu instead of at the icon |
+| The divider stops collapsing icons in a macOS update, or collapses Bellhop's own icon | Re-run the divider spike on each macOS beta | Fall back to listing only: the Bellhop menu still reaches every icon |
+| On macOS 14 to 26 the divider pushes icons off-screen instead, and pressing them opens menus in odd places | Run the divider spike on the M1 | Open the menu from the Bellhop menu instead of at the icon |
 | A search runs a destructive item by accident | — | Require confirmation for Quit, Delete, Sign Out and Reset (see Interaction design) |
 | The default hotkey collides with Spotlight or Raycast | — | Let the user set it, and pick a less common default |
 
@@ -218,38 +218,38 @@ Valet ships outside the Mac App Store, signed with a Developer ID and notarized.
 
 Build in this order. Each milestone ends with something you can run on your own MacBook. No dates yet; they depend on the spike.
 
-0. **Design.** Mock the palette, Valet menu, divider and notch panel.
+0. **Design.** Mock the palette, Bellhop menu, divider and notch panel.
    - Done when: you've approved the mocks for all four surfaces, in light and dark mode.
 1. **Accessibility probe (spike).** A throwaway command-line tool that dumps every menu bar item, its frame, whether it's hidden, and its menu tree as JSON.
    - Done when: the output matches reality on both MacBooks, one on macOS 27 and one on 26 if possible.
-2. **ValetCore.** Scanner, visibility detection, menu mirroring and the action runner, with unit tests that run against saved JSON snapshots.
-   - Done when: `valet list --json` works, and `valet run "Midnight Oil › Keep awake for 1 hour"` presses the real item.
-3. **Valet panel, divider and keepers.** The draggable Valet panel, the divider, keepers, Accessibility onboarding and launch at login.
+2. **BellhopCore.** Scanner, visibility detection, menu mirroring and the action runner, with unit tests that run against saved JSON snapshots.
+   - Done when: `bellhop list --json` works, and `bellhop run "Midnight Oil › Keep awake for 1 hour"` presses the real item.
+3. **Bellhop panel, divider and keepers.** The draggable Bellhop panel, the divider, keepers, Accessibility onboarding and launch at login.
    - Done when: the divider tucks icons on 27, kept icons appear as keepers in the chosen order, icons can be dragged between In the Menu Bar and Tucked Away, submenus mirror the real menus, and choosing an item works.
-   - Status (Oct 22): done on the M5 Max. Still open: the ⌘-drag test of Valet's icon on the Cinema Display, and the M1 run.
+   - Status (Oct 22): done on the M5 Max. Still open: the ⌘-drag test of Bellhop's icon on the Cinema Display, and the M1 run.
 4. **Command palette.** Hotkey, fuzzy search over menu paths, frecency, destructive-item confirmation.
    - Done when: any menu item can be run from the keyboard alone, and the panel feels instant on open (target under 100 ms).
    - Status (Oct 22): done on the M5 Max. Opens in about 20 ms cold; Tommy's keyboard checks passed.
 5. **v0.1 release.** Developer ID signing, notarization, DMG, Sparkle, Homebrew cask, landing page.
-   - Done when: a clean Mac installs Valet from the site and receives an update through Sparkle.
+   - Done when: a clean Mac installs Bellhop from the site and receives an update through Sparkle.
 6. **v1.** Notch panel, pins, status line, App Intents, universal binary.
 7. **Later.** MCP server, hotkeys for individual items, panel-app handling, aliases.
 
 ## Open decisions
 
-- [ ] **Name.** Keep "Valet"? Check the domain, App Store names and trademarks before the landing page.
+- [x] **Name.** Bellhop (Oct 22). Was Valet until v0.1; Laravel Valet, a popular PHP tool, already installs a `valet` command. Barkeep, Tuck, Doorman and Usher were taken by Mac apps. The icon artwork is unchanged for now.
 - [ ] **Default hotkey.** It must not collide with Spotlight (⌘Space) or Raycast (⌥Space). ⌃⌥Space is the placeholder for now.
 - [x] **Divider look.** A thin line, shown only while arranging; invisible otherwise. (Approved Oct 21.)
 - [x] **Notch panel style.** Black in both appearances. (Approved Oct 21.)
-- [x] **Choosing what stays.** Keepers: tuck everything, keep any icons as Valet's own items, shown with the app's icon. (Approved Oct 22.)
-- [x] **Valet menu or panel.** A draggable, menu-styled panel, with "In the Menu Bar" first. (Approved Oct 22.)
+- [x] **Choosing what stays.** Keepers: tuck everything, keep any icons as Bellhop's own items, shown with the app's icon. (Approved Oct 22.)
+- [x] **Bellhop menu or panel.** A draggable, menu-styled panel, with "In the Menu Bar" first. (Approved Oct 22.)
 - [ ] **Private menus.** Leave clipboard history (CopyClip) and similar menus out of search by default?
 - [ ] **Minimum macOS.** 14 like Coat Check, or 15 to cut testing?
 - [ ] **Test machines.** Which macOS is each MacBook on? Ideally one runs 27 and one runs 26.
 - [ ] **Coat Check's code.** It's MIT, so you can borrow from it with attribution. Or write everything from scratch? Either way, avoid Ice and Thaw, which are GPL.
 - [ ] **Business model.** Free and open source, or a free core plus a paid tier for the MCP server, hotkeys for individual items, and so on?
 - [x] **Visual language.** Strictly native macOS: system font, materials and accent color. (Mocks approved Oct 21, `design/mocks/`.)
-- [ ] **Repo.** Name and visibility, for example `tmass1/valet`, private until v0.1.
+- [x] **Repo.** Public since Oct 22. Releases (zip, DMG, appcast) are attached to its GitHub releases, as Burn does.
 
 ## Sources
 

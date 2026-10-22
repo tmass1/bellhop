@@ -3,10 +3,10 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Valet Mocks</title>
+<title>Bellhop Mocks</title>
 <!--
-  Milestone 0 mocks: the command palette, the Valet menu, and the notch panel, in light and dark.
-  Data is Tommy's real menu bar (valet list / valet menu, Oct 21 2026), minus anything personal.
+  Milestone 0 mocks: the command palette, the Bellhop menu, and the notch panel, in light and dark.
+  Data is Tommy's real menu bar (bellhop list / bellhop menu, Oct 21 2026), minus anything personal.
   App icons load from design/mocks/icons/ (git-ignored; run `swift design/mocks/extract-icons.swift`).
   Serve with `make viewer`, then open http://localhost:8765/design/mocks/.
 -->
@@ -217,7 +217,7 @@
   @keyframes toast { 0% { opacity: 0; transform: translate(-50%, 8px); } 8%, 82% { opacity: 1; transform: translate(-50%, 0); } 100% { opacity: 0; } }
   .toast .path { color: var(--label-2); }
 
-  /* ─── Native menu (Valet menu, notch menus) ─── */
+  /* ─── Native menu (Bellhop menu, notch menus) ─── */
   .menu {
     position: absolute; min-width: 240px; padding: 5px; border-radius: 12px; font-size: 13px; color: var(--label);
     background: var(--menu); backdrop-filter: blur(30px) saturate(180%); -webkit-backdrop-filter: blur(30px) saturate(180%);
@@ -281,7 +281,7 @@
   .np.material .np-foot .cap { background: var(--fill-2); color: var(--label-2); }
   .scene-tip { position: absolute; bottom: 18px; left: 18px; font-size: 12px; color: var(--label-2); background: var(--glass); padding: 6px 10px; border-radius: 8px; box-shadow: 0 0 0 .5px var(--glass-edge); backdrop-filter: blur(20px); }
 
-  /* ─── Valet menu as a draggable panel ─── */
+  /* ─── Bellhop menu as a draggable panel ─── */
   .menu.panel-menu { padding: 5px; }
   .menu.panel-menu .mh { display: flex; justify-content: space-between; }
   .menu.panel-menu .mh .hint { font-weight: 500; color: var(--label-4); }
@@ -369,12 +369,12 @@
 <main>
   <header class="page">
     <div>
-      <h1>Valet mocks</h1>
+      <h1>Bellhop mocks</h1>
       <p>Milestone 0, round 2 · real data from your menu bar, Oct 21</p>
     </div>
     <div class="spacer"></div>
     <div class="seg" role="tablist" aria-label="Surface">
-      <button data-tab="menu" aria-pressed="true">Valet menu</button>
+      <button data-tab="menu" aria-pressed="true">Bellhop menu</button>
       <button data-tab="divider" aria-pressed="false">Divider</button>
       <button data-tab="keep" aria-pressed="false">Keep</button>
       <button data-tab="palette" aria-pressed="false">Palette</button>
@@ -397,7 +397,7 @@ const G = {
   chevron: '<svg viewBox="0 0 10 10" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3.5 1.5L7 5l-3.5 3.5"/></svg>',
   pin: '<svg viewBox="0 0 12 12" fill="currentColor"><path d="M4 1h4l-.6 3.4L9.5 6.5v1H6.6V11h-1.2V7.5H2.5v-1l2.1-2.1z"/></svg>',
   overflow: '<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M8.5 4.5L5 8l3.5 3.5M12.5 4.5L9 8l3.5 3.5"/></svg>',
-  valet: '<svg viewBox="0 0 18 18"><g fill="none" stroke="currentColor" stroke-width="0.85" stroke-linecap="round"><path d="M 3.8 5.7 C 5.6 8.5 12.4 8.5 14.2 5.7"/><path d="M 3.6 6 C 4.8 10.8 13.2 10.8 14.4 6"/><path d="M 3.4 6.3 C 4 13.1 14 13.1 14.6 6.3"/></g><path d="M 2.15 5.5 C 2.65 12.1 5.1 15 9 15 C 12.9 15 15.35 12.1 15.85 5.5 L 14 5.5 C 13.55 10.8 11.75 13.15 9 13.15 C 6.25 13.15 4.45 10.8 4 5.5 Z" fill="currentColor"/><g fill="currentColor"><circle cx="3.1" cy="4.8" r="1.65"/><circle cx="14.9" cy="4.8" r="1.65"/></g></svg>',
+  bellhop: '<svg viewBox="0 0 18 18"><g fill="none" stroke="currentColor" stroke-width="0.85" stroke-linecap="round"><path d="M 3.8 5.7 C 5.6 8.5 12.4 8.5 14.2 5.7"/><path d="M 3.6 6 C 4.8 10.8 13.2 10.8 14.4 6"/><path d="M 3.4 6.3 C 4 13.1 14 13.1 14.6 6.3"/></g><path d="M 2.15 5.5 C 2.65 12.1 5.1 15 9 15 C 12.9 15 15.35 12.1 15.85 5.5 L 14 5.5 C 13.55 10.8 11.75 13.15 9 13.15 C 6.25 13.15 4.45 10.8 4 5.5 Z" fill="currentColor"/><g fill="currentColor"><circle cx="3.1" cy="4.8" r="1.65"/><circle cx="14.9" cy="4.8" r="1.65"/></g></svg>',
   battery: '<svg viewBox="0 0 24 16" fill="none" stroke="currentColor" stroke-width="1.2"><rect x="1.5" y="3.5" width="18" height="9" rx="2.6"/><rect x="3.2" y="5.2" width="12.6" height="5.6" rx="1.2" fill="currentColor" stroke="none"/><path d="M21.3 6.5v3" stroke-linecap="round" stroke-width="1.6"/></svg>',
   wifi: '<svg viewBox="0 0 16 16" fill="currentColor"><path d="M8 3.2c2.4 0 4.6.9 6.3 2.5l-1.1 1.1A7.4 7.4 0 0 0 8 4.8c-2 0-3.8.7-5.2 2L1.7 5.7A8.9 8.9 0 0 1 8 3.2zm0 3.3c1.5 0 2.8.5 3.9 1.5l-1.1 1.1A4.1 4.1 0 0 0 8 8c-1 0-2 .4-2.8 1.1L4.1 8A5.6 5.6 0 0 1 8 6.5zm0 3.3c.6 0 1.1.2 1.6.6L8 12l-1.6-1.6c.5-.4 1-.6 1.6-.6z"/></svg>',
   control: '<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.3"><rect x="1.5" y="3" width="13" height="4" rx="2"/><circle cx="12.5" cy="5" r="1.2" fill="currentColor"/><rect x="1.5" y="9" width="13" height="4" rx="2"/><circle cx="3.5" cy="11" r="1.2" fill="currentColor"/></svg>',
@@ -421,7 +421,7 @@ const G = {
   claude: '<svg viewBox="0 0 16 16" fill="currentColor"><path d="M8 1.5l1.1 4.4 4.4-1.6-3.4 3.1 3.9 2.6-4.6-.3L8 14l-1.4-4.3-4.6.3 3.9-2.6-3.4-3.1 4.4 1.6z"/></svg>',
 };
 
-// ─── Data: Tommy's menu bar, left to right (valet list, Oct 21) ───
+// ─── Data: Tommy's menu bar, left to right (bellhop list, Oct 21) ───
 // kind: menu (read while closed) · onDemand (read when opened) · panel (opens a window) · private (not indexed)
 const SEP = { sep: true };
 const it = (title, extra = {}) => ({ title, ...extra });
@@ -464,7 +464,7 @@ const ICONS = [
     it('Open'), SEP, it('Do not launch EOS Utility automatically when camera is connected', { checked: true }), SEP, it('Survey'), SEP, it('Quit'),
   ] },
   { id: 'muse', name: 'Muse', bundle: 'com.meta.endo', glyph: 'ring', kind: 'panel' },
-  { id: 'valet', name: 'Valet', glyph: 'valet', self: true },
+  { id: 'bellhop', name: 'Bellhop', glyph: 'bellhop', self: true },
   { id: 'battery', name: 'Battery', system: 'battery', status: '84%', kind: 'panel' },
   { id: 'wifi', name: 'Wi‑Fi', system: 'wifi', status: 'Connected', kind: 'panel' },
   { id: 'recording', name: 'Custom Recording', system: 'record', kind: 'panel' },
@@ -477,8 +477,8 @@ const byId = Object.fromEntries(ICONS.map((icon) => [icon.id, icon]));
 ICONS.filter((icon) => icon.bundle).forEach((icon) => { new Image().src = `icons/${icon.bundle}.png`; });
 const searchable = ICONS.filter((icon) => !icon.self);
 
-// ─── The bar: everything left of the Valet icon is tucked away ───
-// Valet keeps its divider just left of its own icon. Tucked, the divider is wide enough that macOS 27 collapses it and
+// ─── The bar: everything left of the Bellhop icon is tucked away ───
+// Bellhop keeps its divider just left of its own icon. Tucked, the divider is wide enough that macOS 27 collapses it and
 // everything to its left behind the overflow arrow. Showing all, it's a thin line you can drag.
 const bar = { divider: searchable.findIndex((icon) => icon.id === 'battery'), showing: false, dragging: null };
 const tucked = (icon) => searchable.indexOf(icon) < bar.divider;
@@ -514,7 +514,7 @@ const LAPTOP_ROOM = 1728 / 2 - 92.5 - 10 - 30;
 
 /// Lays the bar out right to left, as macOS 27 does: the first item that doesn't fit collapses, with everything left of it.
 function barLayout(available) {
-  const order = [...searchable.slice(0, bar.divider), { divider: true }, byId.valet, ...searchable.slice(bar.divider)];
+  const order = [...searchable.slice(0, bar.divider), { divider: true }, byId.bellhop, ...searchable.slice(bar.divider)];
   const start = bar.showing ? 0 : bar.divider + 1;
   let used = 0;
   let first = order.length;
@@ -527,7 +527,7 @@ function barLayout(available) {
   return { visible: order.slice(first), collapsed: order.slice(0, first).filter((item) => !item.divider).length };
 }
 
-function stripHTML(strip, { activeValet = false } = {}) {
+function stripHTML(strip, { activeBellhop = false } = {}) {
   // The scene's own bar keeps a safety margin: estimated widths can run a few points short of the rendered ones.
   const room = strip === 'loupe' ? LAPTOP_ROOM : (scene.clientWidth || 1000) / 2 - 100 - 10 - 30 - 8;
   const { visible, collapsed } = barLayout(room);
@@ -538,7 +538,7 @@ function stripHTML(strip, { activeValet = false } = {}) {
     }
     if (icon.text) return `<span class="mbi text" data-id="${icon.id}">${esc(icon.text)}</span>`;
     const glyph = G[icon.system || icon.glyph];
-    const cls = icon.id === 'valet' ? `mbi clickable${activeValet ? ' active' : ''}` : 'mbi';
+    const cls = icon.id === 'bellhop' ? `mbi clickable${activeBellhop ? ' active' : ''}` : 'mbi';
     return `<span class="${cls}" data-id="${icon.id}" title="${esc(icon.name)}">${glyph}</span>`;
   }).join('');
   const arrow = collapsed ? `<span class="mbi overflow-arrow" title="Show Hidden Menu Bar Items">${G.overflow}</span>` : '';
@@ -552,7 +552,7 @@ function menubarHTML(options = {}) {
   </div><div class="notch"></div>`;
 }
 
-// Dragging the divider (⌘-drag in the real app) moves it, and Valet's icon with it, between icons.
+// Dragging the divider (⌘-drag in the real app) moves it, and Bellhop's icon with it, between icons.
 document.addEventListener('pointerdown', (event) => {
   const handle = event.target.closest('[data-divider]');
   if (!handle || !bar.showing) return;
@@ -564,7 +564,7 @@ document.addEventListener('pointermove', (event) => {
   if (!bar.dragging) return;
   const strip = document.querySelector(`[data-strip="${bar.dragging}"]`);
   if (!strip) return;
-  const shown = [...strip.querySelectorAll('[data-id]')].filter((el) => el.dataset.id !== 'valet');
+  const shown = [...strip.querySelectorAll('[data-id]')].filter((el) => el.dataset.id !== 'bellhop');
   const shownIds = new Set(shown.map((el) => el.dataset.id));
   const offBar = searchable.filter((icon) => !shownIds.has(icon.id)).length;
   const left = shown.filter((el) => { const r = el.getBoundingClientRect(); return r.left + r.width / 2 < event.clientX; }).length;
@@ -644,7 +644,7 @@ function rowFromKey(key) {
 }
 
 function indexed(icon) {
-  // Menus read while closed are always searchable; on-demand ones once Valet has opened them.
+  // Menus read while closed are always searchable; on-demand ones once Bellhop has opened them.
   return icon.kind === 'menu' || (icon.kind === 'onDemand' && paletteState.loaded.has(icon.id));
 }
 
@@ -655,7 +655,7 @@ function paletteRows() {
     const top = s.stack[s.stack.length - 1];
     const icon = top.icon;
     if (icon.kind === 'private' && !s.loaded.has(icon.id)) {
-      rows.push({ type: 'message', title: `${icon.name} isn’t indexed`, body: 'Its menu is your clipboard history, so Valet leaves it out of search and recents.' });
+      rows.push({ type: 'message', title: `${icon.name} isn’t indexed`, body: 'Its menu is your clipboard history, so Bellhop leaves it out of search and recents.' });
       rows.push({ type: 'action', icon, title: `Show ${icon.name}’s menu once`, action: 'reveal' });
       return rows;
     }
@@ -707,8 +707,8 @@ function paletteRows() {
   scored.sort((a, b) => b.score - a.score);
   const results = scored.slice(0, 40);
   const unread = searchable.filter((icon) => icon.kind === 'onDemand' && !s.loaded.has(icon.id) && !results.some((r) => r.type === 'icon' && r.icon === icon));
-  if (!results.length) results.push({ type: 'message', title: 'No matches', body: `Nothing Valet has read matches “${q}”.` });
-  // Only when no menu item matched: then the answer may be in a menu Valet hasn't read.
+  if (!results.length) results.push({ type: 'message', title: 'No matches', body: `Nothing Bellhop has read matches “${q}”.` });
+  // Only when no menu item matched: then the answer may be in a menu Bellhop hasn't read.
   if (unread.length && !results.some((r) => r.type === 'item')) {
     results.push({ type: 'section', title: 'Menus not read yet' }, ...unread.map((icon) => ({ type: 'icon', icon })));
   }
@@ -795,7 +795,7 @@ function renderPalette(scene) {
   scene.querySelector('.palette')?.remove();
   scene.querySelector('.reopen')?.remove();
   if (!s.open) {
-    scene.append(h(`<div class="reopen"><button>Open Valet</button><span>or press ${HOTKEY}</span></div>`));
+    scene.append(h(`<div class="reopen"><button>Open Bellhop</button><span>or press ${HOTKEY}</span></div>`));
     scene.querySelector('.reopen button').onclick = () => { s.open = true; s.appearing = true; renderPalette(scene); };
     return;
   }
@@ -804,7 +804,7 @@ function renderPalette(scene) {
   const top = s.stack.at(-1);
   const crumb = top ? `<span class="crumb">${appIcon(top.icon, 'sm')}${esc(top.icon.name)}${top.titles.map((t) => ` ${G.chevron} ${esc(t)}`).join('')}</span>` : '';
   const placeholder = top ? `Filter ${top.titles.at(-1) || top.icon.name}` : 'Search the menu bar';
-  const panel = h(`<div class="palette${s.appearing ? ' appearing' : ''}" role="dialog" aria-label="Valet">
+  const panel = h(`<div class="palette${s.appearing ? ' appearing' : ''}" role="dialog" aria-label="Bellhop">
     <div class="search">${G.search}${crumb}<input value="${esc(s.query)}" placeholder="${placeholder}" spellcheck="false" aria-label="Search"></div>
     <div class="results" role="listbox">${rows.map(rowHTML).join('')}</div>
     <div class="footer">${footerHTML(rows[s.sel])}</div>
@@ -920,7 +920,7 @@ function paletteKey(event, scene, rows) {
 }
 
 // ═══════════════════════════════════════════════════════════════
-// Valet menu (the status item's menu)
+// Bellhop menu (the status item's menu)
 // ═══════════════════════════════════════════════════════════════
 const menuState = { open: true, hover: 'mark', loaded: new Set(), variant: 'panel', drag: null };
 
@@ -946,11 +946,11 @@ function menuItemHTML(entry, path) {
 
 function renderNativeMenu(scene) {
   const s = menuState;
-  scene.innerHTML = menubarHTML({ activeValet: s.open });
-  scene.append(h(`<div class="scene-tip" style="display:flex;gap:10px;align-items:center">${variantSwitchHTML()}<span>Hover an icon to see its mirrored menu. ⌥-click Valet to show tucked icons.</span></div>`));
-  const valetIcon = scene.querySelector('[data-strip="main"] [data-id="valet"]');
-  if (valetIcon) {
-    valetIcon.onclick = (event) => {
+  scene.innerHTML = menubarHTML({ activeBellhop: s.open });
+  scene.append(h(`<div class="scene-tip" style="display:flex;gap:10px;align-items:center">${variantSwitchHTML()}<span>Hover an icon to see its mirrored menu. ⌥-click Bellhop to show tucked icons.</span></div>`));
+  const bellhopIcon = scene.querySelector('[data-strip="main"] [data-id="bellhop"]');
+  if (bellhopIcon) {
+    bellhopIcon.onclick = (event) => {
       if (event.altKey) { bar.showing = !bar.showing; s.open = false; } else s.open = !s.open;
       renderNativeMenu(scene);
     };
@@ -977,13 +977,13 @@ function renderNativeMenu(scene) {
     <div class="mi noicon" data-arrange><span></span><span class="t">Arrange Menu Bar…</span><span class="r"></span></div>
     <div class="ms"></div>
     <div class="mi noicon"><span></span><span class="t">Settings…</span><span class="r">⌘,</span></div>
-    <div class="mi noicon"><span></span><span class="t">Quit Valet</span><span class="r">⌘Q</span></div>
+    <div class="mi noicon"><span></span><span class="t">Quit Bellhop</span><span class="r">⌘Q</span></div>
   </div>`);
   scene.append(menu);
 
-  // Anchor under the Valet icon, like a real status item menu.
+  // Anchor under the Bellhop icon, like a real status item menu.
   const box = scene.getBoundingClientRect();
-  const anchor = valetIcon?.getBoundingClientRect() ?? { left: box.right - 280 };
+  const anchor = bellhopIcon?.getBoundingClientRect() ?? { left: box.right - 280 };
   const left = Math.max(8, Math.min(anchor.left - box.left - 6, box.width - 272 - 8));
   menu.style.left = `${left}px`;
   menu.style.top = '36px';
@@ -1037,18 +1037,18 @@ function renderNativeMenu(scene) {
 }
 
 // ═══════════════════════════════════════════════════════════════
-// Valet menu, proposed: a menu-styled panel you can drag icons in
+// Bellhop menu, proposed: a menu-styled panel you can drag icons in
 // ═══════════════════════════════════════════════════════════════
-// Same rows as the native menu, but it's Valet's own panel, so rows can be dragged: up into "In the Menu Bar"
+// Same rows as the native menu, but it's Bellhop's own panel, so rows can be dragged: up into "In the Menu Bar"
 // to keep an icon (as a keeper), down into "Tucked Away" to tuck it, and along the keepers to reorder them.
 // Hovering a row still opens the app's real menu, mirrored, beside it.
 function renderPanelMenu(scene) {
   const s = menuState;
   const k = keepState;
-  scene.innerHTML = keepBarHTML({ activeValet: s.open });
+  scene.innerHTML = keepBarHTML({ activeBellhop: s.open });
   scene.append(h(`<div class="scene-tip" style="display:flex;gap:10px;align-items:center">${variantSwitchHTML()}<span>Drag an icon between the sections. Drag keepers to reorder.</span></div>`));
-  const valetIcon = scene.querySelector('[data-strip="main"] [data-id="valet"]');
-  if (valetIcon) valetIcon.onclick = () => { s.open = !s.open; renderPanelMenu(scene); bindVariants(scene); };
+  const bellhopIcon = scene.querySelector('[data-strip="main"] [data-id="bellhop"]');
+  if (bellhopIcon) bellhopIcon.onclick = () => { s.open = !s.open; renderPanelMenu(scene); bindVariants(scene); };
   bindVariants(scene);
   if (!s.open) return;
 
@@ -1059,7 +1059,7 @@ function renderPanelMenu(scene) {
     const hasMenu = ['menu', 'onDemand', 'private'].includes(icon.kind);
     const status = icon.status && icon.status !== icon.name ? `<span>${esc(icon.status)}</span>` : '';
     const cls = ['mi', s.hover === icon.id && !s.drag ? 'hl' : '', fixed ? 'fixed' : '', s.drag?.id === icon.id ? 'lifted' : ''].join(' ');
-    return `<div class="${cls}" data-icon="${icon.id}" ${draggable ? 'data-drag' : ''} title="${fixed ? 'Always in the menu bar, right of Valet' : ''}">${appIcon(icon, 'sm')}<span class="t">${esc(icon.name)}</span><span class="r">${status}${hasMenu ? G.chevron : ''}</span></div>`;
+    return `<div class="${cls}" data-icon="${icon.id}" ${draggable ? 'data-drag' : ''} title="${fixed ? 'Always in the menu bar, right of Bellhop' : ''}">${appIcon(icon, 'sm')}<span class="t">${esc(icon.name)}</span><span class="r">${status}${hasMenu ? G.chevron : ''}</span></div>`;
   };
   const menu = h(`<div class="menu panel-menu" style="width: 272px">
     <div class="mi" data-search>${G.search.replace('viewBox', 'width="14" height="14" viewBox')}<span class="t">Search Menu Bar…</span><span class="r">${HOTKEY}</span></div>
@@ -1072,11 +1072,11 @@ function renderPanelMenu(scene) {
     <div data-zone="tucked">${tucked.map((icon) => row(icon)).join('') || '<div class="mi noicon dis"><span></span><span class="t">Nothing tucked away</span><span class="r"></span></div>'}</div>
     <div class="ms"></div>
     <div class="mi noicon"><span></span><span class="t">Settings…</span><span class="r">⌘,</span></div>
-    <div class="mi noicon"><span></span><span class="t">Quit Valet</span><span class="r">⌘Q</span></div>
+    <div class="mi noicon"><span></span><span class="t">Quit Bellhop</span><span class="r">⌘Q</span></div>
   </div>`);
   scene.append(menu);
   const box = scene.getBoundingClientRect();
-  const anchor = valetIcon?.getBoundingClientRect() ?? { left: box.right - 280 };
+  const anchor = bellhopIcon?.getBoundingClientRect() ?? { left: box.right - 280 };
   menu.style.left = `${Math.max(8, Math.min(anchor.left - box.left - 6, box.width - 272 - 8))}px`;
   menu.style.top = '36px';
 
@@ -1271,11 +1271,11 @@ function renderDivider(scene) {
       <div class="loupe-cap"><span>Your 16-inch MacBook Pro, right of the notch, actual size</span><span>${bar.showing ? 'Drag the line' : '» is Apple’s overflow arrow'}</span></div>
     </div>
     <div class="arrange-card">
-      <h2>Everything left of Valet is tucked away</h2>
+      <h2>Everything left of Bellhop is tucked away</h2>
       <span class="seg"><button data-mode="tucked" aria-pressed="${!bar.showing}">Tucked</button><button data-mode="showing" aria-pressed="${bar.showing}">Showing all</button></span>
       <p>${bar.showing
-        ? 'Drag the line to choose what stays in the menu bar. In the app you ⌘-drag it, like any icon; Valet’s icon moves with it.'
-        : 'Valet widens its divider until macOS collapses it, and every icon to its left, behind the overflow arrow. Nothing else is moved.'}</p>
+        ? 'Drag the line to choose what stays in the menu bar. In the app you ⌘-drag it, like any icon; Bellhop’s icon moves with it.'
+        : 'Bellhop widens its divider until macOS collapses it, and every icon to its left, behind the overflow arrow. Nothing else is moved.'}</p>
       <span class="counts">${away.length} tucked · ${inBar.length} in the menu bar</span><span></span>
       <div class="chips">${chips || '<span class="counts">Nothing tucked. Drag the line left of an icon to tuck it.</span>'}</div>
     </div>
@@ -1284,10 +1284,10 @@ function renderDivider(scene) {
   const scroller = panel.querySelector('.loupe-scroll');
   scroller.scrollLeft = scroller.scrollWidth;
   panel.querySelectorAll('[data-mode]').forEach((b) => { b.onclick = () => { bar.showing = b.dataset.mode === 'showing'; refresh(); }; });
-  // On a narrow bar even Valet's icon can collapse while showing everything, so it may not be there to click.
-  const valetIcon = scene.querySelector('[data-strip="main"] [data-id="valet"]');
-  if (valetIcon) {
-    valetIcon.onclick = (event) => {
+  // On a narrow bar even Bellhop's icon can collapse while showing everything, so it may not be there to click.
+  const bellhopIcon = scene.querySelector('[data-strip="main"] [data-id="bellhop"]');
+  if (bellhopIcon) {
+    bellhopIcon.onclick = (event) => {
       if (event.altKey) { bar.showing = !bar.showing; refresh(); } else { menuState.open = true; switchTab('menu'); }
     };
   }
@@ -1296,8 +1296,8 @@ function renderDivider(scene) {
 // ═══════════════════════════════════════════════════════════════
 // Keep: tuck everything, pick favorites back
 // ═══════════════════════════════════════════════════════════════
-// Valet's icon sits next to Apple's items, so every third-party icon is tucked. The ones you keep come back as
-// keepers: Valet's own items, in any order, each opening the app's mirrored menu. Valet never moves the real icons.
+// Bellhop's icon sits next to Apple's items, so every third-party icon is tucked. The ones you keep come back as
+// keepers: Bellhop's own items, in any order, each opening the app's mirrored menu. Bellhop never moves the real icons.
 const SYSTEM_IDS = new Set(['battery', 'wifi', 'recording', 'spotlight', 'control', 'clock']);
 const thirdParty = searchable.filter((icon) => !SYSTEM_IDS.has(icon.id));
 const keepState = { kept: ['burn', 'mark', 'fritter'], style: 'icon', open: null, drag: null };
@@ -1312,15 +1312,15 @@ function keeperHTML(icon) {
   return `<span class="mbi keeper${mono}${open}" data-keeper="${icon.id}" title="${esc(icon.name)}">${appIcon(icon, 'sm')}</span>`;
 }
 
-/// The right side of the bar with keepers: », the keepers, Valet, then Apple's items.
-function keepGlyphsHTML({ activeValet = false } = {}) {
+/// The right side of the bar with keepers: », the keepers, Bellhop, then Apple's items.
+function keepGlyphsHTML({ activeBellhop = false } = {}) {
   const system = searchable.filter((icon) => SYSTEM_IDS.has(icon.id));
   const glyph = (icon) => icon.text
     ? `<span class="mbi text">${esc(icon.text)}</span>`
     : `<span class="mbi" title="${esc(icon.name)}">${G[icon.system || icon.glyph]}</span>`;
   const keepers = keepState.kept.map((id) => keeperHTML(byId[id])).join('');
-  const valet = `<span class="mbi clickable${activeValet ? ' active' : ''}" data-id="valet" title="Valet">${G.valet}</span>`;
-  return `<div class="glyphs" data-strip="main"><span class="mbi overflow-arrow" title="Show Hidden Menu Bar Items">${G.overflow}</span>${keepers}${valet}${system.map(glyph).join('')}</div>`;
+  const bellhop = `<span class="mbi clickable${activeBellhop ? ' active' : ''}" data-id="bellhop" title="Bellhop">${G.bellhop}</span>`;
+  return `<div class="glyphs" data-strip="main"><span class="mbi overflow-arrow" title="Show Hidden Menu Bar Items">${G.overflow}</span>${keepers}${bellhop}${system.map(glyph).join('')}</div>`;
 }
 
 function keepBarHTML(options = {}) {
@@ -1352,10 +1352,10 @@ function renderKeep(scene) {
     </div>
     <div class="zone-label"><span>In your menu bar</span><span>${s.kept.length} kept · drag to reorder</span></div>
     <div class="zone bar" data-drop="bar">${s.kept.map((id) => tileHTML(byId[id], true)).join('') || '<span class="empty">Drag icons here to keep them in the menu bar.</span>'}
-      <span class="bar-tail">${G.valet.replace('viewBox', 'width="14" height="14" viewBox')} Valet, then Apple’s items</span></div>
-    <div class="zone-label"><span>Tucked away</span><span>${tucked.length} · in the Valet menu</span></div>
+      <span class="bar-tail">${G.bellhop.replace('viewBox', 'width="14" height="14" viewBox')} Bellhop, then Apple’s items</span></div>
+    <div class="zone-label"><span>Tucked away</span><span>${tucked.length} · in the Bellhop menu</span></div>
     <div class="zone tray" data-drop="tray">${tucked.map((icon) => tileHTML(icon, false)).join('') || '<span class="empty">Everything is in the menu bar.</span>'}</div>
-    <div class="board-foot"><span>Kept icons are Valet’s own items, so they can go in any order. The real icons stay tucked.</span><span>Click a tile to move it</span></div>
+    <div class="board-foot"><span>Kept icons are Bellhop’s own items, so they can go in any order. The real icons stay tucked.</span><span>Click a tile to move it</span></div>
   </div>`);
   scene.append(board);
   const scroller = board.querySelector('.loupe-scroll');
@@ -1446,15 +1446,15 @@ function startTileDrag(event, tile, scene) {
 const NOTES = {
   keep: [
     ['Try it', 'Drag a tile up to keep it, down to tuck it, or along the bar to reorder. Click a keeper in the menu bar to open its mirrored menu.'],
-    ['Why keepers', 'Valet can’t move other apps’ icons, so it tucks all of them and draws its own item for each one you keep. Those it can order freely.'],
-    ['Open: keeper look', 'Valet can’t read an app’s menu bar glyph without Screen Recording. App icon is clear but colorful; Mono reads as native but blobby; Status shows live text like Burn’s 56%.'],
+    ['Why keepers', 'Bellhop can’t move other apps’ icons, so it tucks all of them and draws its own item for each one you keep. Those it can order freely.'],
+    ['Open: keeper look', 'Bellhop can’t read an app’s menu bar glyph without Screen Recording. App icon is clear but colorful; Mono reads as native but blobby; Status shows live text like Burn’s 56%.'],
     ['Open: panel apps', 'Keepers for Claude, Burn or Gemini press the real (tucked) icon, so their panel opens wherever macOS puts it. That placement is still unverified.'],
   ],
   divider: [
-    ['Try it', 'Switch to Showing all, then drag the line left or right. Tucked mode updates both bars and the Valet menu.'],
-    ['One rule to explain', '“Everything left of Valet is tucked away.” The divider is a separate item that stays next to Valet’s icon, because a wide item collapses itself.'],
+    ['Try it', 'Switch to Showing all, then drag the line left or right. Tucked mode updates both bars and the Bellhop menu.'],
+    ['One rule to explain', '“Everything left of Bellhop is tucked away.” The divider is a separate item that stays next to Bellhop’s icon, because a wide item collapses itself.'],
     ['Open: divider look', 'A thin line, shown only while arranging. When tucked, the divider is invisible and collapsed with the icons it tucks.'],
-    ['Open: keeping them together', 'If you ⌘-drag only Valet’s icon, Valet has to move its divider after it. Placing it from code wasn’t exact in the spike; it needs a second try.'],
+    ['Open: keeping them together', 'If you ⌘-drag only Bellhop’s icon, Bellhop has to move its divider after it. Placing it from code wasn’t exact in the spike; it needs a second try.'],
   ],
   palette: [
     ['Try it', 'Type “snooze hour”, “clean up” or “quit”. → opens a menu, ← goes back, ⌘P pins, ⌘↩ opens the real menu at the icon.'],
@@ -1463,17 +1463,17 @@ const NOTES = {
     ['Open: default hotkey', `${HOTKEY} is a placeholder. It avoids Spotlight (⌘Space) and Raycast (⌥Space).`],
   ],
   menu: [
-    ['Native or draggable', 'The switch at the bottom left compares them. The draggable panel looks like the menu but is Valet’s own window, so rows can move.'],
+    ['Native or draggable', 'The switch at the bottom left compares them. The draggable panel looks like the menu but is Bellhop’s own window, so rows can move.'],
     ['Try the drag', 'Drag Ollama up between Burn and Mark, then drag Mark down into Tucked Away. Watch the menu bar above update.'],
     ['What changes', 'In the panel, “In the Menu Bar” comes first: your keepers (draggable), then Apple’s items (fixed). Tucked Away keeps the real bar’s order.'],
     ['Search row first', `It teaches the palette and its hotkey to people who only use the mouse.`],
     ['The main surface', 'Tucked icons first, then what’s still in the bar. Each mirrors its real menu as a submenu; panel apps (Burn, Claude) open on click.'],
-    ['Arranging lives here too', '“Show Tucked Icons” (or ⌥-click Valet) puts them back in the bar for a moment. “Arrange Menu Bar…” opens the divider view.'],
+    ['Arranging lives here too', '“Show Tucked Icons” (or ⌥-click Bellhop) puts them back in the bar for a moment. “Arrange Menu Bar…” opens the divider view.'],
     ['Status on the right', 'Burn’s 56% and Battery’s 84% come from the icon’s own title, so you can read them without opening anything.'],
-    ['Open: first run', 'New icons start on the far left, so Valet’s icon lands behind the arrow at first. Onboarding should place it, or ask you to ⌘-drag it right.'],
+    ['Open: first run', 'New icons start on the far left, so Bellhop’s icon lands behind the arrow at first. Onboarding should place it, or ask you to ⌘-drag it right.'],
   ],
   notch: [
-    ['Only the tucked icons', 'The same set as the Valet menu’s “Tucked away”, with status where the icon has one. Five across fits 17 icons in four rows.'],
+    ['Only the tucked icons', 'The same set as the Bellhop menu’s “Tucked away”, with status where the icon has one. Five across fits 17 icons in four rows.'],
     ['Open: black or material', 'Black reads as the notch growing and matches the hardware in both modes. Material matches system menus but looks detached from the notch.'],
     ['Opens on hover or click', 'Off by default on Macs without a notch. Hover needs a short delay so passing the cursor over the notch doesn’t trigger it.'],
   ],
@@ -1486,7 +1486,7 @@ function switchTab(next) {
   tab = next;
   document.querySelectorAll('[data-tab]').forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.tab === tab)));
   scene.innerHTML = '';
-  // The Valet menu lists all 23 icons, so its desktop needs to be taller.
+  // The Bellhop menu lists all 23 icons, so its desktop needs to be taller.
   scene.style.height = tab === 'menu' ? '850px' : '';
   if (tab === 'palette') { scene.innerHTML = menubarHTML(); paletteState.open = true; paletteState.appearing = true; renderPalette(scene); }
   if (tab === 'menu') { menuState.open = true; renderMenu(scene); }
@@ -1508,7 +1508,7 @@ function refresh() {
 function setTheme(theme) {
   document.documentElement.dataset.theme = theme;
   document.querySelectorAll('[data-theme]').forEach((b) => b.getAttribute('data-theme') && b.tagName === 'BUTTON' && b.setAttribute('aria-pressed', String(b.dataset.theme === theme)));
-  try { localStorage.setItem('valet-mocks-theme', theme); } catch {}
+  try { localStorage.setItem('bellhop-mocks-theme', theme); } catch {}
   switchTab(tab);
 }
 
@@ -1523,7 +1523,7 @@ document.addEventListener('keydown', (event) => {
 });
 
 let saved = null;
-try { saved = localStorage.getItem('valet-mocks-theme'); } catch {}
+try { saved = localStorage.getItem('bellhop-mocks-theme'); } catch {}
 setTheme(saved || (matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'));
 </script>
 </body>

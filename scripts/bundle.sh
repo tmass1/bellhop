@@ -1,6 +1,6 @@
 #!/bin/zsh
-# Builds dist/Valet.app from the SwiftPM product. No Xcode project needed.
-#   scripts/bundle.sh          → dist/Valet.app (debug, fast incremental builds)
+# Builds dist/Bellhop.app from the SwiftPM product. No Xcode project needed.
+#   scripts/bundle.sh          → dist/Bellhop.app (debug, fast incremental builds)
 #   scripts/bundle.sh --release
 set -euo pipefail
 cd "$(dirname "$0")/.."
@@ -23,16 +23,16 @@ fi
 mkdir -p .build dist
 xattr -w com.dropbox.ignored 1 .build dist 2>/dev/null || true
 
-swift build -c "$CONFIG" --product ValetApp
-BIN="$(swift build -c "$CONFIG" --show-bin-path)/ValetApp"
+swift build -c "$CONFIG" --product BellhopApp
+BIN="$(swift build -c "$CONFIG" --show-bin-path)/BellhopApp"
 [[ -x "$BIN" ]] || { echo "build failed: $BIN missing"; exit 1; }
 
-APP=dist/Valet.app
+APP=dist/Bellhop.app
 rm -rf "$APP"
 mkdir -p "$APP/Contents/MacOS" "$APP/Contents/Resources"
-cp "$BIN" "$APP/Contents/MacOS/Valet"
+cp "$BIN" "$APP/Contents/MacOS/Bellhop"
 cp Resources/Info.plist "$APP/Contents/Info.plist"
-cp Resources/AppIcon.icns Resources/ValetMenuTemplate.png Resources/ValetMenuTemplate@2x.png "$APP/Contents/Resources/"
+cp Resources/AppIcon.icns Resources/BellhopMenuTemplate.png Resources/BellhopMenuTemplate@2x.png "$APP/Contents/Resources/"
 # SwiftPM resource bundles (KeyboardShortcuts' localizations) sit beside the binary. Packages look them up at
 # runtime and crash without them, so ship every one.
 for bundle in "$(dirname "$BIN")"/*.bundle; do
