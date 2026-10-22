@@ -5,6 +5,8 @@ import AppKit
 final class FloatingPanel: NSPanel {
     /// Called when the panel stops being the key window, e.g. you click into another app.
     var onResignKey: (() -> Void)?
+    /// False for app menus beside the Valet panel: the panel keeps the keyboard and passes keys on.
+    var takesKey = true
 
     init(content: NSView, cornerRadius: CGFloat = 10, glass: Bool = false) {
         super.init(
@@ -47,7 +49,7 @@ final class FloatingPanel: NSPanel {
         return material
     }
 
-    override var canBecomeKey: Bool { true }
+    override var canBecomeKey: Bool { takesKey }
 
     override func resignKey() {
         super.resignKey()

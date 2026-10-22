@@ -39,6 +39,8 @@ final class ValetPanelModel {
     // Actions the controller handles.
     @ObservationIgnored var onActivate: ((MenuBarIcon) -> Void)?
     @ObservationIgnored var onHover: ((MenuBarIcon?) -> Void)?
+    /// Arrows, Return and Esc go here first while an app's menu is open beside the panel. True if it used the key.
+    @ObservationIgnored var onMenuKey: ((MenuKey) -> Bool)?
     @ObservationIgnored var onSetKept: (([String]) -> Void)?
     @ObservationIgnored var onSearch: (() -> Void)?
     @ObservationIgnored var onSettings: (() -> Void)?
@@ -67,8 +69,9 @@ final class ValetPanelModel {
 
     // MARK: Pointer and keyboard
 
+    /// Also called again for the row that's already highlighted, so coming back to it can reopen its menu.
     func hover(_ id: String?) {
-        guard drag == nil, highlighted != id else { return }
+        guard drag == nil else { return }
         highlighted = id
         onHover?(id.flatMap(icon))
     }

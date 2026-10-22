@@ -26,7 +26,6 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
                 image.isTemplate = true
                 button.image = image
             }
-            button.toolTip = "Valet · ⌥-click to show tucked icons"
             button.setAccessibilityLabel("Valet")
             button.target = self
             button.action = #selector(iconClicked)
@@ -47,6 +46,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
             engine: engine, system: system, keepers: keepers, mirror: mirror, divider: divider
         )
         valetPanel.onScan = { [weak self] snapshot in self?.accept(snapshot) }
+        valetPanel.openOnHover(statusItem)
         palette = PaletteController(engine: engine, system: system, mirror: mirror) { [weak keepers] in
             keepers?.kept ?? []
         }

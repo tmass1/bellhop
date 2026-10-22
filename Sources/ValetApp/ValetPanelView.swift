@@ -37,12 +37,19 @@ struct ValetPanelView: View {
         .focusEffectDisabled()
         .focused($focused)
         .onAppear { focused = true }
-        .onKeyPress(.upArrow) { model.moveHighlight(by: -1); return .handled }
-        .onKeyPress(.downArrow) { model.moveHighlight(by: 1); return .handled }
-        .onKeyPress(.rightArrow) { model.activateHighlighted(); return .handled }
-        .onKeyPress(.return) { model.activateHighlighted(); return .handled }
+        .onKeyPress(.upArrow) { menuKey(.upArrow) { model.moveHighlight(by: -1) } }
+        .onKeyPress(.downArrow) { menuKey(.downArrow) { model.moveHighlight(by: 1) } }
+        .onKeyPress(.rightArrow) { menuKey(.rightArrow) { model.activateHighlighted() } }
+        .onKeyPress(.leftArrow) { menuKey(.leftArrow) {} }
+        .onKeyPress(.return) { menuKey(.enter) { model.activateHighlighted() } }
         .onKeyPress(.space) { model.toggleKeepHighlighted(); return .handled }
-        .onKeyPress(.escape) { model.onClose?(); return .handled }
+        .onKeyPress(.escape) { menuKey(.escape) { model.onClose?() } }
+    }
+
+    /// Keys go to an open app menu first, then to the panel.
+    private func menuKey(_ key: MenuKey, otherwise: () -> Void) -> KeyPress.Result {
+        if model.onMenuKey?(key) != true { otherwise() }
+        return .handled
     }
 
     // MARK: Sections
