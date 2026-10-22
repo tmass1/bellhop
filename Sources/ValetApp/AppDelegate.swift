@@ -15,6 +15,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     private var server: SocketServer?
 
     func applicationDidFinishLaunching(_ notification: Notification) {
+        Appearance.apply()
         DividerController.placeIconOnFirstRun()
         statusItem = NSStatusBar.system.statusItem(withLength: NSStatusItem.squareLength)
         statusItem.autosaveName = DividerController.iconName
