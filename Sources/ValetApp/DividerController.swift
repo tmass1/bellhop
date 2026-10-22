@@ -19,6 +19,9 @@ final class DividerController {
     private var reattaching = false
     private var pendingFollow: DispatchWorkItem?
     private var observers: [NSObjectProtocol] = []
+    /// Left edge of Valet's leftmost visible item. Keepers sit between the divider and Valet's icon, so the room
+    /// is measured from the leftmost of them.
+    var leftmostItemMinX: (() -> CGFloat?)?
 
     init(icon: NSStatusItem, engine: MenuBarEngine) {
         self.icon = icon
@@ -62,7 +65,7 @@ final class DividerController {
 
     private static func key(_ name: String) -> String { "NSStatusItem Preferred Position \(name)" }
 
-    private var iconPosition: Double? {
+    var iconPosition: Double? {
         UserDefaults.standard.object(forKey: Self.key(Self.iconName)) as? Double
     }
 
@@ -107,14 +110,14 @@ final class DividerController {
     }
 
     /// Sets the divider's width for the current mode and layout.
-    private func resize() {
+    func resize() {
         guard let divider else { return }
         if arranging {
             divider.length = DividerLayout.arrangingWidth
             return
         }
         guard let window = icon.button?.window, let screen = window.screen else { return }
-        let iconMinX = window.frame.minX
+        let iconMinX = min(window.frame.minX, leftmostItemMinX?() ?? window.frame.minX)
         let notchMaxX = screen.auxiliaryTopRightArea.map { Double($0.minX) }
         Task {
             var appMenusMaxX: Double?

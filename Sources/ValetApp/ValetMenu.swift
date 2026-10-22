@@ -9,14 +9,25 @@ final class ValetMenu: NSObject, NSMenuDelegate {
     private let engine: MenuBarEngine
     private let system: LiveAccessibility
     private let divider: DividerController
+    private let keepers: KeeperController
+    private let mirror: MenuMirror
     private let menu = NSMenu()
-    private var snapshot: MenuBarSnapshot?
+    private(set) var snapshot: MenuBarSnapshot?
     private weak var statusItem: NSStatusItem?
+    /// Opens Arrange Menu Bar…
+    var onArrange: (() -> Void)?
+    /// Every new scan, for keepers and the Arrange window.
+    var onScan: ((MenuBarSnapshot) -> Void)?
 
-    init(engine: MenuBarEngine, system: LiveAccessibility, divider: DividerController) {
+    init(
+        engine: MenuBarEngine, system: LiveAccessibility, divider: DividerController, keepers: KeeperController,
+        mirror: MenuMirror
+    ) {
         self.engine = engine
         self.system = system
         self.divider = divider
+        self.keepers = keepers
+        self.mirror = mirror
         super.init()
         menu.delegate = self
         menu.autoenablesItems = false
@@ -29,6 +40,12 @@ final class ValetMenu: NSObject, NSMenuDelegate {
         item.button?.performClick(nil)
     }
 
+    /// Takes a scan made elsewhere (at launch), and passes it on like one of its own.
+    func accept(_ fresh: MenuBarSnapshot) {
+        snapshot = fresh
+        onScan?(fresh)
+    }
+
     // MARK: NSMenuDelegate
 
     func menuWillOpen(_ menu: NSMenu) {
@@ -36,7 +53,7 @@ final class ValetMenu: NSObject, NSMenuDelegate {
         Task {
             let env = SystemSnapshot.capture()
             guard let fresh = try? await engine.scan(env) else { return }
-            snapshot = fresh
+            accept(fresh)
             rebuild()
         }
     }
@@ -53,15 +70,20 @@ final class ValetMenu: NSObject, NSMenuDelegate {
         if !system.isTrusted {
             addOnboarding()
         } else if let snapshot {
+            // Keepers are tucked icons shown again by Valet, so they're listed with the menu bar, in their order.
             let sections = MenuBarSections(snapshot)
+            let byID = Dictionary(snapshot.icons.map { ($0.id, $0) }, uniquingKeysWith: { first, _ in first })
+            let keptIcons = keepers.kept.compactMap { byID[$0] }
+            let tucked = sections.tucked.filter { !keepers.isKept($0.id) }
             menu.addItem(.sectionHeader(title: "Tucked Away"))
-            if sections.tucked.isEmpty {
+            if tucked.isEmpty {
                 menu.addItem(disabled("Nothing tucked away"))
             }
-            sections.tucked.forEach { menu.addItem(iconItem($0)) }
+            tucked.forEach { addIcon($0, keepable: true) }
             menu.addItem(.separator())
             menu.addItem(.sectionHeader(title: "In the Menu Bar"))
-            sections.inBar.forEach { menu.addItem(iconItem($0)) }
+            keptIcons.forEach { addIcon($0, keepable: true) }
+            sections.inBar.forEach { addIcon($0, keepable: false) }
         } else {
             menu.addItem(disabled("Reading the menu bar…"))
         }
@@ -70,14 +92,23 @@ final class ValetMenu: NSObject, NSMenuDelegate {
         let showTucked = NSMenuItem(title: "Show Tucked Icons", action: #selector(toggleArranging), keyEquivalent: "")
         showTucked.target = self
         showTucked.state = divider.arranging ? .on : .off
-        showTucked.toolTip = "Or ⌥-click Valet. ⌘-drag Valet’s icon to choose what stays in the menu bar."
+        showTucked.toolTip = "Or ⌥-click Valet."
         menu.addItem(showTucked)
+        let arrange = NSMenuItem(title: "Arrange Menu Bar…", action: #selector(arrange), keyEquivalent: "")
+        arrange.target = self
+        menu.addItem(arrange)
         let login = NSMenuItem(title: "Open at Login", action: #selector(toggleLogin), keyEquivalent: "")
         login.target = self
         login.state = SMAppService.mainApp.status == .enabled ? .on : .off
         menu.addItem(login)
         menu.addItem(.separator())
         menu.addItem(withTitle: "Quit Valet", action: #selector(NSApplication.terminate(_:)), keyEquivalent: "q")
+    }
+
+    /// Adds an icon's row and, for icons that can be kept, its ⌥ alternate.
+    private func addIcon(_ icon: MenuBarIcon, keepable: Bool) {
+        menu.addItem(iconItem(icon))
+        if keepable { menu.addItem(keepItem(icon)) }
     }
 
     private func addOnboarding() {
@@ -93,39 +124,30 @@ final class ValetMenu: NSObject, NSMenuDelegate {
     private func iconItem(_ icon: MenuBarIcon) -> NSMenuItem {
         let item = NSMenuItem(title: icon.name, action: nil, keyEquivalent: "")
         item.image = AppIcons.image(for: icon)
-        if let status = icon.title, status != icon.name, status.count <= 24 {
+        if let status = icon.statusText {
             item.badge = NSMenuItemBadge(string: status)
         }
-        if let entries = icon.menu, !entries.isEmpty {
-            let submenu = NSMenu(title: icon.name)
-            submenu.autoenablesItems = false
-            entries.forEach { submenu.addItem(entryItem($0, path: [icon.name])) }
+        if let submenu = mirror.menu(for: icon) {
             item.submenu = submenu
         } else {
             // No mirrored menu (a panel, or a menu only built when opened): pressing the icon opens it in place.
-            item.action = #selector(pressIcon(_:))
-            item.target = self
-            item.representedObject = icon.name
+            mirror.pressesIcon(icon, item: item)
         }
         return item
     }
 
-    private func entryItem(_ entry: MenuEntry, path: [String]) -> NSMenuItem {
-        guard !entry.isSeparator, let title = entry.title else { return .separator() }
-        let item = NSMenuItem(title: title, action: nil, keyEquivalent: "")
-        item.isEnabled = entry.enabled
-        item.state = entry.mark == nil ? .off : .on
-        if let shortcut = entry.shortcut { Shortcut.apply(shortcut, to: item) }
-        if let children = entry.children {
-            let submenu = NSMenu(title: title)
-            submenu.autoenablesItems = false
-            children.forEach { submenu.addItem(entryItem($0, path: path + [title])) }
-            item.submenu = submenu
-        } else {
-            item.action = #selector(runEntry(_:))
-            item.target = self
-            item.representedObject = MenuPaths.join(path + [title])
-        }
+    /// Shown while ⌥ is held, in place of the icon's row: keep it in the menu bar, or tuck it away again.
+    private func keepItem(_ icon: MenuBarIcon) -> NSMenuItem {
+        let kept = keepers.isKept(icon.id)
+        let item = NSMenuItem(
+            title: kept ? "Tuck “\(icon.name)” Away" : "Keep “\(icon.name)” in Menu Bar",
+            action: #selector(toggleKeep(_:)), keyEquivalent: ""
+        )
+        item.image = AppIcons.image(for: icon)
+        item.target = self
+        item.representedObject = icon.id
+        item.isAlternate = true
+        item.keyEquivalentModifierMask = .option
         return item
     }
 
@@ -137,48 +159,13 @@ final class ValetMenu: NSObject, NSMenuDelegate {
 
     // MARK: Actions
 
-    @objc private func runEntry(_ sender: NSMenuItem) {
-        guard let path = sender.representedObject as? String else { return }
-        run(path, confirm: false)
+    @objc private func toggleKeep(_ sender: NSMenuItem) {
+        guard let id = sender.representedObject as? String else { return }
+        keepers.toggle(id, iconPosition: divider.iconPosition)
     }
 
-    @objc private func pressIcon(_ sender: NSMenuItem) {
-        guard let name = sender.representedObject as? String else { return }
-        run(name, confirm: false)
-    }
-
-    private func run(_ path: String, confirm: Bool) {
-        Task {
-            do {
-                _ = try await engine.run(path, confirm: confirm, env: SystemSnapshot.capture())
-            } catch ValetError.needsConfirmation(let path) {
-                if confirmDestructive(path) { run(path, confirm: true) }
-            } catch let error as ValetError {
-                alert(error.message)
-            } catch {
-                alert(error.localizedDescription)
-            }
-        }
-    }
-
-    /// Quit, Delete, Sign Out and Reset ask first, so a stray click can't quit something.
-    private func confirmDestructive(_ path: String) -> Bool {
-        let title = MenuPaths.parse(path).last ?? path
-        let alert = NSAlert()
-        alert.messageText = "\(title)?"
-        alert.informativeText = "\(path) can’t be undone."
-        alert.addButton(withTitle: title.split(separator: " ").first.map(String.init) ?? "Run")
-        alert.addButton(withTitle: "Cancel")
-        alert.buttons.first?.hasDestructiveAction = true
-        NSApp.activate()
-        return alert.runModal() == .alertFirstButtonReturn
-    }
-
-    private func alert(_ message: String) {
-        let alert = NSAlert()
-        alert.messageText = message
-        NSApp.activate()
-        alert.runModal()
+    @objc private func arrange() {
+        onArrange?()
     }
 
     @objc private func toggleArranging() {
@@ -193,7 +180,7 @@ final class ValetMenu: NSObject, NSMenuDelegate {
                 try SMAppService.mainApp.register()
             }
         } catch {
-            alert("Couldn’t change Open at Login: \(error.localizedDescription)")
+            MenuMirror.alert("Couldn’t change Open at Login: \(error.localizedDescription)")
         }
     }
 
@@ -201,19 +188,5 @@ final class ValetMenu: NSObject, NSMenuDelegate {
         if let url = URL(string: "x-apple.systempreferences:com.apple.preference.security?Privacy_Accessibility") {
             NSWorkspace.shared.open(url)
         }
-    }
-}
-
-/// Turns a menu's shortcut string ("⌃⌥⇧⌘K") into a key equivalent, so the mirrored item shows it the native way.
-enum Shortcut {
-    static func apply(_ shortcut: String, to item: NSMenuItem) {
-        guard let key = shortcut.last else { return }
-        var mask: NSEvent.ModifierFlags = []
-        if shortcut.contains("⌃") { mask.insert(.control) }
-        if shortcut.contains("⌥") { mask.insert(.option) }
-        if shortcut.contains("⇧") { mask.insert(.shift) }
-        if shortcut.contains("⌘") { mask.insert(.command) }
-        item.keyEquivalent = String(key).lowercased()
-        item.keyEquivalentModifierMask = mask
     }
 }

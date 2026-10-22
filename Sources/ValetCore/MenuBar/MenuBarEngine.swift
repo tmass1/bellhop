@@ -112,6 +112,14 @@ public actor MenuBarEngine {
         )
     }
 
+    /// The current title of an icon from the last scan, trimmed. Nil if it has none or its app went away.
+    func liveTitle(of id: String) -> String? {
+        guard let element = elements[id] else { return nil }
+        let title = element.attributes([AXName.title])[AXName.title]?.string?
+            .trimmingCharacters(in: .whitespaces)
+        return title?.isEmpty == false ? title : nil
+    }
+
     /// Right edge of an app's own menus (File, Edit…). On screens without a notch they share the bar with icons.
     public func appMenusMaxX(pid: Int32) -> Double? {
         reader.appMenusFrame(system.application(pid: pid))?.maxX

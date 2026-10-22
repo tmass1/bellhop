@@ -9,6 +9,8 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     private var statusItem: NSStatusItem!
     private var valetMenu: ValetMenu!
     private var divider: DividerController!
+    private var keepers: KeeperController!
+    private let arrange = ArrangeWindow()
     private var server: SocketServer?
 
     func applicationDidFinishLaunching(_ notification: Notification) {
@@ -29,9 +31,21 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
             button.sendAction(on: [.leftMouseUp, .rightMouseUp])
         }
 
+        let mirror = MenuMirror(engine: engine)
+        keepers = KeeperController(engine: engine, mirror: mirror)
         divider = DividerController(icon: statusItem, engine: engine)
-        valetMenu = ValetMenu(engine: engine, system: system, divider: divider)
+        divider.leftmostItemMinX = { [weak keepers] in keepers?.leftmostMinX }
+        keepers.onLayoutChange = { [weak divider] in divider?.resize() }
+        keepers.onKeptChange = { [weak self] kept in self?.arrange.model.kept = kept }
+        valetMenu = ValetMenu(engine: engine, system: system, divider: divider, keepers: keepers, mirror: mirror)
+        valetMenu.onScan = { [weak self] snapshot in self?.accept(snapshot) }
+        valetMenu.onArrange = { [weak self] in self?.showArrange() }
+        arrange.model.onChange = { [weak self] kept in
+            guard let self else { return }
+            keepers.setKept(kept, iconPosition: divider.iconPosition)
+        }
         divider.start()
+        scanOnLaunch()
         startServer()
         // First-run onboarding: the system prompt adds Valet to the Accessibility list. The menu explains the rest.
         if !system.isTrusted { _ = LiveAccessibility.requestAccess() }
@@ -39,6 +53,27 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
 
     func applicationWillTerminate(_ notification: Notification) {
         server?.stop()
+    }
+
+    /// Keepers need the icons' names, status and menus, so read the menu bar once at launch.
+    private func scanOnLaunch() {
+        guard system.isTrusted else { return }
+        Task {
+            guard let snapshot = try? await engine.scan(SystemSnapshot.capture()) else { return }
+            valetMenu.accept(snapshot)
+        }
+    }
+
+    private func accept(_ snapshot: MenuBarSnapshot) {
+        keepers.update(with: snapshot, iconPosition: divider.iconPosition)
+        arrange.model.update(snapshot: snapshot, kept: keepers.kept)
+    }
+
+    private func showArrange() {
+        if let snapshot = valetMenu.snapshot {
+            arrange.model.update(snapshot: snapshot, kept: keepers.kept)
+        }
+        arrange.show()
     }
 
     @objc private func iconClicked() {
