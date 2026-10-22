@@ -281,6 +281,22 @@
   .np.material .np-foot .cap { background: var(--fill-2); color: var(--label-2); }
   .scene-tip { position: absolute; bottom: 18px; left: 18px; font-size: 12px; color: var(--label-2); background: var(--glass); padding: 6px 10px; border-radius: 8px; box-shadow: 0 0 0 .5px var(--glass-edge); backdrop-filter: blur(20px); }
 
+  /* ─── Valet menu as a draggable panel ─── */
+  .menu.panel-menu { padding: 5px; }
+  .menu.panel-menu .mh { display: flex; justify-content: space-between; }
+  .menu.panel-menu .mh .hint { font-weight: 500; color: var(--label-4); }
+  .menu.panel-menu .mi[data-drag] { touch-action: none; }
+  .menu.panel-menu .mi.lifted { opacity: .25; }
+  .menu.panel-menu .mi.fixed .t { color: var(--label-2); }
+  .drop-line { position: absolute; left: 12px; right: 10px; height: 2px; border-radius: 1px; background: var(--accent); pointer-events: none; z-index: 2; }
+  .drop-line::before { content: ""; position: absolute; left: -4px; top: -3px; width: 6px; height: 6px; border-radius: 50%; border: 1.5px solid var(--accent); background: var(--menu); }
+  .zone-target { position: absolute; left: 4px; right: 4px; border-radius: 8px; background: color-mix(in srgb, var(--accent) 12%, transparent); box-shadow: inset 0 0 0 1.5px color-mix(in srgb, var(--accent) 55%, transparent); pointer-events: none; }
+  .row-ghost {
+    position: fixed; z-index: 1000; pointer-events: none; width: 262px; transform: translate(-28px, 9px) rotate(-1deg);
+    background: var(--menu); backdrop-filter: blur(30px); -webkit-backdrop-filter: blur(30px); border-radius: 8px; color: var(--label);
+    box-shadow: 0 10px 30px rgba(0,0,0,.25), 0 0 0 .5px var(--glass-edge); font-size: 13px;
+  }
+
   /* ─── Keep tab ─── */
   .mbi.keeper { padding: 0 4px; gap: 4px; cursor: pointer; }
   .mbi.keeper img, .mbi.keeper .tile-glyph { width: 16px; height: 16px; border-radius: 4px; }
@@ -314,7 +330,7 @@
   .zone.bar .tile { flex-direction: row; padding: 5px 9px 5px 6px; gap: 6px; background: var(--page-card); box-shadow: 0 0 0 .5px var(--glass-edge); }
   .zone.bar .tile .st { min-height: 0; }
   .zone.bar .empty, .zone.tray .empty { color: var(--label-3); font-size: 12px; padding: 12px 8px; }
-  .fixed { display: inline-flex; align-items: center; gap: 6px; margin-left: auto; color: var(--label-3); font-size: 11.5px; padding-right: 4px; }
+  .bar-tail { display: inline-flex; align-items: center; gap: 6px; margin-left: auto; color: var(--label-3); font-size: 11.5px; padding-right: 4px; }
   .drag-ghost { position: fixed; pointer-events: none; z-index: 1000; opacity: .9; transform: translate(-50%, -50%) scale(1.04); }
   .board-foot { margin-top: 10px; font-size: 12px; color: var(--label-2); display: flex; justify-content: space-between; gap: 12px; }
 
@@ -906,7 +922,20 @@ function paletteKey(event, scene, rows) {
 // ═══════════════════════════════════════════════════════════════
 // Valet menu (the status item's menu)
 // ═══════════════════════════════════════════════════════════════
-const menuState = { open: true, hover: 'mark', loaded: new Set() };
+const menuState = { open: true, hover: 'mark', loaded: new Set(), variant: 'panel', drag: null };
+
+function variantSwitchHTML() {
+  const v = menuState.variant;
+  return `<span class="seg" style="background:var(--fill)"><button data-variant="native" aria-pressed="${v === 'native'}">Native menu</button><button data-variant="panel" aria-pressed="${v === 'panel'}">Draggable panel</button></span>`;
+}
+
+function renderMenu(scene) {
+  if (menuState.variant === 'panel') renderPanelMenu(scene);
+  else renderNativeMenu(scene);
+  scene.querySelectorAll('[data-variant]').forEach((b) => {
+    b.onclick = () => { menuState.variant = b.dataset.variant; menuState.open = true; renderMenu(scene); };
+  });
+}
 
 function menuItemHTML(entry, path) {
   if (entry.sep) return '<div class="ms"></div>';
@@ -915,15 +944,15 @@ function menuItemHTML(entry, path) {
   return `<div class="${cls}" data-path="${esc(path)}"><span class="ck">${entry.checked ? '✓' : ''}</span><span class="t">${esc(entry.title)}</span><span class="r">${right}</span></div>`;
 }
 
-function renderMenu(scene) {
+function renderNativeMenu(scene) {
   const s = menuState;
   scene.innerHTML = menubarHTML({ activeValet: s.open });
-  scene.append(h(`<div class="scene-tip">Hover an icon to see its mirrored menu. ⌥-click Valet to show tucked icons in the bar.</div>`));
+  scene.append(h(`<div class="scene-tip" style="display:flex;gap:10px;align-items:center">${variantSwitchHTML()}<span>Hover an icon to see its mirrored menu. ⌥-click Valet to show tucked icons.</span></div>`));
   const valetIcon = scene.querySelector('[data-strip="main"] [data-id="valet"]');
   if (valetIcon) {
     valetIcon.onclick = (event) => {
       if (event.altKey) { bar.showing = !bar.showing; s.open = false; } else s.open = !s.open;
-      renderMenu(scene);
+      renderNativeMenu(scene);
     };
   }
   if (!s.open) return;
@@ -1005,6 +1034,164 @@ function renderMenu(scene) {
       toast(scene, `${appIcon(icon, 'sm')}Ran <span class="path">${esc(icon.name)} › </span>${esc(title)}`);
     });
   });
+}
+
+// ═══════════════════════════════════════════════════════════════
+// Valet menu, proposed: a menu-styled panel you can drag icons in
+// ═══════════════════════════════════════════════════════════════
+// Same rows as the native menu, but it's Valet's own panel, so rows can be dragged: up into "In the Menu Bar"
+// to keep an icon (as a keeper), down into "Tucked Away" to tuck it, and along the keepers to reorder them.
+// Hovering a row still opens the app's real menu, mirrored, beside it.
+function renderPanelMenu(scene) {
+  const s = menuState;
+  const k = keepState;
+  scene.innerHTML = keepBarHTML({ activeValet: s.open });
+  scene.append(h(`<div class="scene-tip" style="display:flex;gap:10px;align-items:center">${variantSwitchHTML()}<span>Drag an icon between the sections. Drag keepers to reorder.</span></div>`));
+  const valetIcon = scene.querySelector('[data-strip="main"] [data-id="valet"]');
+  if (valetIcon) valetIcon.onclick = () => { s.open = !s.open; renderPanelMenu(scene); bindVariants(scene); };
+  bindVariants(scene);
+  if (!s.open) return;
+
+  const tucked = thirdParty.filter((icon) => !k.kept.includes(icon.id));
+  const kept = k.kept.map((id) => byId[id]);
+  const system = searchable.filter((icon) => SYSTEM_IDS.has(icon.id));
+  const row = (icon, { draggable = true, fixed = false } = {}) => {
+    const hasMenu = ['menu', 'onDemand', 'private'].includes(icon.kind);
+    const status = icon.status && icon.status !== icon.name ? `<span>${esc(icon.status)}</span>` : '';
+    const cls = ['mi', s.hover === icon.id && !s.drag ? 'hl' : '', fixed ? 'fixed' : '', s.drag?.id === icon.id ? 'lifted' : ''].join(' ');
+    return `<div class="${cls}" data-icon="${icon.id}" ${draggable ? 'data-drag' : ''} title="${fixed ? 'Always in the menu bar, right of Valet' : ''}">${appIcon(icon, 'sm')}<span class="t">${esc(icon.name)}</span><span class="r">${status}${hasMenu ? G.chevron : ''}</span></div>`;
+  };
+  const menu = h(`<div class="menu panel-menu" style="width: 272px">
+    <div class="mi" data-search>${G.search.replace('viewBox', 'width="14" height="14" viewBox')}<span class="t">Search Menu Bar…</span><span class="r">${HOTKEY}</span></div>
+    <div class="ms"></div>
+    <div class="mh" data-zone-head="bar"><span>In the Menu Bar</span><span class="hint">Drag to reorder</span></div>
+    <div data-zone="bar">${kept.map((icon) => row(icon)).join('') || '<div class="mi noicon dis" data-empty><span></span><span class="t">Drag icons here to keep them</span><span class="r"></span></div>'}</div>
+    ${system.map((icon) => row(icon, { draggable: false, fixed: true })).join('')}
+    <div class="ms"></div>
+    <div class="mh" data-zone-head="tucked"><span>Tucked Away</span><span class="hint">Drag up to keep</span></div>
+    <div data-zone="tucked">${tucked.map((icon) => row(icon)).join('') || '<div class="mi noicon dis"><span></span><span class="t">Nothing tucked away</span><span class="r"></span></div>'}</div>
+    <div class="ms"></div>
+    <div class="mi noicon"><span></span><span class="t">Settings…</span><span class="r">⌘,</span></div>
+    <div class="mi noicon"><span></span><span class="t">Quit Valet</span><span class="r">⌘Q</span></div>
+  </div>`);
+  scene.append(menu);
+  const box = scene.getBoundingClientRect();
+  const anchor = valetIcon?.getBoundingClientRect() ?? { left: box.right - 280 };
+  menu.style.left = `${Math.max(8, Math.min(anchor.left - box.left - 6, box.width - 272 - 8))}px`;
+  menu.style.top = '36px';
+
+  menu.querySelectorAll('[data-icon]').forEach((el) => {
+    el.addEventListener('mouseenter', () => {
+      if (s.drag || s.hover === el.dataset.icon) return;
+      s.hover = el.dataset.icon;
+      renderPanelMenu(scene);
+    });
+    el.addEventListener('pointerdown', (event) => { if (el.hasAttribute('data-drag')) startRowDrag(event, el, scene); });
+  });
+  menu.querySelector('[data-search]').onclick = () => { switchTab('palette'); };
+
+  // The hovered app's real menu, mirrored beside its row (not while dragging).
+  const icon = byId[s.hover];
+  if (s.drag || !icon || !icon.menu || ['panel', 'onDemand'].includes(icon.kind)) return;
+  const rowEl = menu.querySelector(`[data-icon="${icon.id}"]`);
+  if (!rowEl) return;
+  const sub = h(`<div class="menu">${icon.menu.map((e) => menuItemHTML(e, icon.id)).join('')}</div>`);
+  scene.append(sub);
+  const r = rowEl.getBoundingClientRect();
+  const width = sub.getBoundingClientRect().width;
+  sub.style.left = box.right - r.right > width + 8 ? `${r.right - box.left + 4}px` : `${r.left - box.left - width - 4}px`;
+  sub.style.top = `${Math.min(r.top - box.top - 5, box.height - sub.getBoundingClientRect().height - 8)}px`;
+  sub.querySelectorAll('.mi:not(.dis)').forEach((el) => {
+    el.addEventListener('mouseenter', () => { sub.querySelectorAll('.hl').forEach((x) => x.classList.remove('hl')); el.classList.add('hl'); });
+    el.addEventListener('click', () => {
+      s.open = false; renderPanelMenu(scene); bindVariants(scene);
+      toast(scene, `${appIcon(icon, 'sm')}Ran <span class="path">${esc(icon.name)} › </span>${esc(el.querySelector('.t').textContent)}`);
+    });
+  });
+}
+
+function bindVariants(scene) {
+  scene.querySelectorAll('[data-variant]').forEach((b) => {
+    b.onclick = () => { menuState.variant = b.dataset.variant; menuState.open = true; renderMenu(scene); };
+  });
+}
+
+/// Where a drag would land: the keepers (with an insertion index) or the tucked section.
+function dropTarget(menu, y) {
+  const tuckedHead = menu.querySelector('[data-zone-head="tucked"]').getBoundingClientRect();
+  if (y >= tuckedHead.top) return { zone: 'tucked' };
+  const rows = [...menu.querySelectorAll('[data-zone="bar"] [data-icon]')].filter((el) => !el.classList.contains('lifted'));
+  const index = rows.findIndex((el) => { const r = el.getBoundingClientRect(); return y < r.top + r.height / 2; });
+  return { zone: 'bar', index: index < 0 ? rows.length : index, rows };
+}
+
+function startRowDrag(event, rowEl, scene) {
+  event.preventDefault();
+  const s = menuState;
+  const k = keepState;
+  const id = rowEl.dataset.icon;
+  const start = { x: event.clientX, y: event.clientY };
+  let ghost = null;
+  let target = null;
+  const move = (e) => {
+    if (!ghost && Math.hypot(e.clientX - start.x, e.clientY - start.y) < 4) return;
+    if (!ghost) {
+      s.drag = { id };
+      renderPanelMenu(scene);
+      ghost = h(`<div class="row-ghost"><div class="mi">${rowEl.innerHTML}</div></div>`);
+      document.body.append(ghost);
+    }
+    ghost.style.left = `${e.clientX}px`;
+    ghost.style.top = `${e.clientY}px`;
+    const menu = scene.querySelector('.panel-menu');
+    menu.querySelectorAll('.drop-line, .zone-target').forEach((x) => x.remove());
+    target = dropTarget(menu, e.clientY);
+    const mbox = menu.getBoundingClientRect();
+    if (target.zone === 'bar') {
+      // A line between keepers, where it would land.
+      const rows = target.rows;
+      const head = menu.querySelector('[data-zone-head="bar"]').getBoundingClientRect();
+      const y = rows.length === 0 ? head.bottom + 2
+        : target.index < rows.length ? rows[target.index].getBoundingClientRect().top
+        : rows[rows.length - 1].getBoundingClientRect().bottom;
+      const line = h('<div class="drop-line"></div>');
+      line.style.top = `${y - mbox.top - 1}px`;
+      menu.append(line);
+    } else {
+      // Tucked icons keep the real bar's order, so the whole section lights up instead of a line.
+      const zone = menu.querySelector('[data-zone="tucked"]').getBoundingClientRect();
+      const head = menu.querySelector('[data-zone-head="tucked"]').getBoundingClientRect();
+      const hl = h('<div class="zone-target"></div>');
+      hl.style.top = `${head.top - mbox.top}px`;
+      hl.style.height = `${zone.bottom - head.top + 2}px`;
+      menu.append(hl);
+    }
+  };
+  const up = () => {
+    document.removeEventListener('pointermove', move);
+    document.removeEventListener('pointerup', up);
+    if (!ghost) {
+      // A click: open panel apps; menu apps already show their menu on hover.
+      const icon = byId[id];
+      if (icon.kind === 'panel') { s.open = false; renderPanelMenu(scene); bindVariants(scene); toast(scene, `${appIcon(icon, 'sm')}Opened ${esc(icon.name)}`); }
+      return;
+    }
+    ghost.remove();
+    const kept = k.kept.filter((x) => x !== id);
+    if (target?.zone === 'bar') {
+      const order = target.rows.map((el) => el.dataset.icon).filter((x) => x !== id);
+      const before = order[target.index];
+      const at = before ? kept.indexOf(before) : kept.length;
+      kept.splice(at < 0 ? kept.length : at, 0, id);
+    }
+    k.kept = kept;
+    s.drag = null;
+    s.hover = null;
+    renderPanelMenu(scene);
+    bindVariants(scene);
+  };
+  document.addEventListener('pointermove', move);
+  document.addEventListener('pointerup', up);
 }
 
 // ═══════════════════════════════════════════════════════════════
@@ -1113,7 +1300,7 @@ function renderDivider(scene) {
 // keepers: Valet's own items, in any order, each opening the app's mirrored menu. Valet never moves the real icons.
 const SYSTEM_IDS = new Set(['battery', 'wifi', 'recording', 'spotlight', 'control', 'clock']);
 const thirdParty = searchable.filter((icon) => !SYSTEM_IDS.has(icon.id));
-const keepState = { kept: ['burn', 'mark', 'fritter'], style: 'status', open: null, drag: null };
+const keepState = { kept: ['burn', 'mark', 'fritter'], style: 'icon', open: null, drag: null };
 
 function keeperHTML(icon) {
   const style = keepState.style;
@@ -1126,19 +1313,20 @@ function keeperHTML(icon) {
 }
 
 /// The right side of the bar with keepers: », the keepers, Valet, then Apple's items.
-function keepGlyphsHTML() {
+function keepGlyphsHTML({ activeValet = false } = {}) {
   const system = searchable.filter((icon) => SYSTEM_IDS.has(icon.id));
   const glyph = (icon) => icon.text
     ? `<span class="mbi text">${esc(icon.text)}</span>`
     : `<span class="mbi" title="${esc(icon.name)}">${G[icon.system || icon.glyph]}</span>`;
   const keepers = keepState.kept.map((id) => keeperHTML(byId[id])).join('');
-  return `<div class="glyphs"><span class="mbi overflow-arrow" title="Show Hidden Menu Bar Items">${G.overflow}</span>${keepers}<span class="mbi" title="Valet">${G.valet}</span>${system.map(glyph).join('')}</div>`;
+  const valet = `<span class="mbi clickable${activeValet ? ' active' : ''}" data-id="valet" title="Valet">${G.valet}</span>`;
+  return `<div class="glyphs" data-strip="main"><span class="mbi overflow-arrow" title="Show Hidden Menu Bar Items">${G.overflow}</span>${keepers}${valet}${system.map(glyph).join('')}</div>`;
 }
 
-function keepBarHTML() {
+function keepBarHTML(options = {}) {
   return `<div class="menubar">
     <div class="left"><span style="font-size:15px"></span><b>Finder</b><span>File</span><span>Edit</span><span>View</span><span>Go</span><span>Window</span><span>Help</span></div>
-    <div class="right">${keepGlyphsHTML()}</div>
+    <div class="right">${keepGlyphsHTML(options)}</div>
   </div><div class="notch"></div>`;
 }
 
@@ -1164,7 +1352,7 @@ function renderKeep(scene) {
     </div>
     <div class="zone-label"><span>In your menu bar</span><span>${s.kept.length} kept · drag to reorder</span></div>
     <div class="zone bar" data-drop="bar">${s.kept.map((id) => tileHTML(byId[id], true)).join('') || '<span class="empty">Drag icons here to keep them in the menu bar.</span>'}
-      <span class="fixed">${G.valet.replace('viewBox', 'width="14" height="14" viewBox')} Valet, then Apple’s items</span></div>
+      <span class="bar-tail">${G.valet.replace('viewBox', 'width="14" height="14" viewBox')} Valet, then Apple’s items</span></div>
     <div class="zone-label"><span>Tucked away</span><span>${tucked.length} · in the Valet menu</span></div>
     <div class="zone tray" data-drop="tray">${tucked.map((icon) => tileHTML(icon, false)).join('') || '<span class="empty">Everything is in the menu bar.</span>'}</div>
     <div class="board-foot"><span>Kept icons are Valet’s own items, so they can go in any order. The real icons stay tucked.</span><span>Click a tile to move it</span></div>
@@ -1275,6 +1463,9 @@ const NOTES = {
     ['Open: default hotkey', `${HOTKEY} is a placeholder. It avoids Spotlight (⌘Space) and Raycast (⌥Space).`],
   ],
   menu: [
+    ['Native or draggable', 'The switch at the bottom left compares them. The draggable panel looks like the menu but is Valet’s own window, so rows can move.'],
+    ['Try the drag', 'Drag Ollama up between Burn and Mark, then drag Mark down into Tucked Away. Watch the menu bar above update.'],
+    ['What changes', 'In the panel, “In the Menu Bar” comes first: your keepers (draggable), then Apple’s items (fixed). Tucked Away keeps the real bar’s order.'],
     ['Search row first', `It teaches the palette and its hotkey to people who only use the mouse.`],
     ['The main surface', 'Tucked icons first, then what’s still in the bar. Each mirrors its real menu as a submenu; panel apps (Burn, Claude) open on click.'],
     ['Arranging lives here too', '“Show Tucked Icons” (or ⌥-click Valet) puts them back in the bar for a moment. “Arrange Menu Bar…” opens the divider view.'],
@@ -1322,6 +1513,9 @@ function setTheme(theme) {
 }
 
 document.querySelectorAll('[data-tab]').forEach((b) => { b.onclick = () => switchTab(b.dataset.tab); });
+// Layouts depend on the window's width (what fits in the bar, where menus anchor), so redraw when it changes.
+let resizeTimer;
+window.addEventListener('resize', () => { clearTimeout(resizeTimer); resizeTimer = setTimeout(refresh, 120); });
 document.querySelectorAll('button[data-theme]').forEach((b) => { b.onclick = () => setTheme(b.dataset.theme); });
 document.addEventListener('keydown', (event) => {
   // ⌃⌥Space reopens the palette, like the real hotkey.
