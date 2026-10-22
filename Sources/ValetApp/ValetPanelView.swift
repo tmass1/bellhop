@@ -93,15 +93,22 @@ struct ValetPanelView: View {
             Color.clear.preference(key: RowFrameKey.self, value: [icon.id: geometry.frame(in: .named(Self.space))])
         })
         .onHover { inside in if inside { model.hover(icon.id) } }
-        .onTapGesture { model.onActivate?(icon) }
-        .gesture(draggable ? dragGesture(for: icon.id) : nil)
+        .gesture(pressGesture(for: icon, draggable: draggable))
         .help(draggable ? "" : "Always in the menu bar, right of Valet")
     }
 
-    private func dragGesture(for id: String) -> some Gesture {
-        DragGesture(minimumDistance: 4, coordinateSpace: .named(Self.space))
-            .onChanged { model.dragChanged(id, to: $0.location) }
-            .onEnded { _ in model.dragEnded() }
+    /// One gesture per row, decided on release: barely moved is a click (open), moved is a drag. A separate tap
+    /// gesture would swallow the press before the drag could start.
+    private func pressGesture(for icon: MenuBarIcon, draggable: Bool) -> some Gesture {
+        DragGesture(minimumDistance: 0, coordinateSpace: .named(Self.space))
+            .onChanged { value in
+                guard draggable else { return }
+                let moved = hypot(value.translation.width, value.translation.height)
+                if model.drag?.id == icon.id || moved >= 4 { model.dragChanged(icon.id, to: value.location) }
+            }
+            .onEnded { _ in
+                if model.drag?.id == icon.id { model.dragEnded() } else { model.onActivate?(icon) }
+            }
     }
 
     // MARK: Drag feedback

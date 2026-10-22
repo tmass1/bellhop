@@ -189,15 +189,11 @@ final class ValetPanelController: NSObject {
     }
 
     /// Hovering a row with a mirrored menu opens it after a short pause, like a submenu.
+    /// Hovering only highlights. An app's menu opens on click, → or Return: a real menu captures the mouse, so
+    /// opening one on hover made those rows impossible to drag. Once a menu is open, moving to another row
+    /// switches menus, like a menu bar.
     private func hovered(_ icon: MenuBarIcon?) {
         pendingHover?.cancel()
-        guard let icon, mirror.menu(for: icon) != nil else { return }
-        let work = DispatchWorkItem { [weak self] in
-            guard let self, self.model.highlighted == icon.id, self.model.drag == nil else { return }
-            self.presentSubmenu(for: icon)
-        }
-        pendingHover = work
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.15, execute: work)
     }
 
     // MARK: Mirrored menus beside rows
