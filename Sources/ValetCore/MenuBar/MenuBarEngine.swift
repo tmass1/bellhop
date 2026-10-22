@@ -112,6 +112,11 @@ public actor MenuBarEngine {
         )
     }
 
+    /// Right edge of an app's own menus (File, Edit…). On screens without a notch they share the bar with icons.
+    public func appMenusMaxX(pid: Int32) -> Double? {
+        reader.appMenusFrame(system.application(pid: pid))?.maxX
+    }
+
     /// The last scan if it's recent enough, otherwise a fresh one.
     public func snapshot(_ env: SystemSnapshot, maxAge: TimeInterval = 5) throws -> MenuBarSnapshot {
         if let current, current.capturedAt.timeIntervalSinceNow > -maxAge { return current }
