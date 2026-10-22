@@ -5,7 +5,7 @@ The full plan, including scope, architecture, risks and milestones, is in `docs/
 
 ## Current milestone
 
-**Milestone 3: Valet menu, divider and keepers** (in progress; the ⌘-drag follow test waits for the Cinema Display). Milestone 0's mocks were approved Oct 21 (`design/mocks/`). Milestones 1 and 2 are verified on the M5 Max (macOS 27); the M1 MacBook run is still pending, so keep `valet-probe` until then. Update this line when a milestone is done.
+**Milestone 4: Command palette** (not started; needs Tommy's go-ahead). Milestone 3 (Valet panel, divider, keepers) is done on the M5 Max as of Oct 22; the ⌘-drag test on the Cinema Display and the M1 run are still open, so keep `valet-probe` until then. Update this line when a milestone is done.
 
 ## Stack
 

@@ -219,8 +219,9 @@ Build in this order. Each milestone ends with something you can run on your own 
    - Done when: the output matches reality on both MacBooks, one on macOS 27 and one on 26 if possible.
 2. **ValetCore.** Scanner, visibility detection, menu mirroring and the action runner, with unit tests that run against saved JSON snapshots.
    - Done when: `valet list --json` works, and `valet run "Midnight Oil › Keep awake for 1 hour"` presses the real item.
-3. **Valet menu, divider and keepers.** The vertical list, the divider, keepers with the Arrange board, Accessibility onboarding and launch at login.
-   - Done when: the divider tucks icons on 27, kept icons appear as keepers in the chosen order, tucked icons are listed first, submenus mirror the real menus, and choosing an item works.
+3. **Valet panel, divider and keepers.** The draggable Valet panel, the divider, keepers, Accessibility onboarding and launch at login.
+   - Done when: the divider tucks icons on 27, kept icons appear as keepers in the chosen order, icons can be dragged between In the Menu Bar and Tucked Away, submenus mirror the real menus, and choosing an item works.
+   - Status (Oct 22): done on the M5 Max. Still open: the ⌘-drag test of Valet's icon on the Cinema Display, and the M1 run.
 4. **Command palette.** Hotkey, fuzzy search over menu paths, frecency, destructive-item confirmation.
    - Done when: any menu item can be run from the keyboard alone, and the panel feels instant on open (target under 100 ms).
 5. **v0.1 release.** Developer ID signing, notarization, DMG, Sparkle, Homebrew cask, landing page.
