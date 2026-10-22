@@ -121,9 +121,10 @@ The Valet menu and the divider are the everyday surfaces. The palette is the key
 
 - Approved Oct 22: a menu-styled panel rather than a native menu, because native menus can't be dragged in.
 - "In the Menu Bar" first (keepers, draggable and in order, then Apple's items, fixed), then "Tucked Away" in the real bar's order.
-- Clicking a row opens the app's real menu, mirrored, as a native menu beside it; once one is open, moving to another row switches menus. Panel apps open under Valet's icon. (Changed Oct 22 from hover-to-open: an open menu captures the mouse, so rows couldn't be dragged.)
+- Resting on Valet's icon for a quarter second opens the panel; clicking opens it too. Opened on hover, it closes again if the pointer leaves without going into it, and only takes the keyboard once you're in it. A click on the icon then keeps it open.
+- Resting on a row opens the app's menu beside it, like a submenu; nested submenus cascade the same way. Valet draws these menus itself, menu-styled: a native menu captures the mouse while open, so rows couldn't be dragged (Oct 22 went to click-to-open for that reason; drawing them ourselves brought hover back the same day). Type-to-select inside an app menu is the one native behavior lost. Menus that only exist while open aren't read on hover, since that flashes the real menu; they open on click. Panel apps open under Valet's icon on click. Keepers' click menus stay native.
 - A "Search…" row at the top shows the hotkey (once the palette exists). That row teaches the palette to mouse users.
-- Keyboard: ↑↓ move, → or Return open, Space keeps or tucks, Esc closes. The app you're in keeps focus.
+- Keyboard: ↑↓ move, → or Return open (into an app's menu too), ← backs out of one, Space keeps or tucks, Esc closes the menu, then the panel. The app you're in keeps focus.
 
 ### Notch panel (v1)
 
