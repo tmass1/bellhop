@@ -10,7 +10,7 @@ struct Valet: ParsableCommand {
         commandName: "valet",
         abstract: "Search and run menu bar items from the command line.",
         version: ValetCore.version,
-        subcommands: [List.self, Menu.self, Run.self, Search.self, Palette.self, Status.self]
+        subcommands: [List.self, Menu.self, Run.self, Search.self, Palette.self, Keep.self, Tuck.self, Status.self]
     )
 }
 
@@ -143,6 +143,33 @@ struct Palette: ParsableCommand {
 
     func run() throws {
         _ = try send(.palette(query: query))
+    }
+}
+
+struct Keep: ParsableCommand {
+    static let configuration = CommandConfiguration(
+        abstract: "Keep an icon in the menu bar: Valet shows it next to its own icon, even when it's tucked."
+    )
+
+    @Argument(help: "The icon's name, as `valet list` shows it.")
+    var icon: String
+
+    func run() throws {
+        let response = try send(.keep(icon: icon, keep: true))
+        print("In the menu bar: \((response.keepers ?? []).joined(separator: ", "))")
+    }
+}
+
+struct Tuck: ParsableCommand {
+    static let configuration = CommandConfiguration(abstract: "Tuck a kept icon away again.")
+
+    @Argument(help: "The icon's name, as `valet list` shows it.")
+    var icon: String
+
+    func run() throws {
+        let response = try send(.keep(icon: icon, keep: false))
+        let kept = response.keepers ?? []
+        print(kept.isEmpty ? "No keepers." : "In the menu bar: \(kept.joined(separator: ", "))")
     }
 }
 

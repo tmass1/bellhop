@@ -9,6 +9,8 @@ public enum Request: Codable, Sendable, Equatable {
     case search(query: String)
     /// Opens the palette, optionally with a query typed in.
     case palette(query: String?)
+    /// Keeps an icon in the menu bar as a keeper (`keep: true`) or tucks it away.
+    case keep(icon: String, keep: Bool)
 }
 
 /// One search result, as `valet search` prints it.
@@ -48,10 +50,12 @@ public struct Response: Codable, Sendable {
     public var icon: MenuBarIcon?
     public var run: RunResult?
     public var hits: [SearchHit]?
+    /// The keepers, left to right, after a keep or tuck.
+    public var keepers: [String]?
 
     public init(
         error: ValetError? = nil, status: StatusInfo? = nil, snapshot: MenuBarSnapshot? = nil,
-        icon: MenuBarIcon? = nil, run: RunResult? = nil, hits: [SearchHit]? = nil
+        icon: MenuBarIcon? = nil, run: RunResult? = nil, hits: [SearchHit]? = nil, keepers: [String]? = nil
     ) {
         self.error = error
         self.status = status
@@ -59,6 +63,7 @@ public struct Response: Codable, Sendable {
         self.icon = icon
         self.run = run
         self.hits = hits
+        self.keepers = keepers
     }
 }
 

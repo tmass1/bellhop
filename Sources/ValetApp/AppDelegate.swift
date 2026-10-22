@@ -100,11 +100,20 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     private func startServer() {
         let system = system
         let palette = palette!
+        let keepers = keepers!
+        let divider = divider!
         let handler = RequestHandler(
             engine: engine,
             capture: { await MainActor.run { SystemSnapshot.capture() } },
             status: { StatusInfo(version: ValetCore.version, trusted: system.isTrusted, pid: getpid()) },
-            showPalette: { query in await MainActor.run { palette.show(query: query) } }
+            showPalette: { query in await MainActor.run { palette.show(query: query) } },
+            keep: { icon, shouldKeep in
+                await MainActor.run {
+                    let others = keepers.kept.filter { $0 != icon.id }
+                    keepers.setKept(shouldKeep ? others + [icon.id] : others, iconPosition: divider.iconPosition)
+                    return keepers.kept
+                }
+            }
         )
         let server = SocketServer(path: IPC.socketPath) { await handler.handle($0) }
         do {

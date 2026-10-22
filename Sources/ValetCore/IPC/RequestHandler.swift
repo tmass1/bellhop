@@ -7,19 +7,22 @@ public struct RequestHandler: Sendable {
     private let status: @Sendable () -> StatusInfo
     private let history: HistoryStore
     private let showPalette: @Sendable (String?) async -> Void
+    private let keep: @Sendable (MenuBarIcon, Bool) async -> [String]
 
     public init(
         engine: MenuBarEngine,
         capture: @escaping @Sendable () async -> SystemSnapshot,
         status: @escaping @Sendable () -> StatusInfo,
         history: HistoryStore = HistoryStore(),
-        showPalette: @escaping @Sendable (String?) async -> Void = { _ in }
+        showPalette: @escaping @Sendable (String?) async -> Void = { _ in },
+        keep: @escaping @Sendable (MenuBarIcon, Bool) async -> [String] = { _, _ in [] }
     ) {
         self.engine = engine
         self.capture = capture
         self.status = status
         self.history = history
         self.showPalette = showPalette
+        self.keep = keep
     }
 
     public func handle(_ data: Data) async -> Data {
@@ -61,6 +64,12 @@ public struct RequestHandler: Sendable {
         case .palette(let query):
             await showPalette(query)
             return Response()
+        case .keep(let name, let shouldKeep):
+            let icons = try await engine.snapshot(capture()).icons
+            let icon = try MenuPaths.resolveIcon(name, in: icons)
+            // Answer with the names people see rather than icon IDs.
+            let names = Dictionary(icons.map { ($0.id, $0.name) }, uniquingKeysWith: { first, _ in first })
+            return Response(keepers: await keep(icon, shouldKeep).map { names[$0] ?? $0 })
         }
     }
 }
