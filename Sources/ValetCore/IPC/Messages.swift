@@ -6,6 +6,26 @@ public enum Request: Codable, Sendable, Equatable {
     case list
     case menu(icon: String)
     case run(path: String, confirm: Bool)
+    case search(query: String)
+    /// Opens the palette, optionally with a query typed in.
+    case palette(query: String?)
+}
+
+/// One search result, as `valet search` prints it.
+public struct SearchHit: Codable, Sendable, Equatable {
+    public var path: String
+    public var kind: String
+    public var enabled: Bool
+    public var shortcut: String?
+    public var pinned: Bool
+
+    public init(path: String, kind: String, enabled: Bool, shortcut: String?, pinned: Bool) {
+        self.path = path
+        self.kind = kind
+        self.enabled = enabled
+        self.shortcut = shortcut
+        self.pinned = pinned
+    }
 }
 
 public struct StatusInfo: Codable, Sendable, Equatable {
@@ -27,16 +47,18 @@ public struct Response: Codable, Sendable {
     public var snapshot: MenuBarSnapshot?
     public var icon: MenuBarIcon?
     public var run: RunResult?
+    public var hits: [SearchHit]?
 
     public init(
         error: ValetError? = nil, status: StatusInfo? = nil, snapshot: MenuBarSnapshot? = nil,
-        icon: MenuBarIcon? = nil, run: RunResult? = nil
+        icon: MenuBarIcon? = nil, run: RunResult? = nil, hits: [SearchHit]? = nil
     ) {
         self.error = error
         self.status = status
         self.snapshot = snapshot
         self.icon = icon
         self.run = run
+        self.hits = hits
     }
 }
 

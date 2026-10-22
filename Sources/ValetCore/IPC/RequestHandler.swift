@@ -5,15 +5,21 @@ public struct RequestHandler: Sendable {
     private let engine: MenuBarEngine
     private let capture: @Sendable () async -> SystemSnapshot
     private let status: @Sendable () -> StatusInfo
+    private let history: HistoryStore
+    private let showPalette: @Sendable (String?) async -> Void
 
     public init(
         engine: MenuBarEngine,
         capture: @escaping @Sendable () async -> SystemSnapshot,
-        status: @escaping @Sendable () -> StatusInfo
+        status: @escaping @Sendable () -> StatusInfo,
+        history: HistoryStore = HistoryStore(),
+        showPalette: @escaping @Sendable (String?) async -> Void = { _ in }
     ) {
         self.engine = engine
         self.capture = capture
         self.status = status
+        self.history = history
+        self.showPalette = showPalette
     }
 
     public func handle(_ data: Data) async -> Data {
@@ -41,6 +47,20 @@ public struct RequestHandler: Sendable {
             return Response(icon: try await engine.loadMenu(icon, env: capture()))
         case .run(let path, let confirm):
             return Response(run: try await engine.run(path, confirm: confirm, env: capture()))
+        case .search(let query):
+            let index = SearchIndex(icons: try await engine.snapshot(capture()).icons)
+            let saved = history.load()
+            let hits = index.search(query, boosts: saved.boosts()).map { result in
+                SearchHit(
+                    path: result.candidate.path, kind: result.candidate.kind.rawValue,
+                    enabled: result.candidate.entry?.enabled ?? true, shortcut: result.candidate.entry?.shortcut,
+                    pinned: saved.isPinned(result.candidate.key)
+                )
+            }
+            return Response(hits: hits)
+        case .palette(let query):
+            await showPalette(query)
+            return Response()
         }
     }
 }

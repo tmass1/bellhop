@@ -10,7 +10,7 @@ struct Valet: ParsableCommand {
         commandName: "valet",
         abstract: "Search and run menu bar items from the command line.",
         version: ValetCore.version,
-        subcommands: [List.self, Menu.self, Run.self, Status.self]
+        subcommands: [List.self, Menu.self, Run.self, Search.self, Palette.self, Status.self]
     )
 }
 
@@ -103,6 +103,46 @@ struct Run: ParsableCommand {
         guard let result = response.run else { throw ExitCode.failure }
         if json { return printJSON(result) }
         print("Pressed \(result.path)")
+    }
+}
+
+struct Search: ParsableCommand {
+    static let configuration = CommandConfiguration(
+        abstract: "Search icons and menu items the way the palette does, best match first."
+    )
+
+    @Argument(help: "What to look for, e.g. \"snooze hour\".")
+    var query: String
+
+    @Option(help: "How many results to show.")
+    var limit = 10
+
+    @Flag(help: "Print results as JSON.")
+    var json = false
+
+    func run() throws {
+        let response = try send(.search(query: query))
+        let hits = Array((response.hits ?? []).prefix(limit))
+        if json { return printJSON(hits) }
+        if hits.isEmpty { print("No matches. Menus Valet hasn't read yet aren't searched: try `valet menu <icon>`.") }
+        for hit in hits {
+            var line = hit.path
+            if let shortcut = hit.shortcut { line += "    \(shortcut)" }
+            if !hit.enabled { line += "    (disabled)" }
+            if hit.pinned { line += "    (pinned)" }
+            print(line)
+        }
+    }
+}
+
+struct Palette: ParsableCommand {
+    static let configuration = CommandConfiguration(abstract: "Open the palette, optionally with a search typed in.")
+
+    @Argument(help: "Optional search to start with.")
+    var query: String?
+
+    func run() throws {
+        _ = try send(.palette(query: query))
     }
 }
 
