@@ -8,6 +8,7 @@ excluded:
 
 disabled_rules:
   - trailing_comma  # Swift style: trailing commas keep diffs to one line
+  - optional_data_string_conversion  # String(decoding:as:) is the intended lossy decode
 
 line_length:
   warning: 120
@@ -18,7 +19,7 @@ type_name:
   excluded: [AX]
 
 identifier_name:
-  excluded: [x, y, w, h, id, ms, ax, el]
+  excluded: [x, y, w, h, id, ms, ax, el, fd]
 
 type_body_length:
   warning: 300
