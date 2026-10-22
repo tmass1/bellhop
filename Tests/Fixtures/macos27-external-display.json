@@ -1,0 +1,3266 @@
+{
+  "apps": [
+    {
+      "activationPolicy": "accessory",
+      "bundleID": "com.apple.loginwindow",
+      "extrasStatus": "none",
+      "items": [],
+      "ms": 15.4,
+      "name": "loginwindow",
+      "pid": 425
+    },
+    {
+      "activationPolicy": "prohibited",
+      "bundleID": "com.apple.ViewBridgeAuxiliary",
+      "extrasStatus": "cannotComplete",
+      "items": [],
+      "ms": 0.2,
+      "name": "ViewBridgeAuxiliary",
+      "pid": 568
+    },
+    {
+      "activationPolicy": "accessory",
+      "bundleID": "com.apple.WindowManager",
+      "extrasStatus": "none",
+      "items": [],
+      "ms": 12.5,
+      "name": "WindowManager",
+      "pid": 771
+    },
+    {
+      "activationPolicy": "prohibited",
+      "extrasStatus": "cannotComplete",
+      "items": [],
+      "ms": 0.3,
+      "name": "universalaccessd",
+      "pid": 775
+    },
+    {
+      "activationPolicy": "accessory",
+      "bundleID": "com.apple.coreservices.uiagent",
+      "extrasStatus": "none",
+      "items": [],
+      "ms": 15.3,
+      "name": "CoreServicesUIAgent",
+      "pid": 774
+    },
+    {
+      "activationPolicy": "accessory",
+      "bundleID": "com.apple.AccessibilityVisualsAgent",
+      "extrasStatus": "none",
+      "items": [],
+      "ms": 8.7,
+      "name": "AccessibilityVisualsAgent",
+      "pid": 800
+    },
+    {
+      "activationPolicy": "regular",
+      "bundleID": "com.microsoft.VSCode",
+      "extrasStatus": "none",
+      "items": [],
+      "ms": 7.1,
+      "name": "Code",
+      "pid": 808
+    },
+    {
+      "activationPolicy": "regular",
+      "bundleID": "com.apple.ScreenSharing",
+      "extrasStatus": "none",
+      "items": [],
+      "ms": 14.9,
+      "name": "Screen Sharing",
+      "pid": 812
+    },
+    {
+      "activationPolicy": "regular",
+      "bundleID": "com.apple.MobileSMS",
+      "extrasStatus": "none",
+      "items": [],
+      "ms": 12.5,
+      "name": "Messages",
+      "pid": 814
+    },
+    {
+      "activationPolicy": "accessory",
+      "bundleID": "com.apple.talagent",
+      "extrasStatus": "none",
+      "items": [],
+      "ms": 14.4,
+      "name": "talagentd",
+      "pid": 810
+    },
+    {
+      "activationPolicy": "regular",
+      "bundleID": "com.tinyspeck.slackmacgap",
+      "extrasStatus": "none",
+      "items": [],
+      "ms": 12.4,
+      "name": "Slack",
+      "pid": 820
+    },
+    {
+      "activationPolicy": "regular",
+      "bundleID": "com.google.Chrome",
+      "extrasStatus": "ok",
+      "items": [
+        {
+          "actions": [
+            "AXPress"
+          ],
+          "attributeNames": [
+            "AXEnabled",
+            "AXFrame",
+            "AXParent",
+            "AXSize",
+            "AXChildren",
+            "AXFocused",
+            "AXRole",
+            "AXTopLevelUIElement",
+            "AXHelp",
+            "AXPosition",
+            "AXTitle",
+            "AXWindow",
+            "AXRoleDescription",
+            "AXSelected",
+            "AXSubrole"
+          ],
+          "extraAttributes": {},
+          "frame": {
+            "height": 24,
+            "width": 24,
+            "x": 2050,
+            "y": 2
+          },
+          "help": "Toggle Gemini in Chrome",
+          "hidden": false,
+          "hiddenReasons": [],
+          "index": 0,
+          "menu": {
+            "itemCount": 0,
+            "items": [],
+            "ms": 0,
+            "status": "notExposedWhileClosed",
+            "truncated": false
+          },
+          "role": "AXMenuBarItem",
+          "screenIndex": 0,
+          "subrole": "AXMenuExtra"
+        }
+      ],
+      "ms": 12,
+      "name": "Google Chrome",
+      "pid": 821
+    },
+    {
+      "activationPolicy": "accessory",
+      "bundleID": "com.apple.backgroundtaskmanagement.agent",
+      "extrasStatus": "none",
+      "items": [],
+      "ms": 42.8,
+      "name": "BackgroundTaskManagementAgent",
+      "pid": 816
+    },
+    {
+      "activationPolicy": "accessory",
+      "bundleID": "com.apple.wallpaper.agent",
+      "extrasStatus": "none",
+      "items": [],
+      "ms": 12.7,
+      "name": "Wallpaper",
+      "pid": 793
+    },
+    {
+      "activationPolicy": "prohibited",
+      "bundleID": "com.apple.chronod",
+      "extrasStatus": "cannotComplete",
+      "items": [],
+      "ms": 0.2,
+      "name": "chronod",
+      "pid": 802
+    },
+    {
+      "activationPolicy": "accessory",
+      "bundleID": "com.apple.CoreLocationAgent",
+      "extrasStatus": "none",
+      "items": [],
+      "ms": 8,
+      "name": "CoreLocationAgent",
+      "pid": 830
+    },
+    {
+      "activationPolicy": "regular",
+      "bundleID": "com.pentair.screenlogic2",
+      "extrasStatus": "none",
+      "items": [],
+      "ms": 35.6,
+      "name": "XPAD_VIEW",
+      "pid": 856
+    },
+    {
+      "activationPolicy": "accessory",
+      "bundleID": "com.apple.MenuBarAgent",
+      "extrasStatus": "ok",
+      "items": [
+        {
+          "actions": [
+            "AXShowMenu",
+            "AXPress",
+            "Name:Remove from Menu Bar\nTarget:0x0\nSelector:(null)"
+          ],
+          "attributeNames": [
+            "AXParent",
+            "AXCustomActions",
+            "AXAutoInteractable",
+            "AXRoleDescription",
+            "AXImageData",
+            "AXChildren",
+            "AXIdentifier",
+            "AXPath",
+            "AXAttributedDescription",
+            "AXTopLevelUIElement",
+            "AXEnabled",
+            "AXSubrole",
+            "AXWindow",
+            "AXRole",
+            "AXActivationPoint",
+            "AXChildrenInNavigationOrder",
+            "AXFrame",
+            "AXSize",
+            "AXPosition"
+          ],
+          "description": "Now Playing",
+          "extraAttributes": {
+            "AXActivationPoint": "point(1671.5, 15.0)",
+            "AXAttributedDescription": "Now Playing{\n    AXATextAlignmentValue = 2;\n    AXFont =     {\n        AXFontFamily = \".AppleSystemUIFont\";\n        AXFontName = \".SFNS-Medium\";\n        AXFontSize = 14;\n        AXVisibleName = \"Syste…",
+            "AXAutoInteractable": "false",
+            "AXChildrenInNavigationOrder": "[]",
+            "AXPath": "Path 0x7993020640:\n  moveto (1663, 4)\n    lineto (1680, 4)\n    lineto (1680, 26)\n    lineto (1663, 26)\n    closepath\n  moveto (1663, 4)\n"
+          },
+          "frame": {
+            "height": 30,
+            "width": 17,
+            "x": 1663,
+            "y": 0
+          },
+          "hidden": false,
+          "hiddenReasons": [],
+          "identifier": "com.apple.menuextra.now-playing",
+          "index": 0,
+          "menu": {
+            "itemCount": 0,
+            "items": [],
+            "ms": 0,
+            "status": "notExposedWhileClosed",
+            "truncated": false
+          },
+          "role": "AXMenuBarItem",
+          "screenIndex": 0,
+          "subrole": "AXMenuExtra",
+          "wrapperRole": "AXGroup/AXHostingView"
+        },
+        {
+          "actions": [
+            "AXShowMenu",
+            "AXPress",
+            "Name:Remove from Menu Bar\nTarget:0x0\nSelector:(null)"
+          ],
+          "attributeNames": [
+            "AXParent",
+            "AXCustomActions",
+            "AXAutoInteractable",
+            "AXRoleDescription",
+            "AXImageData",
+            "AXChildren",
+            "AXIdentifier",
+            "AXPath",
+            "AXAttributedDescription",
+            "AXEnabled",
+            "AXTopLevelUIElement",
+            "AXSubrole",
+            "AXRole",
+            "AXWindow",
+            "AXVisibleCharacterRange",
+            "AXActivationPoint",
+            "AXValue",
+            "AXChildrenInNavigationOrder",
+            "AXFrame",
+            "AXSize",
+            "AXPosition"
+          ],
+          "description": "Battery",
+          "extraAttributes": {
+            "AXActivationPoint": "point(2221.0, 15.0)",
+            "AXAttributedDescription": "Battery{\n    AXATextAlignmentValue = 2;\n    AXFont =     {\n        AXFontFamily = \".AppleSystemUIFont\";\n        AXFontName = \".SFNS-Regular\";\n        AXFontSize = 13;\n        AXVisibleName = \"System F…",
+            "AXAutoInteractable": "false",
+            "AXChildrenInNavigationOrder": "[]",
+            "AXImageData": "[{length = 81662, bytes = 0x89504e47 0d0a1a0a 0000000d 49484452 ... 49454e44 ae426082 }, {length = 55925, bytes = 0x89504e47 0d0a1a0a 0000000d 49484452 ... 49454e44 ae426082 }, {length = 17298, bytes …",
+            "AXPath": "Path 0x79930206e0:\n  moveto (2208, 4)\n    lineto (2234, 4)\n    lineto (2234, 26)\n    lineto (2208, 26)\n    closepath\n  moveto (2208, 4)\n",
+            "AXValue": "\"100%, charging\"",
+            "AXVisibleCharacterRange": "range(0, 14)"
+          },
+          "frame": {
+            "height": 30,
+            "width": 26,
+            "x": 2208,
+            "y": 0
+          },
+          "hidden": false,
+          "hiddenReasons": [],
+          "identifier": "com.apple.menuextra.battery",
+          "index": 1,
+          "menu": {
+            "itemCount": 0,
+            "items": [],
+            "ms": 0,
+            "status": "notExposedWhileClosed",
+            "truncated": false
+          },
+          "role": "AXMenuBarItem",
+          "screenIndex": 0,
+          "subrole": "AXMenuExtra",
+          "wrapperRole": "AXGroup/AXHostingView"
+        },
+        {
+          "actions": [
+            "AXShowMenu",
+            "AXPress",
+            "Name:Remove from Menu Bar\nTarget:0x0\nSelector:(null)"
+          ],
+          "attributeNames": [
+            "AXParent",
+            "AXCustomActions",
+            "AXAutoInteractable",
+            "AXRoleDescription",
+            "AXImageData",
+            "AXChildren",
+            "AXIdentifier",
+            "AXPath",
+            "AXAttributedDescription",
+            "AXEnabled",
+            "AXTopLevelUIElement",
+            "AXSubrole",
+            "AXRole",
+            "AXWindow",
+            "AXActivationPoint",
+            "AXChildrenInNavigationOrder",
+            "AXFrame",
+            "AXSize",
+            "AXPosition"
+          ],
+          "description": "Wi‑Fi, connected, 3 bars",
+          "extraAttributes": {
+            "AXActivationPoint": "point(2261.0, 15.0)",
+            "AXAttributedDescription": "Wi‑Fi, connected, 3 bars{\n    AXATextAlignmentValue = 2;\n    AXFont =     {\n        AXFontFamily = \".AppleSystemUIFont\";\n        AXFontName = \".SFNS-Medium\";\n        AXFontSize = 15;\n        AXVisible…",
+            "AXAutoInteractable": "false",
+            "AXChildrenInNavigationOrder": "[]",
+            "AXPath": "Path 0x79930206e0:\n  moveto (2250, 4)\n    lineto (2272, 4)\n    lineto (2272, 26)\n    lineto (2250, 26)\n    closepath\n  moveto (2250, 4)\n"
+          },
+          "frame": {
+            "height": 30,
+            "width": 22,
+            "x": 2250,
+            "y": 0
+          },
+          "hidden": false,
+          "hiddenReasons": [],
+          "identifier": "com.apple.menuextra.wifi",
+          "index": 2,
+          "menu": {
+            "itemCount": 0,
+            "items": [],
+            "ms": 0,
+            "status": "notExposedWhileClosed",
+            "truncated": false
+          },
+          "role": "AXMenuBarItem",
+          "screenIndex": 0,
+          "subrole": "AXMenuExtra",
+          "wrapperRole": "AXGroup/AXHostingView"
+        },
+        {
+          "actions": [
+            "AXShowMenu",
+            "AXPress",
+            "Name:Remove from Menu Bar\nTarget:0x0\nSelector:(null)"
+          ],
+          "attributeNames": [
+            "AXParent",
+            "AXFocused",
+            "AXCustomActions",
+            "AXAutoInteractable",
+            "AXRoleDescription",
+            "AXValueDescription",
+            "AXImageData",
+            "AXChildren",
+            "AXIdentifier",
+            "AXPath",
+            "AXAttributedDescription",
+            "AXEnabled",
+            "AXTopLevelUIElement",
+            "AXSubrole",
+            "AXRole",
+            "AXWindow",
+            "AXActivationPoint",
+            "AXValue",
+            "AXChildrenInNavigationOrder",
+            "AXFrame",
+            "AXSize",
+            "AXPosition"
+          ],
+          "description": "Custom Recording",
+          "extraAttributes": {
+            "AXActivationPoint": "point(2304.5, 15.0)",
+            "AXAttributedDescription": "Custom Recording{\n    AXATextAlignmentValue = 2;\n    AXFont =     {\n        AXFontFamily = \".AppleSystemUIFont\";\n        AXFontName = \".SFNS-Regular\";\n        AXFontSize = 13;\n        AXVisibleName = …",
+            "AXAutoInteractable": "false",
+            "AXChildrenInNavigationOrder": "[]",
+            "AXPath": "Path 0x79930206e0:\n  moveto (2294, 4)\n    lineto (2315, 4)\n    lineto (2315, 26)\n    lineto (2294, 26)\n    closepath\n  moveto (2294, 4)\n",
+            "AXValue": "0"
+          },
+          "frame": {
+            "height": 30,
+            "width": 21,
+            "x": 2294,
+            "y": 0
+          },
+          "hidden": false,
+          "hiddenReasons": [],
+          "identifier": ":com.apple.screenshot.launcher:com.apple.controls.screenshot:com.apple.controls.screenshot.record-custom:FD675143-9F21-43D7-BE8E-E479C7B467A5",
+          "index": 3,
+          "menu": {
+            "itemCount": 0,
+            "items": [],
+            "ms": 0,
+            "status": "notExposedWhileClosed",
+            "truncated": false
+          },
+          "role": "AXCheckBox",
+          "screenIndex": 0,
+          "subrole": "AXToggle",
+          "wrapperRole": "AXGroup/AXHostingView"
+        },
+        {
+          "actions": [
+            "AXShowMenu",
+            "AXPress"
+          ],
+          "attributeNames": [
+            "AXParent",
+            "AXAutoInteractable",
+            "AXRoleDescription",
+            "AXImageData",
+            "AXChildren",
+            "AXIdentifier",
+            "AXPath",
+            "AXAttributedDescription",
+            "AXEnabled",
+            "AXTopLevelUIElement",
+            "AXSubrole",
+            "AXRole",
+            "AXWindow",
+            "AXActivationPoint",
+            "AXChildrenInNavigationOrder",
+            "AXFrame",
+            "AXSize",
+            "AXPosition"
+          ],
+          "description": "Control Center",
+          "extraAttributes": {
+            "AXActivationPoint": "point(2382.0, 15.0)",
+            "AXAttributedDescription": "Control Center{\n    AXATextAlignmentValue = 2;\n    AXFont =     {\n        AXFontFamily = \".AppleSystemUIFont\";\n        AXFontName = \".SFNS-Medium\";\n        AXFontSize = 14;\n        AXVisibleName = \"Sy…",
+            "AXAutoInteractable": "false",
+            "AXChildrenInNavigationOrder": "[]",
+            "AXPath": "Path 0x79930206e0:\n  moveto (2369, 4)\n    lineto (2395, 4)\n    lineto (2395, 26)\n    lineto (2369, 26)\n    closepath\n  moveto (2369, 4)\n"
+          },
+          "frame": {
+            "height": 30,
+            "width": 26,
+            "x": 2369,
+            "y": 0
+          },
+          "hidden": false,
+          "hiddenReasons": [],
+          "identifier": "com.apple.menuextra.controlcenter",
+          "index": 4,
+          "menu": {
+            "itemCount": 0,
+            "items": [],
+            "ms": 0,
+            "status": "notExposedWhileClosed",
+            "truncated": false
+          },
+          "role": "AXMenuBarItem",
+          "screenIndex": 0,
+          "subrole": "AXMenuExtra",
+          "wrapperRole": "AXGroup/AXHostingView"
+        },
+        {
+          "actions": [
+            "AXShowMenu",
+            "AXPress"
+          ],
+          "attributeNames": [
+            "AXParent",
+            "AXAutoInteractable",
+            "AXRoleDescription",
+            "AXImageData",
+            "AXChildren",
+            "AXIdentifier",
+            "AXPath",
+            "AXAttributedDescription",
+            "AXEnabled",
+            "AXTopLevelUIElement",
+            "AXSubrole",
+            "AXRole",
+            "AXWindow",
+            "AXVisibleCharacterRange",
+            "AXActivationPoint",
+            "AXValue",
+            "AXChildrenInNavigationOrder",
+            "AXFrame",
+            "AXSize",
+            "AXPosition"
+          ],
+          "description": "Clock",
+          "extraAttributes": {
+            "AXActivationPoint": "point(2475.5, 15.0)",
+            "AXAttributedDescription": "Clock{\n    AXATextAlignmentValue = 2;\n    AXFont =     {\n        AXFontFamily = \".AppleSystemUIFont\";\n        AXFontName = \".SFNS-Regular\";\n        AXFontSize = 13;\n        AXVisibleName = \"System Fon…",
+            "AXAutoInteractable": "false",
+            "AXChildrenInNavigationOrder": "[]",
+            "AXPath": "Path 0x79930206e0:\n  moveto (2411, 4)\n    lineto (2540, 4)\n    lineto (2540, 26)\n    lineto (2411, 26)\n    closepath\n  moveto (2411, 4)\n",
+            "AXValue": "\"Wed Oct 21  5:58 PM\"",
+            "AXVisibleCharacterRange": "range(0, 19)"
+          },
+          "frame": {
+            "height": 30,
+            "width": 129,
+            "x": 2411,
+            "y": 0
+          },
+          "hidden": false,
+          "hiddenReasons": [],
+          "identifier": "com.apple.menuextra.clock",
+          "index": 5,
+          "menu": {
+            "itemCount": 0,
+            "items": [],
+            "ms": 0,
+            "status": "notExposedWhileClosed",
+            "truncated": false
+          },
+          "role": "AXMenuBarItem",
+          "screenIndex": 0,
+          "subrole": "AXMenuExtra",
+          "wrapperRole": "AXGroup/AXHostingView"
+        }
+      ],
+      "ms": 141.6,
+      "name": "MenuBarAgent",
+      "pid": 803
+    },
+    {
+      "activationPolicy": "accessory",
+      "bundleID": "com.apple.AppSSOAgent",
+      "extrasStatus": "none",
+      "items": [],
+      "ms": 13.6,
+      "name": "Single Sign-On",
+      "pid": 852
+    },
+    {
+      "activationPolicy": "prohibited",
+      "bundleID": "com.apple.sharingd",
+      "extrasStatus": "cannotComplete",
+      "items": [],
+      "ms": 0.2,
+      "name": "sharingd",
+      "pid": 853
+    },
+    {
+      "activationPolicy": "regular",
+      "bundleID": "com.apple.Home",
+      "extrasStatus": "none",
+      "items": [],
+      "ms": 11.1,
+      "name": "Home",
+      "pid": 902
+    },
+    {
+      "activationPolicy": "regular",
+      "bundleID": "com.apple.Passwords",
+      "extrasStatus": "none",
+      "items": [],
+      "ms": 81.2,
+      "name": "Passwords",
+      "pid": 909
+    },
+    {
+      "activationPolicy": "accessory",
+      "bundleID": "com.apple.security.Keychain-Circle-Notification",
+      "extrasStatus": "none",
+      "items": [],
+      "ms": 14.3,
+      "name": "Keychain Circle Notification",
+      "pid": 833
+    },
+    {
+      "activationPolicy": "regular",
+      "bundleID": "com.figma.Desktop",
+      "extrasStatus": "none",
+      "items": [],
+      "ms": 12.3,
+      "name": "Figma",
+      "pid": 918
+    },
+    {
+      "activationPolicy": "regular",
+      "bundleID": "com.meta.endo",
+      "extrasStatus": "ok",
+      "items": [
+        {
+          "actions": [
+            "AXPress"
+          ],
+          "attributeNames": [
+            "AXIdentifier",
+            "AXEnabled",
+            "AXFrame",
+            "AXDescription",
+            "AXParent",
+            "AXSize",
+            "AXChildren",
+            "AXFocused",
+            "AXRole",
+            "AXTopLevelUIElement",
+            "AXPosition",
+            "AXHelp",
+            "AXTitle",
+            "AXWindow",
+            "AXRoleDescription",
+            "AXSelected",
+            "AXSubrole"
+          ],
+          "description": "Endo",
+          "extraAttributes": {},
+          "frame": {
+            "height": 24,
+            "width": 24,
+            "x": 2169,
+            "y": 2
+          },
+          "hidden": false,
+          "hiddenReasons": [],
+          "identifier": "endo-menu-bar-item",
+          "index": 0,
+          "menu": {
+            "itemCount": 0,
+            "items": [],
+            "ms": 0,
+            "status": "notExposedWhileClosed",
+            "truncated": false
+          },
+          "role": "AXMenuBarItem",
+          "screenIndex": 0,
+          "subrole": "AXMenuExtra"
+        }
+      ],
+      "ms": 12.7,
+      "name": "Muse",
+      "pid": 930
+    },
+    {
+      "activationPolicy": "regular",
+      "bundleID": "com.apple.Terminal",
+      "extrasStatus": "none",
+      "items": [],
+      "ms": 56.8,
+      "name": "Terminal",
+      "pid": 941
+    },
+    {
+      "activationPolicy": "regular",
+      "bundleID": "com.apple.Notes",
+      "extrasStatus": "none",
+      "items": [],
+      "ms": 90.3,
+      "name": "Notes",
+      "pid": 950
+    },
+    {
+      "activationPolicy": "regular",
+      "bundleID": "com.xreader.app",
+      "extrasStatus": "none",
+      "items": [],
+      "ms": 10.5,
+      "name": "XReader",
+      "pid": 981
+    },
+    {
+      "activationPolicy": "regular",
+      "bundleID": "com.apple.AppStore",
+      "extrasStatus": "none",
+      "items": [],
+      "ms": 89.7,
+      "name": "App Store",
+      "pid": 1003
+    },
+    {
+      "activationPolicy": "regular",
+      "bundleID": "com.openai.codex",
+      "extrasStatus": "ok",
+      "items": [
+        {
+          "actions": [
+            "AXPress"
+          ],
+          "attributeNames": [
+            "AXEnabled",
+            "AXFrame",
+            "AXDescription",
+            "AXParent",
+            "AXSize",
+            "AXChildren",
+            "AXFocused",
+            "AXRole",
+            "AXTopLevelUIElement",
+            "AXPosition",
+            "AXHelp",
+            "AXTitle",
+            "AXWindow",
+            "AXRoleDescription",
+            "AXSelected",
+            "AXSubrole"
+          ],
+          "description": "ChatGPT",
+          "extraAttributes": {},
+          "frame": {
+            "height": 24,
+            "width": 24,
+            "x": 1695,
+            "y": 2
+          },
+          "help": "ChatGPT",
+          "hidden": false,
+          "hiddenReasons": [],
+          "index": 0,
+          "menu": {
+            "itemCount": 10,
+            "items": [
+              {
+                "children": [
+                  {
+                    "enabled": false,
+                    "isSeparator": false,
+                    "role": "AXMenuItem",
+                    "title": "No Active Sessions"
+                  }
+                ],
+                "enabled": true,
+                "isSeparator": false,
+                "role": "AXMenuItem",
+                "title": "Computer Use"
+              },
+              {
+                "enabled": false,
+                "isSeparator": true,
+                "role": "AXMenuItem"
+              },
+              {
+                "enabled": false,
+                "isSeparator": false,
+                "role": "AXMenuItem",
+                "title": "Pinned"
+              },
+              {
+                "enabled": true,
+                "identifier": "handleAction:",
+                "isSeparator": false,
+                "role": "AXMenuItem",
+                "title": "Item 1"
+              },
+              {
+                "enabled": true,
+                "identifier": "handleAction:",
+                "isSeparator": false,
+                "role": "AXMenuItem",
+                "title": "Item 2"
+              },
+              {
+                "enabled": true,
+                "identifier": "handleAction:",
+                "isSeparator": false,
+                "role": "AXMenuItem",
+                "title": "Item 3"
+              },
+              {
+                "enabled": true,
+                "identifier": "handleAction:",
+                "isSeparator": false,
+                "role": "AXMenuItem",
+                "title": "Item 4"
+              },
+              {
+                "enabled": false,
+                "isSeparator": true,
+                "role": "AXMenuItem"
+              },
+              {
+                "enabled": true,
+                "identifier": "handleAction:",
+                "isSeparator": false,
+                "role": "AXMenuItem",
+                "title": "Quit ChatGPT"
+              }
+            ],
+            "ms": 1.2,
+            "status": "readable",
+            "truncated": false
+          },
+          "role": "AXMenuBarItem",
+          "screenIndex": 0,
+          "subrole": "AXMenuExtra"
+        }
+      ],
+      "ms": 11.9,
+      "name": "ChatGPT",
+      "pid": 1009
+    },
+    {
+      "activationPolicy": "accessory",
+      "bundleID": "com.apple.notificationcenterui",
+      "extrasStatus": "none",
+      "items": [],
+      "ms": 14.9,
+      "name": "Notification Center",
+      "pid": 995
+    },
+    {
+      "activationPolicy": "regular",
+      "bundleID": "com.apple.calculator",
+      "extrasStatus": "none",
+      "items": [],
+      "ms": 81.5,
+      "name": "Calculator",
+      "pid": 1026
+    },
+    {
+      "activationPolicy": "accessory",
+      "bundleID": "com.apple.dock",
+      "extrasStatus": "none",
+      "items": [],
+      "ms": 12.4,
+      "name": "Dock",
+      "pid": 1031
+    },
+    {
+      "activationPolicy": "accessory",
+      "bundleID": "com.apple.systemuiserver",
+      "extrasStatus": "none",
+      "items": [],
+      "ms": 11.5,
+      "name": "SystemUIServer",
+      "pid": 1040
+    },
+    {
+      "activationPolicy": "accessory",
+      "bundleID": "com.apple.controlcenter",
+      "extrasStatus": "none",
+      "items": [],
+      "ms": 0.1,
+      "name": "Control Center",
+      "pid": 1035
+    },
+    {
+      "activationPolicy": "prohibited",
+      "bundleID": "com.apple.ViewBridgeAuxiliary",
+      "extrasStatus": "cannotComplete",
+      "items": [],
+      "ms": 0.2,
+      "name": "ViewBridgeAuxiliary",
+      "pid": 1048
+    },
+    {
+      "activationPolicy": "prohibited",
+      "bundleID": "com.apple.quicklook.QuickLookUIService",
+      "extrasStatus": "none",
+      "items": [],
+      "ms": 76.3,
+      "name": "QuickLookUIService (PID 1044)",
+      "pid": 1053
+    },
+    {
+      "activationPolicy": "regular",
+      "bundleID": "com.apple.finder",
+      "extrasStatus": "none",
+      "items": [],
+      "ms": 10.3,
+      "name": "Finder",
+      "pid": 1044
+    },
+    {
+      "activationPolicy": "prohibited",
+      "bundleID": "com.adobe.accmac.ACCFinderSync",
+      "extrasStatus": "none",
+      "items": [],
+      "ms": 10.4,
+      "name": "Adobe Content Synchronizer Finder Extension",
+      "pid": 1064
+    },
+    {
+      "activationPolicy": "accessory",
+      "bundleID": "com.apple.campo",
+      "extrasStatus": "ok",
+      "items": [
+        {
+          "actions": [
+            "AXPress"
+          ],
+          "attributeNames": [
+            "AXEnabled",
+            "AXFrame",
+            "AXDescription",
+            "AXParent",
+            "AXSize",
+            "AXChildren",
+            "AXFocused",
+            "AXRole",
+            "AXTopLevelUIElement",
+            "AXPosition",
+            "AXHelp",
+            "AXTitle",
+            "AXWindow",
+            "AXRoleDescription",
+            "AXSelected",
+            "AXSubrole"
+          ],
+          "description": "Search",
+          "extraAttributes": {},
+          "frame": {
+            "height": 24,
+            "width": 34,
+            "x": 2328,
+            "y": 2
+          },
+          "hidden": false,
+          "hiddenReasons": [],
+          "index": 0,
+          "menu": {
+            "itemCount": 0,
+            "items": [],
+            "ms": 0,
+            "status": "notExposedWhileClosed",
+            "truncated": false
+          },
+          "role": "AXMenuBarItem",
+          "screenIndex": 0,
+          "subrole": "AXMenuExtra",
+          "title": "Spotlight"
+        }
+      ],
+      "ms": 17.3,
+      "name": "Siri",
+      "pid": 1061
+    },
+    {
+      "activationPolicy": "prohibited",
+      "bundleID": "com.apple.CampoRemoteService",
+      "extrasStatus": "none",
+      "items": [],
+      "ms": 62.2,
+      "name": "CampoRemoteService",
+      "pid": 1087
+    },
+    {
+      "activationPolicy": "accessory",
+      "bundleID": "com.apple.dock.extra",
+      "extrasStatus": "none",
+      "items": [],
+      "ms": 9.9,
+      "name": "Dock Extra",
+      "pid": 1089
+    },
+    {
+      "activationPolicy": "accessory",
+      "bundleID": "com.apple.dock.external.extra.arm64",
+      "extrasStatus": "none",
+      "items": [],
+      "ms": 8,
+      "name": "Dock Extra (ChatGPT.app)",
+      "pid": 1090
+    },
+    {
+      "activationPolicy": "accessory",
+      "bundleID": "com.apple.dock.external.extra.arm64",
+      "extrasStatus": "none",
+      "items": [],
+      "ms": 7.5,
+      "name": "Dock Extra (Cyberduck.app)",
+      "pid": 1091
+    },
+    {
+      "activationPolicy": "accessory",
+      "bundleID": "com.apple.AccessibilityUIServer",
+      "extrasStatus": "none",
+      "items": [],
+      "ms": 10.8,
+      "name": "Accessibility",
+      "pid": 1054
+    },
+    {
+      "activationPolicy": "prohibited",
+      "bundleID": "com.apple.UIKitSystemApp",
+      "extrasStatus": "cannotComplete",
+      "items": [],
+      "ms": 0.2,
+      "name": "UIKitSystem",
+      "pid": 1100
+    },
+    {
+      "activationPolicy": "accessory",
+      "bundleID": "com.apple.wifi.WiFiAgent",
+      "extrasStatus": "none",
+      "items": [],
+      "ms": 62.8,
+      "name": "Wi-Fi",
+      "pid": 916
+    },
+    {
+      "activationPolicy": "prohibited",
+      "bundleID": "com.apple.PressAndHold",
+      "extrasStatus": "none",
+      "items": [],
+      "ms": 88.8,
+      "name": "com.apple.PressAndHold",
+      "pid": 1134
+    },
+    {
+      "activationPolicy": "prohibited",
+      "extrasStatus": "none",
+      "items": [],
+      "ms": 11.8,
+      "name": "AppSSODaemon",
+      "pid": 863
+    },
+    {
+      "activationPolicy": "prohibited",
+      "bundleID": "com.apple.calaccessd",
+      "extrasStatus": "cannotComplete",
+      "items": [],
+      "ms": 0.2,
+      "name": "calaccessd",
+      "pid": 1077
+    },
+    {
+      "activationPolicy": "accessory",
+      "bundleID": "com.apple.WebKit.GPU",
+      "extrasStatus": "cannotComplete",
+      "items": [],
+      "ms": 0.1,
+      "name": "Muse Graphics and Media",
+      "pid": 1199
+    },
+    {
+      "activationPolicy": "accessory",
+      "bundleID": "com.apple.accessibility.universalAccessAuthWarn",
+      "extrasStatus": "none",
+      "items": [],
+      "ms": 15.5,
+      "name": "universalAccessAuthWarn",
+      "pid": 1241
+    },
+    {
+      "activationPolicy": "accessory",
+      "bundleID": "com.apple.WebKit.Networking",
+      "extrasStatus": "cannotComplete",
+      "items": [],
+      "ms": 0.2,
+      "name": "Muse Networking",
+      "pid": 1335
+    },
+    {
+      "activationPolicy": "accessory",
+      "bundleID": "com.apple.WebKit.WebContent",
+      "extrasStatus": "cannotComplete",
+      "items": [],
+      "ms": 0.1,
+      "name": "Muse Web Content",
+      "pid": 1299
+    },
+    {
+      "activationPolicy": "accessory",
+      "bundleID": "com.tinyspeck.slackmacgap.helper",
+      "extrasStatus": "none",
+      "items": [],
+      "ms": 12.5,
+      "name": "Slack Helper",
+      "pid": 1364
+    },
+    {
+      "activationPolicy": "accessory",
+      "bundleID": "com.apple.WebKit.Networking",
+      "extrasStatus": "cannotComplete",
+      "items": [],
+      "ms": 0.2,
+      "name": "XReader Networking",
+      "pid": 1368
+    },
+    {
+      "activationPolicy": "accessory",
+      "bundleID": "com.apple.WebKit.GPU",
+      "extrasStatus": "cannotComplete",
+      "items": [],
+      "ms": 0.1,
+      "name": "XReader Graphics and Media",
+      "pid": 1352
+    },
+    {
+      "activationPolicy": "accessory",
+      "bundleID": "com.apple.WebKit.WebContent",
+      "extrasStatus": "none",
+      "items": [],
+      "ms": 10.1,
+      "name": "XReader Web Content",
+      "pid": 1358
+    },
+    {
+      "activationPolicy": "prohibited",
+      "extrasStatus": "none",
+      "items": [],
+      "ms": 18.3,
+      "name": "GamePolicyAgent",
+      "pid": 1419
+    },
+    {
+      "activationPolicy": "prohibited",
+      "bundleID": "com.apple.LocalAuthenticationRemoteService",
+      "extrasStatus": "none",
+      "items": [],
+      "ms": 49,
+      "name": "LocalAuthenticationRemoteService (Passwords)",
+      "pid": 1465
+    },
+    {
+      "activationPolicy": "accessory",
+      "bundleID": "com.apple.PasswordManagerBrowserExtensionHelper",
+      "extrasStatus": "none",
+      "items": [],
+      "ms": 8.5,
+      "name": "Passwords Extension Helper (Google Chrome)",
+      "pid": 1478
+    },
+    {
+      "activationPolicy": "accessory",
+      "bundleID": "com.apple.universalcontrol",
+      "extrasStatus": "cannotComplete",
+      "items": [],
+      "ms": 0.3,
+      "name": "Universal Control",
+      "pid": 1483
+    },
+    {
+      "activationPolicy": "accessory",
+      "bundleID": "com.google.Chrome.helper",
+      "extrasStatus": "none",
+      "items": [],
+      "ms": 7.8,
+      "name": "Google Chrome Helper (Aperitif)",
+      "pid": 1739
+    },
+    {
+      "activationPolicy": "prohibited",
+      "extrasStatus": "cannotComplete",
+      "items": [],
+      "ms": 0.2,
+      "name": "familycircled",
+      "pid": 906
+    },
+    {
+      "activationPolicy": "prohibited",
+      "bundleID": "com.apple.studentd",
+      "extrasStatus": "none",
+      "items": [],
+      "ms": 12.5,
+      "name": "studentd",
+      "pid": 1793
+    },
+    {
+      "activationPolicy": "accessory",
+      "bundleID": "com.google.GeminiMacOS.launcher",
+      "extrasStatus": "none",
+      "items": [],
+      "ms": 15.2,
+      "name": "GeminiAppLauncher",
+      "pid": 1856
+    },
+    {
+      "activationPolicy": "accessory",
+      "bundleID": "com.apple.TextInputMenuAgent",
+      "extrasStatus": "none",
+      "items": [],
+      "ms": 16,
+      "name": "TextInputMenuAgent",
+      "pid": 1852
+    },
+    {
+      "activationPolicy": "accessory",
+      "bundleID": "com.apple.AirPlayUIAgent",
+      "extrasStatus": "none",
+      "items": [],
+      "ms": 16.8,
+      "name": "AirPlay Screen Mirroring",
+      "pid": 1841
+    },
+    {
+      "activationPolicy": "accessory",
+      "bundleID": "com.markapp.Mark",
+      "extrasStatus": "ok",
+      "items": [
+        {
+          "actions": [
+            "AXPress"
+          ],
+          "attributeNames": [
+            "AXEnabled",
+            "AXFrame",
+            "AXParent",
+            "AXSize",
+            "AXChildren",
+            "AXFocused",
+            "AXRole",
+            "AXTopLevelUIElement",
+            "AXHelp",
+            "AXPosition",
+            "AXTitle",
+            "AXWindow",
+            "AXRoleDescription",
+            "AXSelected",
+            "AXSubrole"
+          ],
+          "extraAttributes": {},
+          "frame": {
+            "height": 24,
+            "width": 36,
+            "x": 1982,
+            "y": 2
+          },
+          "help": "Mark — Capture Region (⌘4)",
+          "hidden": false,
+          "hiddenReasons": [],
+          "index": 0,
+          "menu": {
+            "itemCount": 11,
+            "items": [
+              {
+                "cmdChar": "4",
+                "cmdModifiers": 0,
+                "enabled": true,
+                "identifier": "fireMenuItemAction:",
+                "isSeparator": false,
+                "role": "AXMenuItem",
+                "shortcut": "⌘4",
+                "title": "Capture Region"
+              },
+              {
+                "enabled": true,
+                "identifier": "fireMenuItemAction:",
+                "isSeparator": false,
+                "role": "AXMenuItem",
+                "title": "Capture Window"
+              },
+              {
+                "enabled": true,
+                "identifier": "fireMenuItemAction:",
+                "isSeparator": false,
+                "role": "AXMenuItem",
+                "title": "Capture Whole Screen"
+              },
+              {
+                "enabled": true,
+                "identifier": "fireMenuItemAction:",
+                "isSeparator": false,
+                "role": "AXMenuItem",
+                "title": "Timed Region"
+              },
+              {
+                "enabled": true,
+                "identifier": "fireMenuItemAction:",
+                "isSeparator": false,
+                "role": "AXMenuItem",
+                "title": "Show Editor"
+              },
+              {
+                "enabled": false,
+                "isSeparator": true,
+                "role": "AXMenuItem"
+              },
+              {
+                "enabled": true,
+                "identifier": "fireMenuItemAction:",
+                "isSeparator": false,
+                "mark": "✓",
+                "role": "AXMenuItem",
+                "title": "Open at Login"
+              },
+              {
+                "cmdChar": ",",
+                "cmdModifiers": 0,
+                "enabled": true,
+                "identifier": "fireMenuItemAction:",
+                "isSeparator": false,
+                "role": "AXMenuItem",
+                "shortcut": "⌘,",
+                "title": "Settings…"
+              },
+              {
+                "enabled": true,
+                "identifier": "fireMenuItemAction:",
+                "isSeparator": false,
+                "role": "AXMenuItem",
+                "title": "Check for Updates…"
+              },
+              {
+                "enabled": false,
+                "isSeparator": true,
+                "role": "AXMenuItem"
+              },
+              {
+                "cmdChar": "Q",
+                "cmdModifiers": 0,
+                "enabled": true,
+                "identifier": "fireMenuItemAction:",
+                "isSeparator": false,
+                "role": "AXMenuItem",
+                "shortcut": "⌘Q",
+                "title": "Quit Mark"
+              }
+            ],
+            "ms": 1.5,
+            "status": "readable",
+            "truncated": false
+          },
+          "role": "AXMenuBarItem",
+          "screenIndex": 0,
+          "subrole": "AXMenuExtra"
+        }
+      ],
+      "ms": 20.7,
+      "name": "Mark",
+      "pid": 1862
+    },
+    {
+      "activationPolicy": "accessory",
+      "bundleID": "com.canon.EOS-Utility",
+      "extrasStatus": "ok",
+      "items": [
+        {
+          "actions": [
+            "AXPress"
+          ],
+          "attributeNames": [
+            "AXEnabled",
+            "AXFrame",
+            "AXDescription",
+            "AXParent",
+            "AXSize",
+            "AXChildren",
+            "AXFocused",
+            "AXRole",
+            "AXTopLevelUIElement",
+            "AXPosition",
+            "AXHelp",
+            "AXTitle",
+            "AXWindow",
+            "AXRoleDescription",
+            "AXSelected",
+            "AXSubrole"
+          ],
+          "description": "application icon",
+          "extraAttributes": {},
+          "frame": {
+            "height": 24,
+            "width": 34,
+            "x": 2129,
+            "y": 2
+          },
+          "hidden": false,
+          "hiddenReasons": [],
+          "index": 0,
+          "menu": {
+            "itemCount": 8,
+            "items": [
+              {
+                "enabled": true,
+                "identifier": "_NS:261",
+                "isSeparator": false,
+                "role": "AXMenuItem",
+                "title": "Open"
+              },
+              {
+                "enabled": false,
+                "identifier": "_NS:263",
+                "isSeparator": true,
+                "role": "AXMenuItem"
+              },
+              {
+                "enabled": true,
+                "identifier": "_NS:264",
+                "isSeparator": false,
+                "role": "AXMenuItem"
+              },
+              {
+                "enabled": true,
+                "identifier": "_NS:269",
+                "isSeparator": false,
+                "mark": "✓",
+                "role": "AXMenuItem",
+                "title": "Do not launch EOS Utility automatically when camera is connected"
+              },
+              {
+                "enabled": false,
+                "identifier": "_NS:271",
+                "isSeparator": true,
+                "role": "AXMenuItem"
+              },
+              {
+                "enabled": true,
+                "identifier": "_NS:272",
+                "isSeparator": false,
+                "role": "AXMenuItem",
+                "title": "Survey"
+              },
+              {
+                "enabled": false,
+                "identifier": "_NS:274",
+                "isSeparator": true,
+                "role": "AXMenuItem"
+              },
+              {
+                "enabled": true,
+                "identifier": "_NS:275",
+                "isSeparator": false,
+                "role": "AXMenuItem",
+                "title": "Quit"
+              }
+            ],
+            "ms": 1.2,
+            "status": "readable",
+            "truncated": false
+          },
+          "role": "AXMenuBarItem",
+          "screenIndex": 0,
+          "subrole": "AXMenuExtra"
+        }
+      ],
+      "ms": 21.8,
+      "name": "EOS Utility",
+      "pid": 1863
+    },
+    {
+      "activationPolicy": "accessory",
+      "bundleID": "com.fiplab.clipboard",
+      "extrasStatus": "ok",
+      "items": [
+        {
+          "actions": [
+            "AXPress"
+          ],
+          "attributeNames": [
+            "AXEnabled",
+            "AXFrame",
+            "AXDescription",
+            "AXParent",
+            "AXSize",
+            "AXChildren",
+            "AXFocused",
+            "AXRole",
+            "AXTopLevelUIElement",
+            "AXPosition",
+            "AXHelp",
+            "AXTitle",
+            "AXWindow",
+            "AXRoleDescription",
+            "AXSelected",
+            "AXSubrole"
+          ],
+          "description": "CopyClip",
+          "extraAttributes": {},
+          "frame": {
+            "height": 24,
+            "width": 28,
+            "x": 2016,
+            "y": 2
+          },
+          "hidden": false,
+          "hiddenReasons": [],
+          "index": 0,
+          "menu": {
+            "itemCount": 32,
+            "items": [
+              {
+                "enabled": false,
+                "isSeparator": false,
+                "role": "AXMenuItem",
+                "title": "Select the clip you want to add to your clipboard"
+              },
+              {
+                "enabled": false,
+                "isSeparator": true,
+                "role": "AXMenuItem"
+              },
+              {
+                "cmdChar": "0",
+                "cmdModifiers": 0,
+                "enabled": true,
+                "identifier": "menuItemClippingClicked:",
+                "isSeparator": false,
+                "role": "AXMenuItem",
+                "shortcut": "⌘0",
+                "title": "Item 1"
+              },
+              {
+                "cmdChar": "1",
+                "cmdModifiers": 0,
+                "enabled": true,
+                "identifier": "menuItemClippingClicked:",
+                "isSeparator": false,
+                "role": "AXMenuItem",
+                "shortcut": "⌘1",
+                "title": "Item 2"
+              },
+              {
+                "cmdChar": "2",
+                "cmdModifiers": 0,
+                "enabled": true,
+                "identifier": "menuItemClippingClicked:",
+                "isSeparator": false,
+                "role": "AXMenuItem",
+                "shortcut": "⌘2",
+                "title": "Item 3"
+              },
+              {
+                "cmdChar": "3",
+                "cmdModifiers": 0,
+                "enabled": true,
+                "identifier": "menuItemClippingClicked:",
+                "isSeparator": false,
+                "role": "AXMenuItem",
+                "shortcut": "⌘3",
+                "title": "Item 4"
+              },
+              {
+                "cmdChar": "4",
+                "cmdModifiers": 0,
+                "enabled": true,
+                "identifier": "menuItemClippingClicked:",
+                "isSeparator": false,
+                "role": "AXMenuItem",
+                "shortcut": "⌘4",
+                "title": "Item 5"
+              },
+              {
+                "cmdChar": "5",
+                "cmdModifiers": 0,
+                "enabled": true,
+                "identifier": "menuItemClippingClicked:",
+                "isSeparator": false,
+                "role": "AXMenuItem",
+                "shortcut": "⌘5",
+                "title": "Item 6"
+              },
+              {
+                "cmdChar": "6",
+                "cmdModifiers": 0,
+                "enabled": true,
+                "identifier": "menuItemClippingClicked:",
+                "isSeparator": false,
+                "role": "AXMenuItem",
+                "shortcut": "⌘6",
+                "title": "Item 7"
+              },
+              {
+                "cmdChar": "7",
+                "cmdModifiers": 0,
+                "enabled": true,
+                "identifier": "menuItemClippingClicked:",
+                "isSeparator": false,
+                "role": "AXMenuItem",
+                "shortcut": "⌘7",
+                "title": "Item 8"
+              },
+              {
+                "cmdChar": "8",
+                "cmdModifiers": 0,
+                "enabled": true,
+                "identifier": "menuItemClippingClicked:",
+                "isSeparator": false,
+                "role": "AXMenuItem",
+                "shortcut": "⌘8",
+                "title": "Item 9"
+              },
+              {
+                "cmdChar": "9",
+                "cmdModifiers": 0,
+                "enabled": true,
+                "identifier": "menuItemClippingClicked:",
+                "isSeparator": false,
+                "role": "AXMenuItem",
+                "shortcut": "⌘9",
+                "title": "Item 10"
+              },
+              {
+                "enabled": true,
+                "identifier": "menuItemClippingClicked:",
+                "isSeparator": false,
+                "role": "AXMenuItem",
+                "title": "Item 11"
+              },
+              {
+                "enabled": true,
+                "identifier": "menuItemClippingClicked:",
+                "isSeparator": false,
+                "role": "AXMenuItem",
+                "title": "Item 12"
+              },
+              {
+                "enabled": true,
+                "identifier": "menuItemClippingClicked:",
+                "isSeparator": false,
+                "role": "AXMenuItem",
+                "title": "Item 13"
+              },
+              {
+                "enabled": true,
+                "identifier": "menuItemClippingClicked:",
+                "isSeparator": false,
+                "role": "AXMenuItem",
+                "title": "Item 14"
+              },
+              {
+                "enabled": true,
+                "identifier": "menuItemClippingClicked:",
+                "isSeparator": false,
+                "role": "AXMenuItem",
+                "title": "Item 15"
+              },
+              {
+                "enabled": true,
+                "identifier": "menuItemClippingClicked:",
+                "isSeparator": false,
+                "role": "AXMenuItem",
+                "title": "Item 16"
+              },
+              {
+                "enabled": true,
+                "identifier": "menuItemClippingClicked:",
+                "isSeparator": false,
+                "role": "AXMenuItem",
+                "title": "Item 17"
+              },
+              {
+                "enabled": true,
+                "identifier": "menuItemClippingClicked:",
+                "isSeparator": false,
+                "role": "AXMenuItem",
+                "title": "Item 18"
+              },
+              {
+                "enabled": true,
+                "identifier": "menuItemClippingClicked:",
+                "isSeparator": false,
+                "role": "AXMenuItem",
+                "title": "Item 19"
+              },
+              {
+                "enabled": true,
+                "identifier": "menuItemClippingClicked:",
+                "isSeparator": false,
+                "role": "AXMenuItem",
+                "title": "Item 20"
+              },
+              {
+                "enabled": false,
+                "isSeparator": true,
+                "role": "AXMenuItem"
+              },
+              {
+                "enabled": true,
+                "identifier": "clearClippingsRepository:",
+                "isSeparator": false,
+                "role": "AXMenuItem",
+                "title": "Delete All History"
+              },
+              {
+                "enabled": false,
+                "identifier": "_NS:21",
+                "isSeparator": true,
+                "role": "AXMenuItem"
+              },
+              {
+                "cmdChar": ",",
+                "cmdModifiers": 0,
+                "enabled": true,
+                "identifier": "_NS:32",
+                "isSeparator": false,
+                "role": "AXMenuItem",
+                "shortcut": "⌘,",
+                "title": "Preferences..."
+              },
+              {
+                "enabled": false,
+                "identifier": "_NS:35",
+                "isSeparator": true,
+                "role": "AXMenuItem"
+              },
+              {
+                "enabled": true,
+                "identifier": "_NS:36",
+                "isSeparator": false,
+                "role": "AXMenuItem",
+                "title": "Customer Support"
+              },
+              {
+                "enabled": true,
+                "identifier": "_NS:38",
+                "isSeparator": false,
+                "role": "AXMenuItem",
+                "title": "Join Mailing List"
+              },
+              {
+                "enabled": true,
+                "identifier": "_NS:40",
+                "isSeparator": false,
+                "role": "AXMenuItem",
+                "title": "Rate App"
+              },
+              {
+                "enabled": false,
+                "identifier": "_NS:42",
+                "isSeparator": true,
+                "role": "AXMenuItem"
+              },
+              {
+                "cmdChar": "Q",
+                "cmdModifiers": 0,
+                "enabled": true,
+                "identifier": "_NS:43",
+                "isSeparator": false,
+                "role": "AXMenuItem",
+                "shortcut": "⌘Q",
+                "title": "Quit"
+              }
+            ],
+            "ms": 3.6,
+            "status": "readable",
+            "truncated": false
+          },
+          "role": "AXMenuBarItem",
+          "screenIndex": 0,
+          "subrole": "AXMenuExtra"
+        }
+      ],
+      "ms": 16.4,
+      "name": "CopyClip",
+      "pid": 1864
+    },
+    {
+      "activationPolicy": "prohibited",
+      "bundleID": "com.adobe.AdobeResourceSynchronizer",
+      "extrasStatus": "cannotComplete",
+      "items": [],
+      "ms": 0.2,
+      "name": "Acrobat Collaboration Synchronizer",
+      "pid": 1866
+    },
+    {
+      "activationPolicy": "accessory",
+      "bundleID": "com.apple.Passwords.MenuBarExtra",
+      "extrasStatus": "ok",
+      "items": [
+        {
+          "actions": [
+            "AXPress"
+          ],
+          "attributeNames": [
+            "AXIdentifier",
+            "AXEnabled",
+            "AXFrame",
+            "AXDescription",
+            "AXParent",
+            "AXSize",
+            "AXChildren",
+            "AXFocused",
+            "AXRole",
+            "AXTopLevelUIElement",
+            "AXPosition",
+            "AXHelp",
+            "AXTitle",
+            "AXWindow",
+            "AXRoleDescription",
+            "AXSelected",
+            "AXSubrole"
+          ],
+          "extraAttributes": {},
+          "frame": {
+            "height": 24,
+            "width": 39,
+            "x": 1945,
+            "y": 2
+          },
+          "hidden": false,
+          "hiddenReasons": [],
+          "index": 0,
+          "menu": {
+            "itemCount": 0,
+            "items": [],
+            "ms": 0,
+            "status": "notExposedWhileClosed",
+            "truncated": false
+          },
+          "role": "AXMenuBarItem",
+          "screenIndex": 0,
+          "subrole": "AXMenuExtra",
+          "title": "Apple Passwords Key"
+        }
+      ],
+      "ms": 11.1,
+      "name": "PasswordsMenuBarExtra",
+      "pid": 1831
+    },
+    {
+      "activationPolicy": "accessory",
+      "bundleID": "2BUA8C4S2C.com.1password.browser-helper",
+      "extrasStatus": "none",
+      "items": [],
+      "ms": 8.8,
+      "name": "1Password Browser Helper",
+      "pid": 1823
+    },
+    {
+      "activationPolicy": "accessory",
+      "bundleID": "com.apple.TextInputSwitcher",
+      "extrasStatus": "none",
+      "items": [],
+      "ms": 7.8,
+      "name": "TextInputSwitcher",
+      "pid": 1860
+    },
+    {
+      "activationPolicy": "regular",
+      "bundleID": "com.github.Electron",
+      "extrasStatus": "none",
+      "items": [],
+      "ms": 11.3,
+      "name": "Electron",
+      "pid": 1869
+    },
+    {
+      "activationPolicy": "accessory",
+      "bundleID": "2BUA8C4S2C.com.agilebits.onepassword7-helper",
+      "extrasStatus": "none",
+      "items": [],
+      "ms": 7.8,
+      "name": "1Password Extension Helper",
+      "pid": 1825
+    },
+    {
+      "activationPolicy": "accessory",
+      "bundleID": "com.apple.WebKit.Networking",
+      "extrasStatus": "cannotComplete",
+      "items": [],
+      "ms": 0.2,
+      "name": "Mark Networking",
+      "pid": 1876
+    },
+    {
+      "activationPolicy": "accessory",
+      "bundleID": "com.tommymassaro.burn",
+      "extrasStatus": "ok",
+      "items": [
+        {
+          "actions": [
+            "AXPress"
+          ],
+          "attributeNames": [
+            "AXEnabled",
+            "AXFrame",
+            "AXParent",
+            "AXSize",
+            "AXChildren",
+            "AXFocused",
+            "AXRole",
+            "AXTopLevelUIElement",
+            "AXHelp",
+            "AXPosition",
+            "AXTitle",
+            "AXWindow",
+            "AXRoleDescription",
+            "AXSelected",
+            "AXSubrole"
+          ],
+          "extraAttributes": {},
+          "frame": {
+            "height": 24,
+            "width": 73,
+            "x": 1583,
+            "y": 2
+          },
+          "help": "Personal — weekly 51% used · 1.0 %/h · on pace",
+          "hidden": false,
+          "hiddenReasons": [],
+          "index": 0,
+          "menu": {
+            "itemCount": 0,
+            "items": [],
+            "ms": 0,
+            "status": "notExposedWhileClosed",
+            "truncated": false
+          },
+          "role": "AXMenuBarItem",
+          "screenIndex": 0,
+          "subrole": "AXMenuExtra",
+          "title": " 51%"
+        }
+      ],
+      "ms": 11.3,
+      "name": "Burn",
+      "pid": 1882
+    },
+    {
+      "activationPolicy": "accessory",
+      "bundleID": "com.tommymassaro.dev-server-manager",
+      "extrasStatus": "ok",
+      "items": [
+        {
+          "actions": [
+            "AXPress"
+          ],
+          "attributeNames": [
+            "AXEnabled",
+            "AXFrame",
+            "AXParent",
+            "AXSize",
+            "AXChildren",
+            "AXFocused",
+            "AXRole",
+            "AXTopLevelUIElement",
+            "AXHelp",
+            "AXPosition",
+            "AXTitle",
+            "AXWindow",
+            "AXRoleDescription",
+            "AXSelected",
+            "AXSubrole"
+          ],
+          "extraAttributes": {},
+          "frame": {
+            "height": 24,
+            "width": 41,
+            "x": 1725,
+            "y": 2
+          },
+          "hidden": false,
+          "hiddenReasons": [],
+          "index": 0,
+          "menu": {
+            "itemCount": 0,
+            "items": [],
+            "ms": 0,
+            "status": "notExposedWhileClosed",
+            "truncated": false
+          },
+          "role": "AXMenuBarItem",
+          "screenIndex": 0,
+          "subrole": "AXMenuExtra",
+          "title": "⚡"
+        }
+      ],
+      "ms": 13.7,
+      "name": "Dev Server Manager",
+      "pid": 1885
+    },
+    {
+      "activationPolicy": "accessory",
+      "bundleID": "com.apple.WebKit.GPU",
+      "extrasStatus": "cannotComplete",
+      "items": [],
+      "ms": 0.2,
+      "name": "Mark Graphics and Media",
+      "pid": 1873
+    },
+    {
+      "activationPolicy": "accessory",
+      "bundleID": "com.figma.agent",
+      "extrasStatus": "none",
+      "items": [],
+      "ms": 15.4,
+      "name": "FigmaAgent",
+      "pid": 1894
+    },
+    {
+      "activationPolicy": "accessory",
+      "bundleID": "com.apple.WebKit.WebContent",
+      "extrasStatus": "cannotComplete",
+      "items": [],
+      "ms": 0.2,
+      "name": "Mark Web Content",
+      "pid": 1875
+    },
+    {
+      "activationPolicy": "accessory",
+      "bundleID": "com.apple.SoftwareUpdateNotificationManager",
+      "extrasStatus": "none",
+      "items": [],
+      "ms": 8.9,
+      "name": "SoftwareUpdateNotificationManager",
+      "pid": 1895
+    },
+    {
+      "activationPolicy": "regular",
+      "bundleID": "com.spotify.client",
+      "extrasStatus": "none",
+      "items": [],
+      "ms": 9.9,
+      "name": "Spotify",
+      "pid": 1901
+    },
+    {
+      "activationPolicy": "accessory",
+      "extrasStatus": "none",
+      "items": [],
+      "ms": 7.7,
+      "name": "ChatGPTHelper",
+      "pid": 1833
+    },
+    {
+      "activationPolicy": "prohibited",
+      "bundleID": "com.adobe.CCXProcess",
+      "extrasStatus": "cannotComplete",
+      "items": [],
+      "ms": 0.1,
+      "name": "Creative Cloud Content Manager",
+      "pid": 1985
+    },
+    {
+      "activationPolicy": "accessory",
+      "bundleID": "com.apple.dock.helper",
+      "extrasStatus": "none",
+      "items": [],
+      "ms": 10.9,
+      "name": "DockHelper",
+      "pid": 2045
+    },
+    {
+      "activationPolicy": "prohibited",
+      "extrasStatus": "none",
+      "items": [],
+      "ms": 12.5,
+      "name": "bare-modifier-monitor",
+      "pid": 2103
+    },
+    {
+      "activationPolicy": "accessory",
+      "bundleID": "com.agilebits.onepassword7",
+      "extrasStatus": "none",
+      "items": [],
+      "ms": 13,
+      "name": "1Password 7",
+      "pid": 2125
+    },
+    {
+      "activationPolicy": "prohibited",
+      "bundleID": "com.adobe.AdobeCRDaemon",
+      "extrasStatus": "cannotComplete",
+      "items": [],
+      "ms": 0.2,
+      "name": "Adobe Crash Processor",
+      "pid": 2139
+    },
+    {
+      "activationPolicy": "accessory",
+      "bundleID": "com.adobe.AdobeIPCBroker",
+      "extrasStatus": "none",
+      "items": [],
+      "ms": 12.6,
+      "name": "Creative Cloud Interprocess Service",
+      "pid": 2066
+    },
+    {
+      "activationPolicy": "prohibited",
+      "bundleID": "com.adobe.AdobeCRDaemon",
+      "extrasStatus": "cannotComplete",
+      "items": [],
+      "ms": 0.2,
+      "name": "Adobe Crash Processor",
+      "pid": 2359
+    },
+    {
+      "activationPolicy": "prohibited",
+      "bundleID": "com.adobe.acc.AdobeCreativeCloud",
+      "extrasStatus": "ok",
+      "items": [
+        {
+          "actions": [
+            "AXPress"
+          ],
+          "attributeNames": [
+            "AXEnabled",
+            "AXFrame",
+            "AXParent",
+            "AXSize",
+            "AXChildren",
+            "AXFocused",
+            "AXRole",
+            "AXTopLevelUIElement",
+            "AXHelp",
+            "AXPosition",
+            "AXTitle",
+            "AXWindow",
+            "AXRoleDescription",
+            "AXSelected",
+            "AXSubrole"
+          ],
+          "extraAttributes": {},
+          "frame": {
+            "height": 24,
+            "width": 26,
+            "x": 1772,
+            "y": 2
+          },
+          "help": "Creative Cloud",
+          "hidden": false,
+          "hiddenReasons": [],
+          "index": 0,
+          "menu": {
+            "itemCount": 0,
+            "items": [],
+            "ms": 0,
+            "status": "notExposedWhileClosed",
+            "truncated": false
+          },
+          "role": "AXMenuBarItem",
+          "screenIndex": 0,
+          "subrole": "AXMenuExtra"
+        }
+      ],
+      "ms": 17,
+      "name": "Creative Cloud",
+      "pid": 1848
+    },
+    {
+      "activationPolicy": "prohibited",
+      "extrasStatus": "cannotComplete",
+      "items": [],
+      "ms": 0.2,
+      "name": "npm exec figma-console-mcp@latest",
+      "pid": 2675
+    },
+    {
+      "activationPolicy": "accessory",
+      "bundleID": "com.electron.ollama",
+      "extrasStatus": "ok",
+      "items": [
+        {
+          "actions": [
+            "AXPress"
+          ],
+          "attributeNames": [
+            "AXEnabled",
+            "AXFrame",
+            "AXParent",
+            "AXSize",
+            "AXChildren",
+            "AXFocused",
+            "AXRole",
+            "AXTopLevelUIElement",
+            "AXHelp",
+            "AXPosition",
+            "AXTitle",
+            "AXWindow",
+            "AXRoleDescription",
+            "AXSelected",
+            "AXSubrole"
+          ],
+          "extraAttributes": {},
+          "frame": {
+            "height": 24,
+            "width": 35,
+            "x": 1804,
+            "y": 2
+          },
+          "hidden": false,
+          "hiddenReasons": [],
+          "index": 0,
+          "menu": {
+            "itemCount": 9,
+            "items": [
+              {
+                "enabled": true,
+                "isSeparator": false,
+                "role": "AXMenuItem",
+                "title": "ChatGPT"
+              },
+              {
+                "enabled": false,
+                "isSeparator": true,
+                "role": "AXMenuItem"
+              },
+              {
+                "enabled": true,
+                "identifier": "appsUI",
+                "isSeparator": false,
+                "role": "AXMenuItem",
+                "title": "Open Ollama"
+              },
+              {
+                "cmdChar": ",",
+                "cmdModifiers": 0,
+                "enabled": true,
+                "identifier": "settingsUI",
+                "isSeparator": false,
+                "role": "AXMenuItem",
+                "shortcut": "⌘,",
+                "title": "Settings"
+              },
+              {
+                "enabled": false,
+                "isSeparator": true,
+                "role": "AXMenuItem"
+              },
+              {
+                "enabled": false,
+                "isSeparator": false,
+                "role": "AXMenuItem",
+                "title": "An update is available"
+              },
+              {
+                "enabled": true,
+                "identifier": "startUpdate",
+                "isSeparator": false,
+                "role": "AXMenuItem",
+                "title": "Restart to update"
+              },
+              {
+                "enabled": false,
+                "isSeparator": true,
+                "role": "AXMenuItem"
+              },
+              {
+                "cmdChar": "Q",
+                "cmdModifiers": 0,
+                "enabled": true,
+                "identifier": "requestQuit",
+                "isSeparator": false,
+                "role": "AXMenuItem",
+                "shortcut": "⌘Q",
+                "title": "Quit Ollama"
+              }
+            ],
+            "ms": 3.1,
+            "status": "readable",
+            "truncated": false
+          },
+          "role": "AXMenuBarItem",
+          "screenIndex": 0,
+          "subrole": "AXMenuExtra"
+        }
+      ],
+      "ms": 14.2,
+      "name": "Ollama",
+      "pid": 2892
+    },
+    {
+      "activationPolicy": "prohibited",
+      "bundleID": "com.adobe.acc.AdobeDesktopService",
+      "extrasStatus": "none",
+      "items": [],
+      "ms": 9.6,
+      "name": "Creative Cloud Core Service",
+      "pid": 2913
+    },
+    {
+      "activationPolicy": "prohibited",
+      "bundleID": "com.apple.TextInputUI.xpc.CursorUIViewService",
+      "extrasStatus": "none",
+      "items": [],
+      "ms": 14.9,
+      "name": "CursorUIViewService",
+      "pid": 2975
+    },
+    {
+      "activationPolicy": "accessory",
+      "bundleID": "com.openai.sky.CUAService",
+      "extrasStatus": "none",
+      "items": [],
+      "ms": 11.6,
+      "name": "ChatGPT Computer Use",
+      "pid": 2984
+    },
+    {
+      "activationPolicy": "accessory",
+      "bundleID": "com.apple.WorkflowKit.ShortcutsViewService",
+      "extrasStatus": "none",
+      "items": [],
+      "ms": 17.6,
+      "name": "Shortcuts",
+      "pid": 3116
+    },
+    {
+      "activationPolicy": "prohibited",
+      "bundleID": "com.adobe.ccd.helper",
+      "extrasStatus": "none",
+      "items": [],
+      "ms": 10.2,
+      "name": "Creative Cloud Helper",
+      "pid": 3187
+    },
+    {
+      "activationPolicy": "accessory",
+      "bundleID": "com.adobe.accmac",
+      "extrasStatus": "none",
+      "items": [],
+      "ms": 15.9,
+      "name": "Adobe Content Synchronizer",
+      "pid": 3417
+    },
+    {
+      "activationPolicy": "accessory",
+      "bundleID": "com.privateinternetaccess.vpn",
+      "extrasStatus": "ok",
+      "items": [
+        {
+          "actions": [
+            "AXPress",
+            "Name:Show menu\nTarget:0x7916dae700\nSelector:accShowMenu:"
+          ],
+          "attributeNames": [
+            "AXCustomActions",
+            "AXEnabled",
+            "AXFrame",
+            "AXParent",
+            "AXSize",
+            "AXChildren",
+            "AXFocused",
+            "AXRole",
+            "AXTopLevelUIElement",
+            "AXPosition",
+            "AXHelp",
+            "AXTitle",
+            "AXWindow",
+            "AXRoleDescription",
+            "AXSelected",
+            "AXSubrole"
+          ],
+          "extraAttributes": {},
+          "frame": {
+            "height": 24,
+            "width": 24,
+            "x": 1553,
+            "y": 2
+          },
+          "help": "Private Internet Access",
+          "hidden": false,
+          "hiddenReasons": [],
+          "index": 0,
+          "menu": {
+            "itemCount": 0,
+            "items": [],
+            "ms": 0,
+            "status": "notExposedWhileClosed",
+            "truncated": false
+          },
+          "role": "AXMenuBarItem",
+          "screenIndex": 0,
+          "subrole": "AXMenuExtra"
+        }
+      ],
+      "ms": 16.2,
+      "name": "Private Internet Access",
+      "pid": 4446
+    },
+    {
+      "activationPolicy": "prohibited",
+      "bundleID": "com.apple.SafariPlatformSupport.Helper",
+      "extrasStatus": "none",
+      "items": [],
+      "ms": 14.9,
+      "name": "AutoFill (Private Internet Access)",
+      "pid": 4557
+    },
+    {
+      "activationPolicy": "prohibited",
+      "bundleID": "com.apple.SafariPlatformSupport.Helper",
+      "extrasStatus": "none",
+      "items": [],
+      "ms": 11.3,
+      "name": "AutoFill (ChatGPT)",
+      "pid": 5178
+    },
+    {
+      "activationPolicy": "prohibited",
+      "bundleID": "com.apple.Notes.SpotlightIndexExtension",
+      "extrasStatus": "cannotComplete",
+      "items": [],
+      "ms": 0.2,
+      "name": "Notes Spotlight Index Extension",
+      "pid": 5958
+    },
+    {
+      "activationPolicy": "prohibited",
+      "bundleID": "com.apple.AuthenticationServicesCore.AuthenticationServicesAgent",
+      "extrasStatus": "notTrusted",
+      "items": [],
+      "ms": 26.6,
+      "name": "AuthenticationServicesAgent",
+      "pid": 6233
+    },
+    {
+      "activationPolicy": "prohibited",
+      "bundleID": "com.apple.SafariPlatformSupport.Helper",
+      "extrasStatus": "none",
+      "items": [],
+      "ms": 8.1,
+      "name": "AutoFill (Google Chrome)",
+      "pid": 8539
+    },
+    {
+      "activationPolicy": "accessory",
+      "bundleID": "com.apple.LocalAuthentication.UIAgent",
+      "extrasStatus": "none",
+      "items": [],
+      "ms": 14,
+      "name": "coreautha",
+      "pid": 11694
+    },
+    {
+      "activationPolicy": "prohibited",
+      "bundleID": "com.apple.SafariPlatformSupport.Helper",
+      "extrasStatus": "none",
+      "items": [],
+      "ms": 92.9,
+      "name": "AutoFill (Screen Sharing)",
+      "pid": 14766
+    },
+    {
+      "activationPolicy": "prohibited",
+      "bundleID": "com.apple.SafariPlatformSupport.Helper",
+      "extrasStatus": "none",
+      "items": [],
+      "ms": 8,
+      "name": "AutoFill (XReader)",
+      "pid": 15596
+    },
+    {
+      "activationPolicy": "prohibited",
+      "bundleID": "com.apple.photolibraryd",
+      "extrasStatus": "cannotComplete",
+      "items": [],
+      "ms": 0.2,
+      "name": "photolibraryd",
+      "pid": 973
+    },
+    {
+      "activationPolicy": "prohibited",
+      "bundleID": "com.apple.messages.AssistantExtension",
+      "extrasStatus": "cannotComplete",
+      "items": [],
+      "ms": 0.1,
+      "name": "Messages",
+      "pid": 21629
+    },
+    {
+      "activationPolicy": "prohibited",
+      "bundleID": "com.apple.imdpersistence.IMDPersistenceAgent",
+      "extrasStatus": "cannotComplete",
+      "items": [],
+      "ms": 0.1,
+      "name": "IMDPersistenceAgent",
+      "pid": 887
+    },
+    {
+      "activationPolicy": "regular",
+      "bundleID": "com.apple.TextEdit",
+      "extrasStatus": "none",
+      "items": [],
+      "ms": 94.7,
+      "name": "TextEdit",
+      "pid": 38318
+    },
+    {
+      "activationPolicy": "prohibited",
+      "bundleID": "com.apple.appkit.xpc.openAndSavePanelService",
+      "extrasStatus": "none",
+      "items": [],
+      "ms": 87.1,
+      "name": "Open and Save Panel Service (TextEdit)",
+      "pid": 38346
+    },
+    {
+      "activationPolicy": "prohibited",
+      "bundleID": "com.apple.quicklook.QuickLookUIService",
+      "extrasStatus": "none",
+      "items": [],
+      "ms": 15.6,
+      "name": "QuickLookUIService (Open and Save Panel Service (TextEdit))",
+      "pid": 38347
+    },
+    {
+      "activationPolicy": "regular",
+      "bundleID": "com.apple.Photos",
+      "extrasStatus": "none",
+      "items": [],
+      "ms": 91.2,
+      "name": "Photos",
+      "pid": 42885
+    },
+    {
+      "activationPolicy": "prohibited",
+      "bundleID": "com.apple.appkit.xpc.openAndSavePanelService",
+      "extrasStatus": "none",
+      "items": [],
+      "ms": 93.5,
+      "name": "Open and Save Panel Service (Photos)",
+      "pid": 42914
+    },
+    {
+      "activationPolicy": "prohibited",
+      "bundleID": "com.apple.quicklook.QuickLookUIService",
+      "extrasStatus": "none",
+      "items": [],
+      "ms": 17.9,
+      "name": "QuickLookUIService (Open and Save Panel Service (Photos))",
+      "pid": 42916
+    },
+    {
+      "activationPolicy": "accessory",
+      "bundleID": "com.apple.UserNotificationCenter",
+      "extrasStatus": "none",
+      "items": [],
+      "ms": 12,
+      "name": "UserNotificationCenter",
+      "pid": 45382
+    },
+    {
+      "activationPolicy": "accessory",
+      "bundleID": "com.apple.SSMenuAgent",
+      "extrasStatus": "none",
+      "items": [],
+      "ms": 16.6,
+      "name": "SSMenuAgent",
+      "pid": 45841
+    },
+    {
+      "activationPolicy": "regular",
+      "bundleID": "com.apple.findmy",
+      "extrasStatus": "none",
+      "items": [],
+      "ms": 13.4,
+      "name": "Find My",
+      "pid": 48426
+    },
+    {
+      "activationPolicy": "prohibited",
+      "extrasStatus": "cannotComplete",
+      "items": [],
+      "ms": 0.2,
+      "name": "sdb",
+      "pid": 53308
+    },
+    {
+      "activationPolicy": "regular",
+      "bundleID": "org.tizen.sdk.ide",
+      "extrasStatus": "none",
+      "items": [],
+      "ms": 14.5,
+      "name": "Tizen Studio",
+      "pid": 53684
+    },
+    {
+      "activationPolicy": "prohibited",
+      "bundleID": "com.apple.SafariPlatformSupport.Helper",
+      "extrasStatus": "none",
+      "items": [],
+      "ms": 15.4,
+      "name": "AutoFill (Tizen Studio)",
+      "pid": 53762
+    },
+    {
+      "activationPolicy": "regular",
+      "bundleID": "org.tizen.cert.ide",
+      "extrasStatus": "none",
+      "items": [],
+      "ms": 10.5,
+      "name": "Tizen Certificate Manager",
+      "pid": 54048
+    },
+    {
+      "activationPolicy": "prohibited",
+      "bundleID": "com.apple.SafariPlatformSupport.Helper",
+      "extrasStatus": "none",
+      "items": [],
+      "ms": 11,
+      "name": "AutoFill (Tizen Certificate Manager)",
+      "pid": 54134
+    },
+    {
+      "activationPolicy": "accessory",
+      "bundleID": "com.apple.PowerChime",
+      "extrasStatus": "none",
+      "items": [],
+      "ms": 13.6,
+      "name": "PowerChime",
+      "pid": 66934
+    },
+    {
+      "activationPolicy": "accessory",
+      "bundleID": "com.getdropbox.dropbox",
+      "extrasStatus": "ok",
+      "items": [
+        {
+          "actions": [
+            "AXPress"
+          ],
+          "attributeNames": [
+            "AXEnabled",
+            "AXFrame",
+            "AXParent",
+            "AXSize",
+            "AXChildren",
+            "AXFocused",
+            "AXRole",
+            "AXTopLevelUIElement",
+            "AXHelp",
+            "AXPosition",
+            "AXTitle",
+            "AXWindow",
+            "AXRoleDescription",
+            "AXSelected",
+            "AXSubrole"
+          ],
+          "extraAttributes": {},
+          "frame": {
+            "height": 24,
+            "width": 38,
+            "x": 1837,
+            "y": 2
+          },
+          "help": "Dropbox 277.3.4925",
+          "hidden": false,
+          "hiddenReasons": [],
+          "index": 0,
+          "menu": {
+            "itemCount": 0,
+            "items": [],
+            "ms": 0,
+            "status": "notExposedWhileClosed",
+            "truncated": false
+          },
+          "role": "AXMenuBarItem",
+          "screenIndex": 0,
+          "subrole": "AXMenuExtra"
+        }
+      ],
+      "ms": 8.5,
+      "name": "Dropbox",
+      "pid": 80510
+    },
+    {
+      "activationPolicy": "prohibited",
+      "bundleID": "com.getdropbox.dropbox.garcon",
+      "extrasStatus": "none",
+      "items": [],
+      "ms": 10.3,
+      "name": "Dropbox Finder Extension",
+      "pid": 80511
+    },
+    {
+      "activationPolicy": "prohibited",
+      "bundleID": "com.apple.finder.FinderSync.IsExtensionEnabled",
+      "extrasStatus": "none",
+      "items": [],
+      "ms": 8.9,
+      "name": "IsExtensionEnabled",
+      "pid": 80722
+    },
+    {
+      "activationPolicy": "accessory",
+      "bundleID": "com.getdropbox.dropbox.activityprovider",
+      "extrasStatus": "none",
+      "items": [],
+      "ms": 7.9,
+      "name": "Dropbox Activity Provider",
+      "pid": 80723
+    },
+    {
+      "activationPolicy": "accessory",
+      "bundleID": "com.apple.WebKit.GPU",
+      "extrasStatus": "cannotComplete",
+      "items": [],
+      "ms": 0.2,
+      "name": "Passwords Graphics and Media",
+      "pid": 84187
+    },
+    {
+      "activationPolicy": "prohibited",
+      "bundleID": "com.apple.AuthenticationServices.Helper",
+      "extrasStatus": "none",
+      "items": [],
+      "ms": 7.4,
+      "name": "AuthenticationServicesHelper (Google Chrome)",
+      "pid": 84915
+    },
+    {
+      "activationPolicy": "accessory",
+      "bundleID": "com.google.Chrome.framework.AlertNotificationService",
+      "extrasStatus": "none",
+      "items": [],
+      "ms": 7.9,
+      "name": "Google Chrome",
+      "pid": 23483
+    },
+    {
+      "activationPolicy": "prohibited",
+      "bundleID": "com.apple.appkit.xpc.ThemeWidgetControlViewService",
+      "extrasStatus": "none",
+      "items": [],
+      "ms": 30.5,
+      "name": "ThemeWidgetControlViewService (Google Chrome)",
+      "pid": 5772
+    },
+    {
+      "activationPolicy": "prohibited",
+      "extrasStatus": "cannotComplete",
+      "items": [],
+      "ms": 0.2,
+      "name": "npm run dev",
+      "pid": 12588
+    },
+    {
+      "activationPolicy": "prohibited",
+      "extrasStatus": "cannotComplete",
+      "items": [],
+      "ms": 0.1,
+      "name": "npm exec figma-console-mcp@latest",
+      "pid": 15265
+    },
+    {
+      "activationPolicy": "prohibited",
+      "bundleID": "com.apple.SafariPlatformSupport.Helper",
+      "extrasStatus": "none",
+      "items": [],
+      "ms": 12.2,
+      "name": "AutoFill (Figma)",
+      "pid": 15759
+    },
+    {
+      "activationPolicy": "prohibited",
+      "bundleID": "com.apple.textkit.nsattributedstringagent",
+      "extrasStatus": "cannotComplete",
+      "items": [],
+      "ms": 0.3,
+      "name": "nsattributedstringagent",
+      "pid": 20857
+    },
+    {
+      "activationPolicy": "prohibited",
+      "bundleID": "com.apple.textkit.nsattributedstringagent",
+      "extrasStatus": "cannotComplete",
+      "items": [],
+      "ms": 0.3,
+      "name": "nsattributedstringagent",
+      "pid": 88531
+    },
+    {
+      "activationPolicy": "prohibited",
+      "bundleID": "com.apple.SafariPlatformSupport.Helper",
+      "extrasStatus": "none",
+      "items": [],
+      "ms": 11.4,
+      "name": "AutoFill (Muse)",
+      "pid": 11468
+    },
+    {
+      "activationPolicy": "regular",
+      "bundleID": "com.anysphere.sand",
+      "extrasStatus": "none",
+      "items": [],
+      "ms": 13.1,
+      "name": "Grok Bot",
+      "pid": 33599
+    },
+    {
+      "activationPolicy": "accessory",
+      "bundleID": "com.anysphere.sand.electron-helper",
+      "extrasStatus": "none",
+      "items": [],
+      "ms": 7.5,
+      "name": "Grok Bot Helper",
+      "pid": 33623
+    },
+    {
+      "activationPolicy": "prohibited",
+      "bundleID": "com.apple.appkit.xpc.ThemeWidgetControlViewService",
+      "extrasStatus": "none",
+      "items": [],
+      "ms": 58.1,
+      "name": "ThemeWidgetControlViewService (Figma)",
+      "pid": 80479
+    },
+    {
+      "activationPolicy": "accessory",
+      "bundleID": "com.google.drivefs",
+      "extrasStatus": "ok",
+      "items": [
+        {
+          "actions": [
+            "AXPress"
+          ],
+          "attributeNames": [
+            "AXEnabled",
+            "AXFrame",
+            "AXDescription",
+            "AXParent",
+            "AXSize",
+            "AXChildren",
+            "AXFocused",
+            "AXRole",
+            "AXTopLevelUIElement",
+            "AXPosition",
+            "AXHelp",
+            "AXTitle",
+            "AXWindow",
+            "AXRoleDescription",
+            "AXSelected",
+            "AXSubrole"
+          ],
+          "description": "Google Drive",
+          "extraAttributes": {},
+          "frame": {
+            "height": 24,
+            "width": 34,
+            "x": 1913,
+            "y": 2
+          },
+          "hidden": false,
+          "hiddenReasons": [],
+          "index": 0,
+          "menu": {
+            "itemCount": 0,
+            "items": [],
+            "ms": 0,
+            "status": "notExposedWhileClosed",
+            "truncated": false
+          },
+          "role": "AXMenuBarItem",
+          "screenIndex": 0,
+          "subrole": "AXMenuExtra"
+        }
+      ],
+      "ms": 17.8,
+      "name": "Google Drive",
+      "pid": 93303
+    },
+    {
+      "activationPolicy": "accessory",
+      "bundleID": "com.apple.WebKit.GPU",
+      "extrasStatus": "cannotComplete",
+      "items": [],
+      "ms": 0.2,
+      "name": "Google Drive Graphics and Media",
+      "pid": 93307
+    },
+    {
+      "activationPolicy": "accessory",
+      "bundleID": "com.apple.WebKit.Networking",
+      "extrasStatus": "cannotComplete",
+      "items": [],
+      "ms": 0.1,
+      "name": "Google Drive Networking",
+      "pid": 93310
+    },
+    {
+      "activationPolicy": "accessory",
+      "bundleID": "com.apple.WebKit.WebContent",
+      "extrasStatus": "cannotComplete",
+      "items": [],
+      "ms": 0.1,
+      "name": "Google Drive Web Content",
+      "pid": 93308
+    },
+    {
+      "activationPolicy": "prohibited",
+      "bundleID": "com.google.drivefs.finderhelper.findersync",
+      "extrasStatus": "none",
+      "items": [],
+      "ms": 18.5,
+      "name": "Google Drive",
+      "pid": 93319
+    },
+    {
+      "activationPolicy": "regular",
+      "bundleID": "com.anthropic.claudefordesktop",
+      "extrasStatus": "ok",
+      "items": [
+        {
+          "actions": [
+            "AXPress"
+          ],
+          "attributeNames": [
+            "AXEnabled",
+            "AXFrame",
+            "AXParent",
+            "AXSize",
+            "AXChildren",
+            "AXFocused",
+            "AXRole",
+            "AXTopLevelUIElement",
+            "AXHelp",
+            "AXPosition",
+            "AXTitle",
+            "AXWindow",
+            "AXRoleDescription",
+            "AXSelected",
+            "AXSubrole"
+          ],
+          "extraAttributes": {},
+          "frame": {
+            "height": 26,
+            "width": 42,
+            "x": 1873,
+            "y": 1
+          },
+          "hidden": false,
+          "hiddenReasons": [],
+          "index": 0,
+          "menu": {
+            "itemCount": 0,
+            "items": [],
+            "ms": 0,
+            "status": "notExposedWhileClosed",
+            "truncated": false
+          },
+          "role": "AXMenuBarItem",
+          "screenIndex": 0,
+          "subrole": "AXMenuExtra"
+        }
+      ],
+      "ms": 1.2,
+      "name": "Claude",
+      "pid": 97522
+    },
+    {
+      "activationPolicy": "prohibited",
+      "extrasStatus": "cannotComplete",
+      "items": [],
+      "ms": 0.3,
+      "name": "npm exec @mui/mcp@latest",
+      "pid": 97666
+    },
+    {
+      "activationPolicy": "prohibited",
+      "extrasStatus": "cannotComplete",
+      "items": [],
+      "ms": 0.1,
+      "name": "npm exec @mui/mcp@latest",
+      "pid": 97811
+    },
+    {
+      "activationPolicy": "accessory",
+      "bundleID": "com.anthropic.claudefordesktop.helper",
+      "extrasStatus": "none",
+      "items": [],
+      "ms": 11.7,
+      "name": "Claude Helper",
+      "pid": 7976
+    },
+    {
+      "activationPolicy": "regular",
+      "bundleID": "com.fritter.app",
+      "extrasStatus": "ok",
+      "items": [
+        {
+          "actions": [
+            "AXPress"
+          ],
+          "attributeNames": [
+            "AXEnabled",
+            "AXFrame",
+            "AXParent",
+            "AXSize",
+            "AXChildren",
+            "AXFocused",
+            "AXRole",
+            "AXTopLevelUIElement",
+            "AXHelp",
+            "AXPosition",
+            "AXTitle",
+            "AXWindow",
+            "AXRoleDescription",
+            "AXSelected",
+            "AXSubrole"
+          ],
+          "extraAttributes": {},
+          "frame": {
+            "height": 24,
+            "width": 51,
+            "x": 2080,
+            "y": 2
+          },
+          "hidden": false,
+          "hiddenReasons": [],
+          "index": 0,
+          "menu": {
+            "itemCount": 3,
+            "items": [
+              {
+                "enabled": true,
+                "identifier": "fireMenuItemAction:",
+                "isSeparator": false,
+                "role": "AXMenuItem",
+                "title": "Open Fritter"
+              },
+              {
+                "enabled": false,
+                "isSeparator": true,
+                "role": "AXMenuItem"
+              },
+              {
+                "cmdChar": "Q",
+                "cmdModifiers": 0,
+                "enabled": true,
+                "identifier": "fireMenuItemAction:",
+                "isSeparator": false,
+                "role": "AXMenuItem",
+                "shortcut": "⌘Q",
+                "title": "Quit Fritter"
+              }
+            ],
+            "ms": 0.6,
+            "status": "readable",
+            "truncated": false
+          },
+          "role": "AXMenuBarItem",
+          "screenIndex": 0,
+          "subrole": "AXMenuExtra",
+          "title": "3"
+        }
+      ],
+      "ms": 19.5,
+      "name": "Fritter",
+      "pid": 8362
+    },
+    {
+      "activationPolicy": "accessory",
+      "bundleID": "com.apple.WebKit.Networking",
+      "extrasStatus": "cannotComplete",
+      "items": [],
+      "ms": 0.3,
+      "name": "Fritter Networking",
+      "pid": 8366
+    },
+    {
+      "activationPolicy": "accessory",
+      "bundleID": "com.apple.WebKit.GPU",
+      "extrasStatus": "cannotComplete",
+      "items": [],
+      "ms": 0.1,
+      "name": "Fritter Graphics and Media",
+      "pid": 8364
+    },
+    {
+      "activationPolicy": "accessory",
+      "bundleID": "com.apple.WebKit.WebContent",
+      "extrasStatus": "cannotComplete",
+      "items": [],
+      "ms": 0.1,
+      "name": "Fritter Web Content",
+      "pid": 8365
+    },
+    {
+      "activationPolicy": "accessory",
+      "bundleID": "com.apple.WebKit.WebContent",
+      "extrasStatus": "cannotComplete",
+      "items": [],
+      "ms": 0.1,
+      "name": "Fritter Web Content",
+      "pid": 8367
+    },
+    {
+      "activationPolicy": "prohibited",
+      "extrasStatus": "cannotComplete",
+      "items": [],
+      "ms": 0,
+      "name": "npm exec figma-console-mcp@latest",
+      "pid": 11560
+    },
+    {
+      "activationPolicy": "prohibited",
+      "bundleID": "com.apple.appkit.xpc.openAndSavePanelService",
+      "extrasStatus": "none",
+      "items": [],
+      "ms": 8.8,
+      "name": "Open and Save Panel Service (Claude)",
+      "pid": 21051
+    },
+    {
+      "activationPolicy": "prohibited",
+      "bundleID": "com.apple.quicklook.QuickLookUIService",
+      "extrasStatus": "none",
+      "items": [],
+      "ms": 16,
+      "name": "QuickLookUIService (Open and Save Panel Service (Claude))",
+      "pid": 21052
+    },
+    {
+      "activationPolicy": "prohibited",
+      "extrasStatus": "cannotComplete",
+      "items": [],
+      "ms": 0.2,
+      "name": "npm exec figma-console-mcp@latest",
+      "pid": 21479
+    },
+    {
+      "activationPolicy": "prohibited",
+      "bundleID": "com.apple.CoreSimulator.SimulatorTrampoline",
+      "extrasStatus": "none",
+      "items": [],
+      "ms": 15.9,
+      "name": "SimulatorTrampoline",
+      "pid": 26529
+    },
+    {
+      "activationPolicy": "prohibited",
+      "bundleID": "com.apple.CoreSimulator.CoreSimulatorService",
+      "extrasStatus": "none",
+      "items": [],
+      "ms": 15.6,
+      "name": "com.apple.CoreSimulator.CoreSimulatorService",
+      "pid": 26518
+    },
+    {
+      "activationPolicy": "prohibited",
+      "extrasStatus": "cannotComplete",
+      "items": [],
+      "ms": 0.2,
+      "name": "npm exec figma-console-mcp@latest",
+      "pid": 33093
+    }
+  ],
+  "capturedAt": "2026-10-21T21:58:46Z",
+  "frontmostApp": {
+    "bundleID": "com.anthropic.claudefordesktop",
+    "menuTitles": [
+      "Apple",
+      "Claude",
+      "File",
+      "Edit",
+      "View",
+      "Go",
+      "Window",
+      "Help"
+    ],
+    "menusFrame": {
+      "height": 30,
+      "width": 386,
+      "x": 10,
+      "y": 0
+    },
+    "name": "Claude",
+    "pid": 97522
+  },
+  "hardware": {
+    "arch": "arm64",
+    "model": "Mac17,6"
+  },
+  "macOS": {
+    "build": "26A434",
+    "version": "27.0.1"
+  },
+  "options": {
+    "allProcesses": false,
+    "delay": 0,
+    "maxDepth": 6,
+    "timeout": 0.5
+  },
+  "probeVersion": "0.1",
+  "screens": [
+    {
+      "frame": {
+        "height": 1440,
+        "width": 2560,
+        "x": 0,
+        "y": 0
+      },
+      "index": 0,
+      "menuBarHeight": 30,
+      "name": "LED Cinema Display"
+    },
+    {
+      "frame": {
+        "height": 1117,
+        "width": 1728,
+        "x": 2560,
+        "y": 0
+      },
+      "index": 1,
+      "menuBarHeight": 32,
+      "name": "Built-in Retina Display",
+      "notch": {
+        "height": 32,
+        "width": 185,
+        "x": 3331.5,
+        "y": 0
+      }
+    }
+  ],
+  "summary": {
+    "appsScanned": 167,
+    "appsWithErrors": [
+      "AuthenticationServicesAgent (notTrusted)"
+    ],
+    "appsWithExtras": 18,
+    "appsWithoutClosedMenu": [
+      "Google Chrome",
+      "MenuBarAgent",
+      "Muse",
+      "Siri",
+      "PasswordsMenuBarExtra",
+      "Burn",
+      "Dev Server Manager",
+      "Creative Cloud",
+      "Private Internet Access",
+      "Dropbox",
+      "Google Drive",
+      "Claude"
+    ],
+    "cannotCompleteCount": 44,
+    "hiddenByReason": {},
+    "hiddenCount": 0,
+    "itemCount": 23,
+    "menuStatusCounts": {
+      "notExposedWhileClosed": 17,
+      "readable": 6
+    },
+    "slowestApps": [
+      {
+        "ms": 141.6,
+        "name": "MenuBarAgent"
+      },
+      {
+        "ms": 94.7,
+        "name": "TextEdit"
+      },
+      {
+        "ms": 93.5,
+        "name": "Open and Save Panel Service (Photos)"
+      },
+      {
+        "ms": 92.9,
+        "name": "AutoFill (Screen Sharing)"
+      },
+      {
+        "ms": 91.2,
+        "name": "Photos"
+      }
+    ],
+    "totalMs": 2870.3
+  }
+}
