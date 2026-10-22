@@ -1,10 +1,12 @@
 import AppKit
+import ValetCore
 
-// Placeholder shell so `make run` proves bundling and signing work. The real hanger menu and palette wait for the
-// approved mocks (milestone 0) and land in milestones 3 and 4.
+// Status item plus the socket the `valet` CLI talks to. The real menu and palette wait for approved mocks
+// (milestones 3 and 4).
 @MainActor
 final class AppDelegate: NSObject, NSApplicationDelegate {
     private var statusItem: NSStatusItem?
+    private var server: SocketServer?
 
     func applicationDidFinishLaunching(_ notification: Notification) {
         let item = NSStatusBar.system.statusItem(withLength: NSStatusItem.squareLength)
@@ -20,6 +22,30 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         menu.addItem(withTitle: "Quit Valet", action: #selector(NSApplication.terminate(_:)), keyEquivalent: "q")
         item.menu = menu
         statusItem = item
+
+        // Placeholder for milestone 3's onboarding: shows the system prompt the first time.
+        _ = LiveAccessibility.requestAccess()
+        startServer()
+    }
+
+    func applicationWillTerminate(_ notification: Notification) {
+        server?.stop()
+    }
+
+    private func startServer() {
+        let system = LiveAccessibility()
+        let handler = RequestHandler(
+            engine: MenuBarEngine(system: system),
+            capture: { await MainActor.run { SystemSnapshot.capture() } },
+            status: { StatusInfo(version: ValetCore.version, trusted: system.isTrusted, pid: getpid()) }
+        )
+        let server = SocketServer(path: IPC.socketPath) { await handler.handle($0) }
+        do {
+            try server.start()
+            self.server = server
+        } catch {
+            NSLog("Valet: couldn't start the CLI socket: \(error)")
+        }
     }
 }
 

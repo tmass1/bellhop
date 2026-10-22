@@ -5,7 +5,7 @@ The full plan, including scope, architecture, risks and milestones, is in `docs/
 
 ## Current milestone
 
-**Milestone 1: Accessibility probe (spike).** Update this line when a milestone is done.
+**Milestone 2: ValetCore.** Milestone 1 is verified on the M5 Max (macOS 27); the M1 MacBook run is still pending, so keep `valet-probe` until then. Update this line when a milestone is done.
 
 ## Stack
 
@@ -38,6 +38,7 @@ The full plan, including scope, architecture, risks and milestones, is in `docs/
 - macOS 14 minimum. Test on macOS 27 first.
 - Ask before any destructive menu action in testing (Quit, Delete, Sign Out, Reset). Use harmless items like toggles or "About" when checking that AXPress works.
 - Run `make test` and `make lint` before every commit. Keep commits small, one concern each.
+- New fixtures go through `tools/scrub-fixture.py`: menus can hold clipboard history, chat titles and tokens.
 
 ## Working with Tommy
 
