@@ -46,9 +46,9 @@ macOS 27 also changes the ground underneath this kind of app: the menu bar is no
 These are the tie-breakers when a feature decision is unclear.
 
 1. **Keyboard first, mouse friendly.** Every action is reachable without the trackpad, and the Valet menu still works for people who never touch the hotkey.
-2. **Condense, don't rearrange.** Valet only sizes its own divider; macOS decides what collapses. Never move, drag or redraw other apps' icons. Never capture the screen.
+2. **Condense, don't rearrange.** Valet only sizes its own divider and draws its own keepers; macOS decides what collapses. Never move, drag or redraw other apps' icons. Never capture the screen.
 3. **One permission.** Accessibility only. No Screen Recording, no Input Monitoring.
-4. **Idle until summoned.** No polling loops. Do the work when the palette opens, cache it, and go quiet again.
+4. **Idle until summoned.** No polling loops, with one exception: keepers re-read their own apps' status text every 30 seconds. Everything else happens when Valet's menu or the palette opens.
 5. **Native, not themed.** Use AppKit and SwiftUI with system materials. Respect Reduce Motion, Reduce Transparency, and light and dark mode.
 6. **Scriptable by default.** Anything the UI can do, the CLI, Shortcuts and MCP can do too.
 7. **Fail safe.** If macOS changes underneath us, degrade to read-only listing rather than clicking the wrong thing.
@@ -60,6 +60,7 @@ The MVP condenses the menu bar and gives every icon a vertical home, then adds t
 | Feature | Phase | Why it matters |
 | --- | --- | --- |
 | Divider: tuck every icon left of it behind macOS's overflow; click Valet to show or hide them | MVP | The core reason to install: a tidy menu bar on a small screen |
+| Keepers: bring chosen tucked icons back as Valet's own items, in any order | MVP | Choose any icons to keep, which no macOS 27 tool can do without faking drags |
 | Valet menu: every icon, tucked ones first, real menus mirrored, real item pressed | MVP | The vertical home, and the mouse path |
 | Command palette on a global hotkey | MVP | Reach any icon or item without hunting |
 | Fuzzy search across app names **and** menu item paths | MVP | Typing "awake 1h" finds Midnight Oil › Keep awake for 1 hour |
@@ -103,6 +104,14 @@ The Valet menu and the divider are the everyday surfaces. The palette is the key
 - When collapsed, the divider is wide enough that macOS 27 collapses it and everything left of it behind the overflow arrow. On macOS 14 to 26, the same width pushes those icons off-screen.
 - The divider sits just left of Valet's icon and moves with it, so the rule is one sentence: everything left of Valet is tucked away. You arrange by ⌘-dragging Valet's icon, like any other icon. Valet never moves other icons.
 - While arranging ("Show Tucked Icons", or ⌥-click Valet), the divider is a thin line. The rest of the time it's invisible, collapsed with the icons it tucks.
+
+### Keepers (MVP)
+
+- Valet sits next to Apple's items, so every third-party icon is tucked. Each icon you keep comes back as a keeper: an item Valet draws itself, just left of Valet's icon, in whatever order you choose.
+- A keeper shows the app's status text when it has one (Burn's "56%"), otherwise the app's icon. Valet can't copy an app's real menu bar glyph without Screen Recording.
+- Clicking a keeper opens the app's real menu, mirrored. Panel apps, and menus that only exist while open, press the real tucked icon instead.
+- Choose in Arrange Menu Bar… (a board: drag icons between "In your menu bar" and "Tucked away", and along the bar to reorder), or with ⌥ in the Valet menu ("Keep in Menu Bar").
+- Approved Oct 22: status text, with the app icon as the fallback.
 
 ### Valet menu (MVP)
 
@@ -207,8 +216,8 @@ Build in this order. Each milestone ends with something you can run on your own 
    - Done when: the output matches reality on both MacBooks, one on macOS 27 and one on 26 if possible.
 2. **ValetCore.** Scanner, visibility detection, menu mirroring and the action runner, with unit tests that run against saved JSON snapshots.
    - Done when: `valet list --json` works, and `valet run "Midnight Oil › Keep awake for 1 hour"` presses the real item.
-3. **Valet menu and divider.** The vertical list, the divider, Accessibility onboarding and launch at login.
-   - Done when: the divider tucks icons on 27, tucked icons are listed first, submenus mirror the real menus, and choosing an item works.
+3. **Valet menu, divider and keepers.** The vertical list, the divider, keepers with the Arrange board, Accessibility onboarding and launch at login.
+   - Done when: the divider tucks icons on 27, kept icons appear as keepers in the chosen order, tucked icons are listed first, submenus mirror the real menus, and choosing an item works.
 4. **Command palette.** Hotkey, fuzzy search over menu paths, frecency, destructive-item confirmation.
    - Done when: any menu item can be run from the keyboard alone, and the panel feels instant on open (target under 100 ms).
 5. **v0.1 release.** Developer ID signing, notarization, DMG, Sparkle, Homebrew cask, landing page.
@@ -222,6 +231,7 @@ Build in this order. Each milestone ends with something you can run on your own 
 - [ ] **Default hotkey.** It must not collide with Spotlight (⌘Space) or Raycast (⌥Space). ⌃⌥Space is the placeholder for now.
 - [x] **Divider look.** A thin line, shown only while arranging; invisible otherwise. (Approved Oct 21.)
 - [x] **Notch panel style.** Black in both appearances. (Approved Oct 21.)
+- [x] **Choosing what stays.** Keepers: tuck everything, keep any icons as Valet's own items. Status text, app icon fallback. (Approved Oct 22.)
 - [ ] **Private menus.** Leave clipboard history (CopyClip) and similar menus out of search by default?
 - [ ] **Minimum macOS.** 14 like Coat Check, or 15 to cut testing?
 - [ ] **Test machines.** Which macOS is each MacBook on? Ideally one runs 27 and one runs 26.

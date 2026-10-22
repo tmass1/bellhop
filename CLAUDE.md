@@ -5,7 +5,7 @@ The full plan, including scope, architecture, risks and milestones, is in `docs/
 
 ## Current milestone
 
-**Milestone 3: Valet menu and divider** (in progress; the ⌘-drag follow test waits for the Cinema Display). Milestone 0's mocks were approved Oct 21 (`design/mocks/`). Milestones 1 and 2 are verified on the M5 Max (macOS 27); the M1 MacBook run is still pending, so keep `valet-probe` until then. Update this line when a milestone is done.
+**Milestone 3: Valet menu, divider and keepers** (in progress; the ⌘-drag follow test waits for the Cinema Display). Milestone 0's mocks were approved Oct 21 (`design/mocks/`). Milestones 1 and 2 are verified on the M5 Max (macOS 27); the M1 MacBook run is still pending, so keep `valet-probe` until then. Update this line when a milestone is done.
 
 ## Stack
 
@@ -30,7 +30,7 @@ The full plan, including scope, architecture, risks and milestones, is in `docs/
 ## Rules
 
 - Accessibility API only. Never use ScreenCaptureKit, `CGWindowListCreateImage` or anything that needs Screen Recording.
-- Never move, drag or redraw other apps' icons. Valet condenses the bar only by sizing its own divider item, which makes macOS collapse the icons to its left. Press items with `AXPress`, not synthesized mouse events.
+- Never move, drag or redraw other apps' icons. Valet condenses the bar only by sizing its own divider item, which makes macOS collapse the icons to its left. Keepers are Valet's own items showing an app's icon or status text, never a copy of its menu bar glyph. Press items with `AXPress`, not synthesized mouse events.
 - All AX calls run off the main thread inside an actor, with `AXUIElementSetMessagingTimeout` set per app.
 - Put AX behind a protocol so ValetCore is testable without a live menu bar. Tests use JSON fixtures in `Tests/Fixtures/`, captured from real probe output.
 - No network calls except Sparkle's update check. No analytics.

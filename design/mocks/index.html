@@ -1113,16 +1113,16 @@ function renderDivider(scene) {
 // keepers: Valet's own items, in any order, each opening the app's mirrored menu. Valet never moves the real icons.
 const SYSTEM_IDS = new Set(['battery', 'wifi', 'recording', 'spotlight', 'control', 'clock']);
 const thirdParty = searchable.filter((icon) => !SYSTEM_IDS.has(icon.id));
-const keepState = { kept: ['burn', 'mark', 'fritter'], style: 'icon', open: null, drag: null };
+const keepState = { kept: ['burn', 'mark', 'fritter'], style: 'status', open: null, drag: null };
 
 function keeperHTML(icon) {
   const style = keepState.style;
   const open = keepState.open === icon.id ? ' open' : '';
   const status = icon.status && icon.status !== icon.name ? icon.status : '';
   if (style === 'status' && status) return `<span class="mbi keeper${open}" data-keeper="${icon.id}" title="${esc(icon.name)}"><span class="kt">${esc(status)}</span></span>`;
-  const mono = style === 'icon' ? '' : ' mono';
-  const text = style === 'status' && status ? `<span class="kt">${esc(status)}</span>` : '';
-  return `<span class="mbi keeper${mono}${open}" data-keeper="${icon.id}" title="${esc(icon.name)}">${appIcon(icon, 'sm')}${text}</span>`;
+  // Approved look: status text where the app has one, otherwise the app's icon. Mono is kept for comparison.
+  const mono = style === 'mono' ? ' mono' : '';
+  return `<span class="mbi keeper${mono}${open}" data-keeper="${icon.id}" title="${esc(icon.name)}">${appIcon(icon, 'sm')}</span>`;
 }
 
 /// The right side of the bar with keepers: », the keepers, Valet, then Apple's items.
@@ -1156,7 +1156,7 @@ function renderKeep(scene) {
   const board = h(`<div class="board">
     <div class="board-head">
       <h2>Choose what stays in the menu bar</h2>
-      <span class="seg"><button data-style="icon" aria-pressed="${s.style === 'icon'}">App icon</button><button data-style="mono" aria-pressed="${s.style === 'mono'}">Mono</button><button data-style="status" aria-pressed="${s.style === 'status'}">Status</button></span>
+      <span class="seg"><button data-style="icon" aria-pressed="${s.style === 'icon'}">App icon</button><button data-style="mono" aria-pressed="${s.style === 'mono'}">Mono</button><button data-style="status" aria-pressed="${s.style === 'status'}">Status + icon</button></span>
     </div>
     <div class="loupe" style="margin-bottom: 14px">
       <div class="loupe-scroll"><div class="loupe-bar"><span class="loupe-notch"></span><div class="loupe-right">${keepGlyphsHTML()}</div></div></div>
