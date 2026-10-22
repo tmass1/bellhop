@@ -86,17 +86,21 @@ The Valet menu and the divider are the everyday surfaces. The palette is the key
 
 ### Command palette (MVP)
 
-- A floating, non-activating panel in the top third of the active screen, so the app you're in keeps focus.
-- **Empty state:** Pinned, then Recent, then "Hidden by the notch", then everything else.
+- A floating, non-activating panel in the top third of the active screen, so the app you're in keeps focus. Liquid Glass on macOS 26+.
+- **Hotkey:** ⌃⌥Space by default (a placeholder), changeable in Settings. `valet palette [query]` opens it too.
+- **Empty state:** Pinned, then Recent, then Tucked Away, then In the Menu Bar.
 - **Each row:** app icon, path ("Midnight Oil › Keep awake for 1 hour"), and status text right-aligned ("84 GB free").
 - **Keys:**
   - Return runs the item.
   - → drills into an app's menu, ← goes back.
-  - ⌘Return opens the app's real menu at its icon.
+  - ⌘Return opens the app's icon, as clicking it in the Valet panel would (its menu, mirrored, or its panel).
   - ⌘P pins or unpins.
   - Esc closes.
 - Disabled items appear dimmed. Toggles show their checkmark. Items with their own app shortcut show it in the row.
-- **Destructive items** (Quit, Delete, Sign Out, Reset) need ⌘Return or a second Return, so a mistyped search can't quit something.
+- **Destructive items** (Quit, Delete, Sign Out, Reset) need a second Return, so a mistyped search can't quit something.
+- Menus only built when opened aren't searchable until Valet has read them once. When nothing matches, the palette lists them under "Menus Not Read Yet"; → reads one.
+- CopyClip's menu (clipboard history) isn't indexed by default; it can still be opened by name.
+- Opens in about 20 ms with the last scan (the window is built at launch); a fresh scan updates it about 100 ms later.
 
 ### Divider (MVP)
 
@@ -224,6 +228,7 @@ Build in this order. Each milestone ends with something you can run on your own 
    - Status (Oct 22): done on the M5 Max. Still open: the ⌘-drag test of Valet's icon on the Cinema Display, and the M1 run.
 4. **Command palette.** Hotkey, fuzzy search over menu paths, frecency, destructive-item confirmation.
    - Done when: any menu item can be run from the keyboard alone, and the panel feels instant on open (target under 100 ms).
+   - Status (Oct 22): built; opens in about 20 ms cold. Waiting on Tommy's keyboard check.
 5. **v0.1 release.** Developer ID signing, notarization, DMG, Sparkle, Homebrew cask, landing page.
    - Done when: a clean Mac installs Valet from the site and receives an update through Sparkle.
 6. **v1.** Notch panel, pins, status line, App Intents, universal binary.
