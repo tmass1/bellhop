@@ -121,7 +121,7 @@ The Valet menu and the divider are the everyday surfaces. The palette is the key
 
 - Approved Oct 22: a menu-styled panel rather than a native menu, because native menus can't be dragged in.
 - "In the Menu Bar" first (keepers, draggable and in order, then Apple's items, fixed), then "Tucked Away" in the real bar's order.
-- Hovering a row opens the app's real menu, mirrored, as a native menu beside it. Panel apps open on click, under Valet's icon.
+- Clicking a row opens the app's real menu, mirrored, as a native menu beside it; once one is open, moving to another row switches menus. Panel apps open under Valet's icon. (Changed Oct 22 from hover-to-open: an open menu captures the mouse, so rows couldn't be dragged.)
 - A "Search…" row at the top shows the hotkey (once the palette exists). That row teaches the palette to mouse users.
 - Keyboard: ↑↓ move, → or Return open, Space keeps or tucks, Esc closes. The app you're in keeps focus.
 
@@ -133,7 +133,7 @@ The Valet menu and the divider are the everyday surfaces. The palette is the key
 
 ### Settings
 
-- Hotkey, palette density (compact or comfortable), and notch panel on or off.
+- Hotkey, appearance (System, Light or Dark, for Valet's own windows and menus), palette density (compact or comfortable), and notch panel on or off.
 - Launch at login, apps to ignore, CLI install.
 - A plain-language privacy page.
 
