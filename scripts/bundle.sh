@@ -27,6 +27,7 @@ mkdir -p .build dist
 xattr -w com.dropbox.ignored 1 .build dist 2>/dev/null || true
 
 swift build -c "$CONFIG" "${ARCHS[@]}" --product BellhopApp
+swift build -c "$CONFIG" "${ARCHS[@]}" --product bellhop
 BIN="$(swift build -c "$CONFIG" "${ARCHS[@]}" --show-bin-path)/BellhopApp"
 [[ -x "$BIN" ]] || { echo "build failed: $BIN missing"; exit 1; }
 
@@ -34,6 +35,10 @@ APP=dist/Bellhop.app
 rm -rf "$APP"
 mkdir -p "$APP/Contents/MacOS" "$APP/Contents/Resources"
 cp "$BIN" "$APP/Contents/MacOS/Bellhop"
+# The `bellhop` CLI rides along in Helpers (MacOS can't hold both `Bellhop` and `bellhop` on a case-insensitive
+# disk). Homebrew links it onto PATH.
+mkdir -p "$APP/Contents/Helpers"
+cp "$(dirname "$BIN")/bellhop" "$APP/Contents/Helpers/bellhop"
 cp Resources/Info.plist "$APP/Contents/Info.plist"
 cp Resources/AppIcon.icns Resources/BellhopMenuTemplate.png Resources/BellhopMenuTemplate@2x.png "$APP/Contents/Resources/"
 # SwiftPM resource bundles (KeyboardShortcuts' localizations) sit beside the binary. Packages look them up at
@@ -56,5 +61,6 @@ sign() { codesign --force --options runtime "${TIMESTAMP[@]}" --sign "$SIGN_IDEN
 sign "$FW/Versions/B/Autoupdate"
 sign "$FW/Versions/B/Updater.app"
 sign "$FW"
+sign "$APP/Contents/Helpers/bellhop"
 sign "$APP"
 echo "built $APP"

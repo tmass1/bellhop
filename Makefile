@@ -1,4 +1,4 @@
-.PHONY: build test lint run probe viewer clean
+.PHONY: build test lint run package release probe viewer clean
 
 # Overridable from the shell. Developer ID keeps the Accessibility grant stable across rebuilds.
 CODESIGN_IDENTITY ?= Developer ID Application: Thomas Massaro (Y5V8Y3BH9A)
@@ -20,6 +20,14 @@ run:
 	pkill -x Bellhop 2>/dev/null || true
 	scripts/bundle.sh
 	open dist/Bellhop.app
+
+# A signed, notarized dist/Bellhop.dmg (and Bellhop.zip) to hand to someone, without publishing anything.
+package:
+	scripts/release.sh --dry-run
+
+# Everything: GitHub release with zip, DMG and appcast, and the Homebrew cask. Needs docs/releases/<version>.md.
+release:
+	scripts/release.sh
 
 probe:
 	@mkdir -p .build && xattr -w com.dropbox.ignored 1 .build 2>/dev/null || true
