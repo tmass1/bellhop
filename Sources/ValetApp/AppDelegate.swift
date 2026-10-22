@@ -7,10 +7,9 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     private let system = LiveAccessibility()
     private lazy var engine = MenuBarEngine(system: system)
     private var statusItem: NSStatusItem!
-    private var valetMenu: ValetMenu!
+    private var valetPanel: ValetPanelController!
     private var divider: DividerController!
     private var keepers: KeeperController!
-    private let arrange = ArrangeWindow()
     private var server: SocketServer?
 
     func applicationDidFinishLaunching(_ notification: Notification) {
@@ -40,14 +39,11 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         divider = DividerController(icon: statusItem, engine: engine)
         divider.leftmostItemMinX = { [weak keepers] in keepers?.leftmostMinX }
         keepers.onLayoutChange = { [weak divider] in divider?.resize() }
-        keepers.onKeptChange = { [weak self] kept in self?.arrange.model.kept = kept }
-        valetMenu = ValetMenu(engine: engine, system: system, divider: divider, keepers: keepers, mirror: mirror)
-        valetMenu.onScan = { [weak self] snapshot in self?.accept(snapshot) }
-        valetMenu.onArrange = { [weak self] in self?.showArrange() }
-        arrange.model.onChange = { [weak self] kept in
-            guard let self else { return }
-            keepers.setKept(kept, iconPosition: divider.iconPosition)
-        }
+        keepers.onKeptChange = { [weak self] _ in self?.valetPanel.keptChanged() }
+        valetPanel = ValetPanelController(
+            engine: engine, system: system, keepers: keepers, mirror: mirror, divider: divider
+        )
+        valetPanel.onScan = { [weak self] snapshot in self?.accept(snapshot) }
         divider.start()
         scanOnLaunch()
         startServer()
@@ -64,27 +60,19 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         guard system.isTrusted else { return }
         Task {
             guard let snapshot = try? await engine.scan(SystemSnapshot.capture()) else { return }
-            valetMenu.accept(snapshot)
+            valetPanel.accept(snapshot)
         }
     }
 
     private func accept(_ snapshot: MenuBarSnapshot) {
         keepers.update(with: snapshot, iconPosition: divider.iconPosition)
-        arrange.model.update(snapshot: snapshot, kept: keepers.kept)
-    }
-
-    private func showArrange() {
-        if let snapshot = valetMenu.snapshot {
-            arrange.model.update(snapshot: snapshot, kept: keepers.kept)
-        }
-        arrange.show()
     }
 
     @objc private func iconClicked() {
         if NSApp.currentEvent?.modifierFlags.contains(.option) == true {
             divider.toggleArranging()
         } else {
-            valetMenu.show(from: statusItem)
+            valetPanel.toggle(from: statusItem)
         }
     }
 

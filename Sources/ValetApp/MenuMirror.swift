@@ -7,6 +7,8 @@ final class MenuMirror: NSObject {
     private let engine: MenuBarEngine
     /// Where panels opened from the Valet menu should go: the left edge of Valet's icon, and its screen's right edge.
     var anchor: (() -> (x: Double, screenMaxX: Double)?)?
+    /// Called when an item in a mirrored menu is chosen, so whatever showed it can close.
+    var onAction: (() -> Void)?
 
     init(engine: MenuBarEngine) {
         self.engine = engine
@@ -32,6 +34,7 @@ final class MenuMirror: NSObject {
 
     @objc private func openIcon(_ sender: NSMenuItem) {
         guard let name = sender.representedObject as? String else { return }
+        onAction?()
         guard let anchor = anchor?() else { return run(name, confirm: false) }
         Task {
             do {
@@ -67,6 +70,7 @@ final class MenuMirror: NSObject {
 
     @objc private func runPath(_ sender: NSMenuItem) {
         guard let path = sender.representedObject as? String else { return }
+        onAction?()
         run(path, confirm: false)
     }
 

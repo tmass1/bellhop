@@ -34,7 +34,7 @@ final class KeeperController: NSObject {
 
     // MARK: Changing what's kept
 
-    /// Called when the kept list changes from anywhere (the Valet menu's ⌥ items or the Arrange window).
+    /// Called when the kept list changes, so the Valet panel can redraw its sections.
     var onKeptChange: (([String]) -> Void)?
 
     func setKept(_ ids: [String], iconPosition: Double?) {
