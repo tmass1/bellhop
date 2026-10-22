@@ -101,7 +101,8 @@ The Valet menu and the divider are the everyday surfaces. The palette is the key
 
 - Valet adds one extra status item, the divider. Icons to its left are tucked; icons to its right stay in the bar.
 - When collapsed, the divider is wide enough that macOS 27 collapses it and everything left of it behind the overflow arrow. On macOS 14 to 26, the same width pushes those icons off-screen.
-- You place the divider by ⌘-dragging it, like any other icon. Valet never moves other icons.
+- The divider sits just left of Valet's icon and moves with it, so the rule is one sentence: everything left of Valet is tucked away. You arrange by ⌘-dragging Valet's icon, like any other icon. Valet never moves other icons.
+- While arranging ("Show Tucked Icons", or ⌥-click Valet), the divider is a thin line. The rest of the time it's invisible, collapsed with the icons it tucks.
 
 ### Valet menu (MVP)
 
@@ -112,6 +113,7 @@ The Valet menu and the divider are the everyday surfaces. The palette is the key
 
 - Hover over the notch briefly, or click it, and a panel grows down from the notch. It shows hidden icons as a grid of app icons with status text.
 - Clicking a tile opens the mirrored menu. Off by default on Macs without a notch.
+- Black in both light and dark mode, so it reads as the notch growing. It drops a notch-width neck through the menu bar and widens below it, so the menu bar stays readable.
 
 ### Settings
 
@@ -217,14 +219,15 @@ Build in this order. Each milestone ends with something you can run on your own 
 ## Open decisions
 
 - [ ] **Name.** Keep "Valet"? Check the domain, App Store names and trademarks before the landing page.
-- [ ] **Default hotkey.** It must not collide with Spotlight (⌘Space) or Raycast (⌥Space). The mocks use ⌃⌥Space as a placeholder.
-- [ ] **Divider look.** Invisible, a thin line, or Valet's own icon doubling as the divider?
+- [ ] **Default hotkey.** It must not collide with Spotlight (⌘Space) or Raycast (⌥Space). ⌃⌥Space is the placeholder for now.
+- [x] **Divider look.** A thin line, shown only while arranging; invisible otherwise. (Approved Oct 21.)
+- [x] **Notch panel style.** Black in both appearances. (Approved Oct 21.)
 - [ ] **Private menus.** Leave clipboard history (CopyClip) and similar menus out of search by default?
 - [ ] **Minimum macOS.** 14 like Coat Check, or 15 to cut testing?
 - [ ] **Test machines.** Which macOS is each MacBook on? Ideally one runs 27 and one runs 26.
 - [ ] **Coat Check's code.** It's MIT, so you can borrow from it with attribution. Or write everything from scratch? Either way, avoid Ice and Thaw, which are GPL.
 - [ ] **Business model.** Free and open source, or a free core plus a paid tier for the MCP server, hotkeys for individual items, and so on?
-- [ ] **Visual language.** Strictly native macOS, or carry some of your Cabin design system into the palette?
+- [x] **Visual language.** Strictly native macOS: system font, materials and accent color. (Mocks approved Oct 21, `design/mocks/`.)
 - [ ] **Repo.** Name and visibility, for example `tmass1/valet`, private until v0.1.
 
 ## Sources
