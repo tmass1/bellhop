@@ -13,12 +13,17 @@ struct ValetPanelView: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
             if model.trusted {
+                // Teaches the palette and its shortcut to people who only use the mouse.
+                FooterRow(title: "Search Menu Bar…", symbol: "magnifyingglass", shortcut: model.paletteShortcut) {
+                    model.onSearch?()
+                }
+                separator
                 rows
             } else {
                 onboarding
             }
             separator
-            FooterRow(title: "Open at Login", checked: model.opensAtLogin) { model.onToggleLogin?() }
+            FooterRow(title: "Settings…", shortcut: "⌘,") { model.onSettings?() }
             FooterRow(title: "Quit Valet", shortcut: "⌘Q") { NSApp.terminate(nil) }
         }
         .padding(5)
@@ -212,16 +217,16 @@ private struct PlaceholderRow: View {
 
 private struct FooterRow: View {
     let title: String
-    var checked = false
+    var symbol: String?
     var shortcut: String?
     let action: () -> Void
     @State private var hovering = false
 
     var body: some View {
         HStack(spacing: 7) {
-            Image(systemName: "checkmark")
-                .font(.system(size: 10, weight: .bold))
-                .opacity(checked ? 1 : 0)
+            Image(systemName: symbol ?? "circle")
+                .font(.system(size: 12, weight: .medium))
+                .opacity(symbol == nil ? 0 : 1)
                 .frame(width: 16)
             Text(title)
             Spacer()

@@ -16,6 +16,7 @@ let package = Package(
     ],
     dependencies: [
         .package(url: "https://github.com/apple/swift-argument-parser", from: "1.5.0"),
+        .package(url: "https://github.com/sindresorhus/KeyboardShortcuts", from: "2.0.0"),
     ],
     targets: [
         .target(
@@ -25,7 +26,10 @@ let package = Package(
         ),
         .executableTarget(
             name: "ValetApp",
-            dependencies: ["ValetCore"],
+            dependencies: [
+                "ValetCore",
+                .product(name: "KeyboardShortcuts", package: "KeyboardShortcuts"),
+            ],
             path: "Sources/ValetApp",
             swiftSettings: swiftSettings
         ),

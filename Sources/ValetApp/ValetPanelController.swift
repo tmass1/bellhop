@@ -1,5 +1,5 @@
 import AppKit
-import ServiceManagement
+import KeyboardShortcuts
 import SwiftUI
 import ValetCore
 
@@ -42,7 +42,6 @@ final class ValetPanelController: NSObject {
         model.onActivate = { [weak self] in self?.activate($0) }
         model.onHover = { [weak self] in self?.hovered($0) }
         model.onSetKept = { ids in keepers.setKept(ids, iconPosition: divider.iconPosition) }
-        model.onToggleLogin = { [weak self] in self?.toggleLogin() }
         model.onOpenPrivacySettings = {
             if let url = URL(string: "x-apple.systempreferences:com.apple.preference.security?Privacy_Accessibility") {
                 NSWorkspace.shared.open(url)
@@ -59,8 +58,13 @@ final class ValetPanelController: NSObject {
 
     /// Takes a scan made elsewhere (at launch) or by this panel, and refreshes the rows.
     func accept(_ fresh: MenuBarSnapshot) {
-        snapshot = fresh
+        receive(fresh)
         onScan?(fresh)
+    }
+
+    /// Takes a scan made elsewhere (the palette) without passing it on again.
+    func receive(_ fresh: MenuBarSnapshot) {
+        snapshot = fresh
         model.update(snapshot: fresh, kept: keepers.kept)
         resize()
     }
@@ -77,7 +81,7 @@ final class ValetPanelController: NSObject {
     private func show(from item: NSStatusItem) {
         statusItem = item
         model.trusted = system.isTrusted
-        model.opensAtLogin = SMAppService.mainApp.status == .enabled
+        model.paletteShortcut = KeyboardShortcuts.getShortcut(for: .togglePalette)?.description ?? ""
         model.highlighted = nil
         if let snapshot { model.update(snapshot: snapshot, kept: keepers.kept) }
 
@@ -258,57 +262,4 @@ final class ValetPanelController: NSObject {
         let local = hosting.convert(panel.convertPoint(fromScreen: point), from: nil)
         return model.rowFrames.first { $0.value.contains(local) }?.key
     }
-
-    // MARK: Settings
-
-    private func toggleLogin() {
-        do {
-            if SMAppService.mainApp.status == .enabled {
-                try SMAppService.mainApp.unregister()
-            } else {
-                try SMAppService.mainApp.register()
-            }
-        } catch {
-            MenuMirror.alert("Couldn’t change Open at Login: \(error.localizedDescription)")
-        }
-        model.opensAtLogin = SMAppService.mainApp.status == .enabled
-    }
-}
-
-/// A borderless, non-activating panel with the menu material: it takes keyboard input without pulling focus from
-/// the app you're in.
-final class FloatingPanel: NSPanel {
-    init(content: NSView) {
-        super.init(
-            contentRect: .zero, styleMask: [.nonactivatingPanel, .borderless, .fullSizeContentView],
-            backing: .buffered, defer: true
-        )
-        isFloatingPanel = true
-        level = .popUpMenu
-        backgroundColor = .clear
-        isOpaque = false
-        hasShadow = true
-        becomesKeyOnlyIfNeeded = false
-        hidesOnDeactivate = false
-        collectionBehavior = [.canJoinAllSpaces, .fullScreenAuxiliary, .transient]
-
-        let material = NSVisualEffectView()
-        material.material = .menu
-        material.blendingMode = .behindWindow
-        material.state = .active
-        material.wantsLayer = true
-        material.layer?.cornerRadius = 10
-        material.layer?.masksToBounds = true
-        content.translatesAutoresizingMaskIntoConstraints = false
-        material.addSubview(content)
-        NSLayoutConstraint.activate([
-            content.leadingAnchor.constraint(equalTo: material.leadingAnchor),
-            content.trailingAnchor.constraint(equalTo: material.trailingAnchor),
-            content.topAnchor.constraint(equalTo: material.topAnchor),
-            content.bottomAnchor.constraint(equalTo: material.bottomAnchor),
-        ])
-        contentView = material
-    }
-
-    override var canBecomeKey: Bool { true }
 }

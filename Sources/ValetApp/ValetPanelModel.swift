@@ -25,7 +25,8 @@ final class ValetPanelModel {
     var fixed: [MenuBarIcon] = []
     /// Tucked icons that aren't kept, in the real bar's order.
     var tucked: [MenuBarIcon] = []
-    var opensAtLogin = false
+    /// The palette's shortcut, shown on the Search row (e.g. "⌃⌥Space").
+    var paletteShortcut = ""
     /// The row under the pointer or chosen with the keyboard.
     var highlighted: String?
     var drag: Drag?
@@ -39,7 +40,8 @@ final class ValetPanelModel {
     @ObservationIgnored var onActivate: ((MenuBarIcon) -> Void)?
     @ObservationIgnored var onHover: ((MenuBarIcon?) -> Void)?
     @ObservationIgnored var onSetKept: (([String]) -> Void)?
-    @ObservationIgnored var onToggleLogin: (() -> Void)?
+    @ObservationIgnored var onSearch: (() -> Void)?
+    @ObservationIgnored var onSettings: (() -> Void)?
     @ObservationIgnored var onOpenPrivacySettings: (() -> Void)?
     @ObservationIgnored var onClose: (() -> Void)?
 

@@ -10,6 +10,8 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     private var valetPanel: ValetPanelController!
     private var divider: DividerController!
     private var keepers: KeeperController!
+    private var palette: PaletteController!
+    private let settings = SettingsWindow()
     private var server: SocketServer?
 
     func applicationDidFinishLaunching(_ notification: Notification) {
@@ -44,6 +46,22 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
             engine: engine, system: system, keepers: keepers, mirror: mirror, divider: divider
         )
         valetPanel.onScan = { [weak self] snapshot in self?.accept(snapshot) }
+        palette = PaletteController(engine: engine, system: system, mirror: mirror) { [weak keepers] in
+            keepers?.kept ?? []
+        }
+        palette.anchor = mirror.anchor
+        valetPanel.model.onSearch = { [weak self] in
+            self?.valetPanel.close()
+            self?.palette.show()
+        }
+        valetPanel.model.onSettings = { [weak self] in
+            self?.valetPanel.close()
+            self?.settings.show()
+        }
+        palette.onScan = { [weak self] snapshot in
+            self?.valetPanel.receive(snapshot)
+            self?.accept(snapshot)
+        }
         SystemSnapshot.dividerFrames = { [weak divider] in divider?.tuckingFrames ?? [] }
         divider.start()
         scanOnLaunch()
@@ -65,8 +83,10 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         }
     }
 
+    /// Every scan, wherever it was made, reaches keepers and the palette.
     private func accept(_ snapshot: MenuBarSnapshot) {
         keepers.update(with: snapshot, iconPosition: divider.iconPosition)
+        palette.accept(snapshot)
     }
 
     @objc private func iconClicked() {
@@ -79,10 +99,12 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
 
     private func startServer() {
         let system = system
+        let palette = palette!
         let handler = RequestHandler(
             engine: engine,
             capture: { await MainActor.run { SystemSnapshot.capture() } },
-            status: { StatusInfo(version: ValetCore.version, trusted: system.isTrusted, pid: getpid()) }
+            status: { StatusInfo(version: ValetCore.version, trusted: system.isTrusted, pid: getpid()) },
+            showPalette: { query in await MainActor.run { palette.show(query: query) } }
         )
         let server = SocketServer(path: IPC.socketPath) { await handler.handle($0) }
         do {
