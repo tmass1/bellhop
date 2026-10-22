@@ -11,7 +11,8 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     private var divider: DividerController!
     private var keepers: KeeperController!
     private var palette: PaletteController!
-    private let settings = SettingsWindow()
+    private let updater = Updater()
+    private lazy var settings = SettingsWindow(updater: updater)
     private var server: SocketServer?
 
     func applicationDidFinishLaunching(_ notification: Notification) {
@@ -59,6 +60,12 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
             self?.bellhopPanel.close()
             self?.settings.show()
         }
+        bellhopPanel.model.onCheckForUpdates = { [weak self] in
+            self?.bellhopPanel.close()
+            self?.updater.checkForUpdates()
+        }
+        updater.onAvailableChange = { [weak self] in self?.bellhopPanel.model.updateAvailable = $0 }
+        updater.start()
         palette.onScan = { [weak self] snapshot in
             self?.bellhopPanel.receive(snapshot)
             self?.accept(snapshot)

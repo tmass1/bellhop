@@ -23,6 +23,13 @@ struct BellhopPanelView: View {
                 onboarding
             }
             separator
+            if let version = model.updateAvailable {
+                FooterRow(title: "Update to Bellhop \(version)…", symbol: "arrow.down.circle") {
+                    model.onCheckForUpdates?()
+                }
+            } else {
+                FooterRow(title: "Check for Updates…") { model.onCheckForUpdates?() }
+            }
             FooterRow(title: "Settings…", shortcut: "⌘,") { model.onSettings?() }
             FooterRow(title: "Quit Bellhop", shortcut: "⌘Q") { NSApp.terminate(nil) }
         }

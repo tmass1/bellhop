@@ -44,6 +44,9 @@ final class BellhopPanelModel {
     @ObservationIgnored var onSetKept: (([String]) -> Void)?
     @ObservationIgnored var onSearch: (() -> Void)?
     @ObservationIgnored var onSettings: (() -> Void)?
+    @ObservationIgnored var onCheckForUpdates: (() -> Void)?
+    /// A newer version a scheduled check found, offered in the footer.
+    var updateAvailable: String?
     @ObservationIgnored var onOpenPrivacySettings: (() -> Void)?
     @ObservationIgnored var onClose: (() -> Void)?
 

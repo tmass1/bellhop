@@ -18,6 +18,8 @@ let package = Package(
     dependencies: [
         .package(url: "https://github.com/apple/swift-argument-parser", from: "1.5.0"),
         .package(url: "https://github.com/sindresorhus/KeyboardShortcuts", from: "2.0.0"),
+        // In-app updates: the appcast, the EdDSA check on every download, and the Software Update window.
+        .package(url: "https://github.com/sparkle-project/Sparkle", from: "2.10.0"),
     ],
     targets: [
         .target(
@@ -30,9 +32,14 @@ let package = Package(
             dependencies: [
                 "BellhopCore",
                 .product(name: "KeyboardShortcuts", package: "KeyboardShortcuts"),
+                .product(name: "Sparkle", package: "Sparkle"),
             ],
             path: "Sources/BellhopApp",
-            swiftSettings: swiftSettings
+            swiftSettings: swiftSettings,
+            // Sparkle.framework ships inside the bundle, in Contents/Frameworks.
+            linkerSettings: [
+                .unsafeFlags(["-Xlinker", "-rpath", "-Xlinker", "@executable_path/../Frameworks"]),
+            ]
         ),
         .executableTarget(
             name: "BellhopCLI",

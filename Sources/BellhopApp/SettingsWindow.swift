@@ -3,8 +3,9 @@ import KeyboardShortcuts
 import ServiceManagement
 import SwiftUI
 
-/// Bellhop's settings: the palette shortcut and Open at Login, plus a plain word on privacy.
+/// Bellhop's settings: the palette shortcut, appearance, Open at Login and updates, plus a plain word on privacy.
 struct SettingsView: View {
+    let updater: Updater
     @State private var opensAtLogin = SMAppService.mainApp.status == .enabled
     @State private var appearance = Appearance.current
 
@@ -20,9 +21,18 @@ struct SettingsView: View {
                 Toggle("Open Bellhop at login", isOn: $opensAtLogin)
                     .onChange(of: opensAtLogin) { _, enabled in setOpensAtLogin(enabled) }
             }
+            Section("Updates") {
+                Toggle("Check for updates automatically", isOn: Binding(
+                    get: { updater.checksAutomatically }, set: { updater.setChecksAutomatically($0) }
+                ))
+                LabeledContent("Bellhop \(Updater.version)") {
+                    Button("Check Now") { updater.checkForUpdates() }
+                }
+            }
             Section("Privacy") {
                 Text("Bellhop reads and presses menu bar items using Accessibility. It never records your screen, "
-                    + "and nothing you search or run leaves this Mac.")
+                    + "and nothing you search or run leaves this Mac. "
+                    + "The only thing it fetches is the update list from GitHub, once a day.")
                     .foregroundStyle(.secondary)
                     .fixedSize(horizontal: false, vertical: true)
             }
@@ -43,11 +53,16 @@ struct SettingsView: View {
 
 @MainActor
 final class SettingsWindow {
+    private let updater: Updater
     private var window: NSWindow?
+
+    init(updater: Updater) {
+        self.updater = updater
+    }
 
     func show() {
         if window == nil {
-            let window = NSWindow(contentViewController: NSHostingController(rootView: SettingsView()))
+            let window = NSWindow(contentViewController: NSHostingController(rootView: SettingsView(updater: updater)))
             window.title = "Bellhop Settings"
             window.styleMask = [.titled, .closable]
             window.isReleasedWhenClosed = false
