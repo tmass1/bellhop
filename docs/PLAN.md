@@ -110,13 +110,16 @@ The Valet menu and the divider are the everyday surfaces. The palette is the key
 - Valet sits next to Apple's items, so every third-party icon is tucked. Each icon you keep comes back as a keeper: an item Valet draws itself, just left of Valet's icon, in whatever order you choose.
 - A keeper shows the app's icon. Valet can't copy an app's real menu bar glyph without Screen Recording. Status text moved to the keeper's tooltip: on its own, "1" or "3" doesn't say which app it is.
 - Clicking a keeper opens the app's real menu, mirrored. Panel apps, and menus that only exist while open, press the real tucked icon instead.
-- Choose in Arrange Menu Bar… (a board: drag icons between "In your menu bar" and "Tucked away", and along the bar to reorder), or with ⌥ in the Valet menu ("Keep in Menu Bar").
+- Choose by dragging in the Valet panel itself: up into "In the Menu Bar" to keep, down into "Tucked Away" to tuck, along the keepers to reorder. Space does the same from the keyboard.
 - Approved Oct 22: app icon (first tried status text with an icon fallback; changed after seeing it in the bar).
 
-### Valet menu (MVP)
+### Valet panel (MVP)
 
-- Every icon in a vertical list, tucked ones first, each with its real menu as a submenu. Panel apps open on click.
-- A "Search…" row at the top shows the hotkey. That row teaches the palette to mouse users.
+- Approved Oct 22: a menu-styled panel rather than a native menu, because native menus can't be dragged in.
+- "In the Menu Bar" first (keepers, draggable and in order, then Apple's items, fixed), then "Tucked Away" in the real bar's order.
+- Hovering a row opens the app's real menu, mirrored, as a native menu beside it. Panel apps open on click, under Valet's icon.
+- A "Search…" row at the top shows the hotkey (once the palette exists). That row teaches the palette to mouse users.
+- Keyboard: ↑↓ move, → or Return open, Space keeps or tucks, Esc closes. The app you're in keeps focus.
 
 ### Notch panel (v1)
 
@@ -232,6 +235,7 @@ Build in this order. Each milestone ends with something you can run on your own 
 - [x] **Divider look.** A thin line, shown only while arranging; invisible otherwise. (Approved Oct 21.)
 - [x] **Notch panel style.** Black in both appearances. (Approved Oct 21.)
 - [x] **Choosing what stays.** Keepers: tuck everything, keep any icons as Valet's own items, shown with the app's icon. (Approved Oct 22.)
+- [x] **Valet menu or panel.** A draggable, menu-styled panel, with "In the Menu Bar" first. (Approved Oct 22.)
 - [ ] **Private menus.** Leave clipboard history (CopyClip) and similar menus out of search by default?
 - [ ] **Minimum macOS.** 14 like Coat Check, or 15 to cut testing?
 - [ ] **Test machines.** Which macOS is each MacBook on? Ideally one runs 27 and one runs 26.
