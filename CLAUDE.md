@@ -5,7 +5,7 @@ The full plan, including scope, architecture, risks and milestones, is in `docs/
 
 ## Current milestone
 
-**Milestone 4: Command palette** (not started; needs Tommy's go-ahead). Milestone 3 (Valet panel, divider, keepers) is done on the M5 Max as of Oct 22; the ⌘-drag test on the Cinema Display and the M1 run are still open, so keep `valet-probe` until then. Update this line when a milestone is done.
+**Milestone 5: v0.1 release** (not started; needs Tommy's go-ahead). Milestones 3 (Valet panel, divider, keepers) and 4 (command palette) are done on the M5 Max as of Oct 22; the ⌘-drag test on the Cinema Display and the M1 run are still open, so keep `valet-probe` until then. Update this line when a milestone is done.
 
 ## Stack
 

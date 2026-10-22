@@ -228,7 +228,7 @@ Build in this order. Each milestone ends with something you can run on your own 
    - Status (Oct 22): done on the M5 Max. Still open: the ⌘-drag test of Valet's icon on the Cinema Display, and the M1 run.
 4. **Command palette.** Hotkey, fuzzy search over menu paths, frecency, destructive-item confirmation.
    - Done when: any menu item can be run from the keyboard alone, and the panel feels instant on open (target under 100 ms).
-   - Status (Oct 22): built; opens in about 20 ms cold. Waiting on Tommy's keyboard check.
+   - Status (Oct 22): done on the M5 Max. Opens in about 20 ms cold; Tommy's keyboard checks passed.
 5. **v0.1 release.** Developer ID signing, notarization, DMG, Sparkle, Homebrew cask, landing page.
    - Done when: a clean Mac installs Valet from the site and receives an update through Sparkle.
 6. **v1.** Notch panel, pins, status line, App Intents, universal binary.
