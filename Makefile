@@ -26,9 +26,10 @@ probe:
 	swift build -c release --product valet-probe
 	"$$(swift build -c release --show-bin-path)/valet-probe" $(ARGS)
 
-# Serves the repo on localhost only, for tools/probe-viewer (reads probe-output/).
+# Serves the repo on localhost only, for tools/probe-viewer and design/mocks.
 viewer:
 	@echo "Probe viewer: http://localhost:8765/tools/probe-viewer/"
+	@echo "Mocks:        http://localhost:8765/design/mocks/"
 	python3 -m http.server 8765 --bind 127.0.0.1
 
 clean:

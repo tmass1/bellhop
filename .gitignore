@@ -5,3 +5,4 @@ probe-output/
 .swiftpm/
 *.xcodeproj
 .DS_Store
+design/mocks/icons/
