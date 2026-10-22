@@ -73,7 +73,8 @@ public enum Visibility {
     ///   - appMenus: the union of the frontmost app's menu bar item frames, if known.
     ///   - overflowButton: the frame of macOS 27's overflow arrow, when it's showing. Don't pass it for the arrow itself.
     public static func hiddenReasons(
-        for item: Frame, screens: [ScreenGeometry], appMenus: Frame?, overflowButton: Frame? = nil
+        for item: Frame, screens: [ScreenGeometry], appMenus: Frame?, overflowButton: Frame? = nil,
+        dividers: [Frame] = []
     ) -> [HiddenReason] {
         var reasons: [HiddenReason] = []
         if item.width <= 1 || item.height <= 1 {
@@ -92,8 +93,16 @@ public enum Visibility {
            item.minX < appMenus.maxX {
             reasons.append(.behindAppMenus)
         }
-        if let overflowButton, Visibility.screen(containing: overflowButton, in: screens)?.index == screen.index,
-           item.minX < overflowButton.minX {
+        let leftOfArrow = overflowButton.map {
+            Visibility.screen(containing: $0, in: screens)?.index == screen.index && item.minX < $0.minX
+        } ?? false
+        // Valet's dividers fill the space tucked icons used to occupy. Items can't overlap, so an icon reporting a
+        // position under a divider is collapsed and just hasn't updated its frame.
+        let underDivider = dividers.contains { divider in
+            let overlap = min(item.maxX, divider.maxX) - max(item.minX, divider.minX)
+            return overlap > 2 && Visibility.screen(containing: divider, in: screens)?.index == screen.index
+        }
+        if leftOfArrow || underDivider {
             reasons.append(.collapsedBehindOverflow)
         }
         return reasons

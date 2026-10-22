@@ -18,11 +18,15 @@ public struct SystemSnapshot: Sendable {
     public var apps: [RunningApp]
     public var frontmost: RunningApp?
     public var screens: [ScreenGeometry]
+    /// Where Valet's own dividers are, in Accessibility coordinates. An icon overlapping one is tucked: collapsed
+    /// icons can keep reporting their old position, and macOS never lets two items overlap.
+    public var dividers: [Frame]
 
-    public init(apps: [RunningApp], frontmost: RunningApp?, screens: [ScreenGeometry]) {
+    public init(apps: [RunningApp], frontmost: RunningApp?, screens: [ScreenGeometry], dividers: [Frame] = []) {
         self.apps = apps
         self.frontmost = frontmost
         self.screens = screens
+        self.dividers = dividers
     }
 }
 

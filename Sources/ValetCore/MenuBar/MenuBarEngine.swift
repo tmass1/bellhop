@@ -65,7 +65,8 @@ public actor MenuBarEngine {
             elements[id] = raw.element
             let hiddenReasons = raw.frame.map {
                 Visibility.hiddenReasons(
-                    for: $0, screens: env.screens, appMenus: appMenus, overflowButton: overflowButton
+                    for: $0, screens: env.screens, appMenus: appMenus, overflowButton: overflowButton,
+                    dividers: env.dividers
                 )
             } ?? [.offScreen]
             icons.append(icon(

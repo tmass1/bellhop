@@ -1,6 +1,9 @@
 import AppKit
 
 extension SystemSnapshot {
+    /// The app sets this so every capture knows where Valet's own dividers are (Cocoa screen coordinates).
+    @MainActor public static var dividerFrames: () -> [CGRect] = { [] }
+
     /// Reads running apps, the frontmost app and the screens. AppKit wants this on the main thread.
     @MainActor
     public static func capture() -> SystemSnapshot {
@@ -8,10 +11,12 @@ extension SystemSnapshot {
         let apps = workspace.runningApplications
             .filter { $0.processIdentifier > 0 && $0.processIdentifier != getpid() }
             .map(RunningApp.init)
+        let primaryHeight = NSScreen.screens.first?.frame.height ?? 0
         return SystemSnapshot(
             apps: apps,
             frontmost: workspace.frontmostApplication.map(RunningApp.init),
-            screens: captureScreens()
+            screens: captureScreens(),
+            dividers: dividerFrames().map { Frame(cocoa: $0, primaryScreenHeight: primaryHeight) }
         )
     }
 

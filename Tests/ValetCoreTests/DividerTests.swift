@@ -27,3 +27,17 @@ import Testing
     #expect(sections.inBar.count == 16)
     #expect(sections.inBar.first?.name == "Dropbox")
 }
+
+@Test func notchedScreensUseOneOverWideDivider() {
+    #expect(DividerLayout.tuckingWidths(iconMinX: 1330, leftBoundary: 957, notched: true, screenWidth: 1728) == [413])
+}
+
+@Test func screensWithoutANotchSplitTheRoomIntoPiecesThatFit() {
+    // Cinema Display, Oct 22: room 1,800 pt (app menus end at 372, ◆ at 2172); 2 × 880 tucked every icon.
+    #expect(DividerLayout.tuckingWidths(iconMinX: 2172, leftBoundary: 372, notched: false, screenWidth: 2560)
+        == [880, 880])
+    // Small room: one piece.
+    #expect(DividerLayout.tuckingWidths(iconMinX: 900, leftBoundary: 400, notched: false, screenWidth: 1920)
+        == [460])
+    #expect(DividerLayout.tuckingWidths(iconMinX: 420, leftBoundary: 400, notched: false, screenWidth: 1920) == nil)
+}

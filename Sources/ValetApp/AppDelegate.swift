@@ -44,6 +44,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
             engine: engine, system: system, keepers: keepers, mirror: mirror, divider: divider
         )
         valetPanel.onScan = { [weak self] snapshot in self?.accept(snapshot) }
+        SystemSnapshot.dividerFrames = { [weak divider] in divider?.tuckingFrames ?? [] }
         divider.start()
         scanOnLaunch()
         startServer()

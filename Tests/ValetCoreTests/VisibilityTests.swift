@@ -101,3 +101,21 @@ private let overflowArrow = Frame(x: 981.5, y: 1, width: 17.5, height: 30)
         for: item, screens: screens, appMenus: nil, overflowButton: Frame(x: 4000, y: 0, width: 18, height: 30)
     ).isEmpty)
 }
+
+// Cinema Display, Oct 22: dividers at 380–1194 and 1216–2030, arrow at 1184. Collapsed icons kept reporting their
+// old spots, some right of the arrow.
+@Test func iconsUnderValetsDividersAreTuckedWhateverTheyReport() {
+    let cinema = [ScreenGeometry(
+        index: 0, name: "Cinema", frame: Frame(x: 0, y: 0, width: 2560, height: 1440), menuBarHeight: 30, notch: nil
+    )]
+    let dividers = [Frame(x: 380, y: 2, width: 814, height: 24), Frame(x: 1216, y: 2, width: 814, height: 24)]
+    let arrow = Frame(x: 1184, y: 1, width: 17.5, height: 27)
+    let stale = Frame(x: 1516, y: 2, width: 24, height: 24)
+    #expect(Visibility.hiddenReasons(
+        for: stale, screens: cinema, appMenus: nil, overflowButton: arrow, dividers: dividers
+    ) == [.collapsedBehindOverflow])
+    let keeperSide = Frame(x: 2211, y: 2, width: 26, height: 24)
+    #expect(Visibility.hiddenReasons(
+        for: keeperSide, screens: cinema, appMenus: nil, overflowButton: arrow, dividers: dividers
+    ).isEmpty)
+}

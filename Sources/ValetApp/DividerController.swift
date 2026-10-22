@@ -13,7 +13,8 @@ final class DividerController {
 
     private let icon: NSStatusItem
     private let engine: MenuBarEngine
-    private var divider: NSStatusItem?
+    /// One divider on a notched screen; on a wide screen without a notch, several that together fill the room.
+    private var dividers: [NSStatusItem] = []
     private(set) var arranging = false
     private var attachedTo: Double?
     private var reattaching = false
@@ -58,12 +59,19 @@ final class DividerController {
 
     func toggleArranging() {
         arranging.toggle()
-        attach()
+        apply([DividerLayout.arrangingWidth])
+        styleDivider()
+        resize()
     }
 
     // MARK: Attaching
 
     private static func key(_ name: String) -> String { "NSStatusItem Preferred Position \(name)" }
+
+    /// The dividers' frames on screen while they're tucking, for telling which icons they hide.
+    var tuckingFrames: [CGRect] {
+        arranging ? [] : dividers.compactMap { $0.button?.window?.frame }.filter { $0.width > 40 }
+    }
 
     var iconPosition: Double? {
         UserDefaults.standard.object(forKey: Self.key(Self.iconName)) as? Double
@@ -77,43 +85,53 @@ final class DividerController {
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) { [weak self] in self?.attach() }
             return
         }
-        reattaching = true
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) { [weak self] in self?.reattaching = false }
-        if let divider { NSStatusBar.system.removeStatusItem(divider) }
-        storeDividerPosition()
         attachedTo = iconPosition
-        let divider = NSStatusBar.system.statusItem(withLength: DividerLayout.arrangingWidth)
-        divider.autosaveName = Self.dividerName
-        divider.button?.setAccessibilityLabel("Valet divider")
-        self.divider = divider
-        styleDivider()
+        // The icon may have moved: re-create every piece next to its new spot.
+        dividers.forEach { NSStatusBar.system.removeStatusItem($0) }
+        dividers = []
+        apply([DividerLayout.arrangingWidth])
         resize()
     }
 
-    /// macOS reads this when the divider is created. On 27 it drops it again once the divider is collapsed
-    /// (tucked), so it's written fresh before every creation rather than relied on afterwards.
-    private func storeDividerPosition() {
-        guard let position = iconPosition else { return }
-        let key = Self.key(Self.dividerName)
-        let wanted = DividerLayout.dividerPosition(forIcon: position)
-        if (UserDefaults.standard.object(forKey: key) as? Double) != wanted {
-            UserDefaults.standard.set(wanted, forKey: key)
+    /// Sets the pieces' widths, re-creating them when the count changes. Each one's position is written right
+    /// before it's created: macOS reads it then, and on 27 drops it once the piece is collapsed.
+    private func apply(_ widths: [Double]) {
+        if widths.count != dividers.count {
+            reattaching = true
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) { [weak self] in self?.reattaching = false }
+            dividers.forEach { NSStatusBar.system.removeStatusItem($0) }
+            dividers = widths.indices.map { index in
+                let name = index == 0 ? Self.dividerName : "\(Self.dividerName) \(index + 1)"
+                if let position = iconPosition {
+                    let piece = DividerLayout.dividerPosition(forIcon: position) + 0.1 * Double(index)
+                    UserDefaults.standard.set(piece, forKey: Self.key(name))
+                }
+                let divider = NSStatusBar.system.statusItem(withLength: widths[index])
+                divider.autosaveName = name
+                divider.button?.setAccessibilityLabel("Valet divider")
+                return divider
+            }
+            styleDivider()
+        }
+        for (divider, width) in zip(dividers, widths) where divider.length != width {
+            divider.length = width
         }
     }
 
     private func styleDivider() {
-        guard let button = divider?.button else { return }
+        guard let button = dividers.first?.button else { return }
         button.image = arranging ? Self.lineImage : nil
         button.toolTip = arranging
             ? "Icons left of this line are tucked away. ⌘-drag Valet’s icon to move it."
             : nil
     }
 
-    /// Sets the divider's width for the current mode and layout.
+    /// Sets the dividers for the current mode and layout.
     func resize() {
-        guard let divider else { return }
+        guard !dividers.isEmpty else { return }
         if arranging {
-            divider.length = DividerLayout.arrangingWidth
+            apply([DividerLayout.arrangingWidth])
+            styleDivider()
             return
         }
         guard let window = icon.button?.window, let screen = window.screen else { return }
@@ -121,16 +139,23 @@ final class DividerController {
         let notchMaxX = screen.auxiliaryTopRightArea.map { Double($0.minX) }
         Task {
             var appMenusMaxX: Double?
-            if notchMaxX == nil, let front = NSWorkspace.shared.frontmostApplication {
-                appMenusMaxX = await engine.appMenusMaxX(pid: front.processIdentifier)
+            if notchMaxX == nil {
+                // Without a notch the app's own menus share the bar. If they can't be read, keep what's there
+                // rather than guess: measuring from the screen's edge makes the dividers far too wide.
+                guard let front = NSWorkspace.shared.frontmostApplication,
+                      let maxX = await engine.appMenusMaxX(pid: front.processIdentifier) else { return }
+                appMenusMaxX = maxX
             }
             let boundary = DividerLayout.leftBoundary(
                 screenMinX: screen.frame.minX, notchMaxX: notchMaxX, appMenusMaxX: appMenusMaxX
             )
-            // If Valet's own icon has no room to its left, a wide divider can't help; leave it thin.
-            let width = DividerLayout.tuckingWidth(iconMinX: iconMinX, leftBoundary: boundary)
+            let widths = DividerLayout.tuckingWidths(
+                iconMinX: iconMinX, leftBoundary: boundary, notched: notchMaxX != nil,
+                screenWidth: screen.frame.width
+            )
             guard !arranging else { return }
-            divider.length = width ?? DividerLayout.arrangingWidth
+            // If Valet's own items have no room to their left, wide dividers can't help; leave one thin one.
+            apply(widths ?? [DividerLayout.arrangingWidth])
         }
     }
 
