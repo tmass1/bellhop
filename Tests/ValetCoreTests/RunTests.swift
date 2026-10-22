@@ -2,7 +2,7 @@ import Testing
 @testable import ValetCore
 
 private func engine(
-    _ customize: @escaping @Sendable (String, FakeElement, ActionLog) -> Void = { _, _, _ in }
+    _ customize: @escaping FixtureAccessibility.Customize = { _, _, _, _ in }
 ) throws -> (MenuBarEngine, FixtureAccessibility) {
     var system = try FixtureAccessibility("macos27-laptop-overflow")
     system.customize = customize
@@ -49,11 +49,12 @@ private func engine(
     let (engine, system) = try engine()
     let result = try await engine.run("Burn", confirm: false, env: system.file.system)
     #expect(result.path == "Burn")
+    // The fake logs the raw fixture title; Valet trims it to "52%" for display.
     #expect(system.log.entries == [" 52%:AXPress"])
 }
 
 /// Dev Server Manager only builds its menu when opened: pressing the icon adds an AXMenu child.
-private let onDemandMenu: @Sendable (String, FakeElement, ActionLog) -> Void = { app, icon, log in
+private let onDemandMenu: FixtureAccessibility.Customize = { app, icon, _, log in
     guard app == "Dev Server Manager" else { return }
     icon.onPerform = { element, action in
         guard action == AXName.press else { return nil }
@@ -92,12 +93,37 @@ private let onDemandMenu: @Sendable (String, FakeElement, ActionLog) -> Void = {
     #expect(system.log.entries == ["⚡:AXPress", "AXMenu:AXCancel"])
 }
 
-@Test func iconsThatShowNoMenuArePanelsAndGetClosedAgain() async throws {
-    let (engine, system) = try engine()
+/// Google Drive opens a panel: pressing its icon adds a window to the app, and pressing again removes it.
+private let panelApp: FixtureAccessibility.Customize = { app, icon, appElement, log in
+    guard app == "Google Drive" else { return }
+    icon.onPerform = { _, action in
+        guard action == AXName.press else { return nil }
+        let open = appElement.values[AXName.windows]?.elements.isEmpty == false
+        appElement.values[AXName.windows] = .elements(open ? [] : [FakeElement([:], log: log)])
+        return nil
+    }
+}
+
+@Test func iconsThatOpenAWindowArePanelsAndGetClosedRightAway() async throws {
+    let (engine, system) = try engine(panelApp)
+    let clock = ContinuousClock()
+    let start = clock.now
     let icon = try await engine.loadMenu("Google Drive", env: system.file.system)
+    #expect(clock.now - start < .milliseconds(400))
     #expect(icon.menuAvailability == .panel)
     #expect(system.log.entries == ["Google Drive:AXPress", "Google Drive:AXPress"])
     await #expect(throws: ValetError.panelApp("Google Drive")) {
         try await engine.run("Google Drive › Settings", confirm: false, env: system.file.system)
+    }
+}
+
+@Test func iconsThatIgnoreThePressArentPressedAgain() async throws {
+    let (engine, system) = try engine()
+    let icon = try await engine.loadMenu("Claude", env: system.file.system)
+    #expect(icon.menuAvailability == .noResponse)
+    // Claude's icon has no title or description, so the fake logs its role.
+    #expect(system.log.entries == ["AXMenuBarItem:AXPress"])
+    await #expect(throws: ValetError.noResponse("Claude")) {
+        try await engine.run("Claude › Settings", confirm: false, env: system.file.system)
     }
 }

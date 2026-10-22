@@ -91,6 +91,7 @@ enum AXName {
     static let cmdModifiers = "AXMenuItemCmdModifiers"
     static let extrasMenuBar = "AXExtrasMenuBar"
     static let menuBar = "AXMenuBar"
+    static let windows = "AXWindows"
 
     static let menuRole = "AXMenu"
     static let groupRole = "AXGroup"

@@ -31,8 +31,10 @@ public enum MenuAvailability: String, Codable, Sendable {
     case readable
     /// The app only builds its menu when it opens. `MenuBarEngine.loadMenu` opens it briefly to read it.
     case onDemand
-    /// Pressing the icon showed no menu: a panel or popover app. Run the icon itself instead.
+    /// Pressing the icon opens a window (panel, popover or overlay) instead of a menu. Run the icon itself.
     case panel
+    /// Pressing the icon over Accessibility did nothing visible to Valet; some apps only react to real clicks.
+    case noResponse
 }
 
 public struct MenuEntry: Codable, Sendable, Equatable {

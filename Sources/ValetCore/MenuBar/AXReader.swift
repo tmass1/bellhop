@@ -1,4 +1,5 @@
 import CoreGraphics
+import Foundation
 
 /// Stateless reads over Accessibility elements, shared by `MenuBarEngine`'s scan, menu and run paths.
 /// Only call it from inside the engine's actor.
@@ -46,7 +47,7 @@ struct AXReader {
             app: app,
             element: target,
             role: outer[AXName.role]?.string,
-            title: values[AXName.title]?.string,
+            title: values[AXName.title]?.string?.trimmingCharacters(in: .whitespaces).nilIfEmpty,
             description: values[AXName.description]?.string,
             help: help,
             frame: frame,
@@ -173,4 +174,8 @@ struct AXReader {
         if !enabled { throw ValetError.disabled(path) }
         if MenuPaths.isDestructive(title), !confirm { throw ValetError.needsConfirmation(path) }
     }
+}
+
+extension String {
+    var nilIfEmpty: String? { isEmpty ? nil : self }
 }

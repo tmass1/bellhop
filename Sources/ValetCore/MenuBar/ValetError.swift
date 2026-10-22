@@ -10,6 +10,7 @@ public enum ValetError: Error, Codable, Sendable, Equatable {
     case disabled(String)
     case needsConfirmation(String)
     case panelApp(String)
+    case noResponse(String)
     case pressFailed(String, code: Int32)
     case badRequest(String)
 
@@ -36,6 +37,8 @@ public enum ValetError: Error, Codable, Sendable, Equatable {
             "\"\(path)\" can't be undone. Run it again with --confirm."
         case .panelApp(let name):
             "\(name) opens a panel, not a menu. Run \"\(name)\" on its own to open it."
+        case .noResponse(let name):
+            "\(name) didn't respond when Valet pressed it. Some apps only react to a real click."
         case .pressFailed(let path, let code):
             "Couldn't press \"\(path)\" (Accessibility error \(code))."
         case .badRequest(let detail):

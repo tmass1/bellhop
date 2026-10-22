@@ -61,6 +61,8 @@ struct Menu: ParsableCommand {
         switch icon.menuAvailability {
         case .panel:
             print("  Opens a panel, not a menu. `valet run \"\(icon.name)\"` opens it.")
+        case .noResponse:
+            print("  Didn't respond to Valet's press. Some apps only react to a real click.")
         case .readable, .onDemand:
             printTree(icon.menu ?? [], depth: 1)
         }
@@ -168,5 +170,6 @@ private func menuSummary(_ icon: MenuBarIcon) -> String {
     case .readable: "\(MenuPaths.entries(for: icon).count) items"
     case .onDemand: "read on open"
     case .panel: "panel"
+    case .noResponse: "no response"
     }
 }

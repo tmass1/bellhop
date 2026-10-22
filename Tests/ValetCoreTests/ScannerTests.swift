@@ -27,7 +27,7 @@ import Testing
     let system = try FixtureAccessibility("macos27-laptop-overflow")
     let icons = try await MenuBarEngine(system: system).scan(system.file.system).icons
     let byApp = Dictionary(icons.map { ($0.app.name, $0) }, uniquingKeysWith: { first, _ in first })
-    #expect(byApp["Burn"]?.title == " 52%")
+    #expect(byApp["Burn"]?.title == "52%")
     #expect(byApp["Dropbox"]?.label == "Dropbox 277.3.4925")
     #expect(byApp["Ollama"]?.label == "Ollama")
     #expect(byApp["Mark"]?.name == "Mark")

@@ -16,8 +16,9 @@ public actor MenuBarEngine {
     private var current: MenuBarSnapshot?
     /// Live elements from the last scan, by icon ID. Valid while the owning process lives.
     private var elements: [String: any AXElement] = [:]
-    /// Icons that showed no menu when pressed. Remembered so we don't press them again to look.
-    private var panelIcons: Set<String> = []
+    /// Icons that showed no menu when pressed (`.panel` or `.noResponse`). Remembered so we don't press them
+    /// again just to look.
+    private var noMenu: [String: MenuAvailability] = [:]
 
     private let reader = AXReader()
     private let menuOpenTimeout: Duration = .milliseconds(800)
@@ -93,8 +94,8 @@ public actor MenuBarEngine {
             var budget = reader.maxMenuItems
             menu = reader.walk(menuElement, depth: 1, budget: &budget).map(\.entry)
             availability = .readable
-        } else if panelIcons.contains(id) {
-            availability = .panel
+        } else if let known = noMenu[id] {
+            availability = known
         }
         return MenuBarIcon(
             id: id,
@@ -126,8 +127,8 @@ public actor MenuBarEngine {
         var icon = try MenuPaths.resolveIcon(query, in: snapshot.icons)
         guard icon.menuAvailability == .onDemand, let element = elements[icon.id] else { return icon }
 
-        guard let menuElement = await openMenu(element, iconID: icon.id) else {
-            icon.menuAvailability = .panel
+        guard case .menu(let menuElement) = await openMenu(element, of: icon) else {
+            icon.menuAvailability = noMenu[icon.id] ?? .noResponse
             update(icon)
             return icon
         }
@@ -159,6 +160,8 @@ public actor MenuBarEngine {
         switch icon.menuAvailability {
         case .panel:
             throw ValetError.panelApp(icon.name)
+        case .noResponse:
+            throw ValetError.noResponse(icon.name)
         case .readable:
             // Check against the menu we already read before touching anything live.
             _ = try reader.entry(at: titles, in: icon.menu ?? [], iconName: icon.name, confirm: confirm)
@@ -181,14 +184,19 @@ public actor MenuBarEngine {
     private func pressInOpenMenu(
         icon: MenuBarIcon, iconElement: any AXElement, titles: [String], confirm: Bool
     ) async throws -> RunResult {
-        guard let menuElement = await openMenu(iconElement, iconID: icon.id) else {
-            var panel = icon
-            panel.menuAvailability = .panel
-            update(panel)
+        let menuElement: any AXElement
+        switch await openMenu(iconElement, of: icon) {
+        case .menu(let element):
+            menuElement = element
+        case .panel:
             throw ValetError.panelApp(icon.name)
+        case .noResponse:
+            throw ValetError.noResponse(icon.name)
         }
         do {
-            let (item, actual) = try reader.liveItem(at: titles, in: menuElement, iconName: icon.name, confirm: confirm)
+            let (item, actual) = try reader.liveItem(
+                at: titles, in: menuElement, iconName: icon.name, confirm: confirm
+            )
             let path = MenuPaths.join([icon.name] + actual)
             if let failure = item.perform(AXName.press), failure != .cannotComplete {
                 close(menuElement, icon: iconElement)
@@ -203,21 +211,42 @@ public actor MenuBarEngine {
 
     // MARK: Opening and closing
 
-    /// Presses the icon and waits for its menu. Returns nil for panel apps, after closing the panel again.
-    private func openMenu(_ icon: any AXElement, iconID: String) async -> (any AXElement)? {
+    private enum Opened {
+        case menu(any AXElement)
+        case panel
+        case noResponse
+    }
+
+    /// Presses the icon and waits for its menu. A panel shows up instead as a new window in the owning app, usually
+    /// within 100 ms (Claude's quick-entry overlay, Burn's popover); it's closed again right away.
+    private func openMenu(_ element: any AXElement, of icon: MenuBarIcon) async -> Opened {
+        let app = system.application(pid: icon.app.pid)
+        let windowsBefore = windowCount(app)
         // An open menu holds the owning app in menu tracking, so this press often times out (cannotComplete)
         // even though it worked.
-        if let failure = icon.perform(AXName.press), failure != .cannotComplete { return nil }
+        if let failure = element.perform(AXName.press), failure != .cannotComplete {
+            noMenu[icon.id] = .noResponse
+            return .noResponse
+        }
         let clock = ContinuousClock()
         let deadline = clock.now + menuOpenTimeout
         while clock.now < deadline {
-            if let menu = reader.menuChild(of: icon) { return menu }
+            if let menu = reader.menuChild(of: element) { return .menu(menu) }
+            if windowCount(app) > windowsBefore {
+                noMenu[icon.id] = .panel
+                // Pressing again toggles the panel closed.
+                _ = element.perform(AXName.press)
+                return .panel
+            }
             try? await Task.sleep(for: .milliseconds(40))
         }
-        // No menu appeared: it's a panel or popover. Pressing again toggles it closed.
-        panelIcons.insert(iconID)
-        _ = icon.perform(AXName.press)
-        return nil
+        // Nothing opened, so there's nothing to close.
+        noMenu[icon.id] = .noResponse
+        return .noResponse
+    }
+
+    private func windowCount(_ app: any AXElement) -> Int {
+        app.attributes([AXName.windows])[AXName.windows]?.elements.count ?? 0
     }
 
     private func close(_ menu: any AXElement, icon: any AXElement) {
