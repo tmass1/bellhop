@@ -33,5 +33,10 @@ mkdir -p "$APP/Contents/MacOS" "$APP/Contents/Resources"
 cp "$BIN" "$APP/Contents/MacOS/Valet"
 cp Resources/Info.plist "$APP/Contents/Info.plist"
 cp Resources/AppIcon.icns Resources/ValetMenuTemplate.png Resources/ValetMenuTemplate@2x.png "$APP/Contents/Resources/"
+# SwiftPM resource bundles (KeyboardShortcuts' localizations) sit beside the binary. Packages look them up at
+# runtime and crash without them, so ship every one.
+for bundle in "$(dirname "$BIN")"/*.bundle; do
+  [[ -d "$bundle" ]] && cp -R "$bundle" "$APP/Contents/Resources/"
+done
 codesign --force --options runtime --sign "$SIGN_IDENTITY" "$APP"
 echo "built $APP"
