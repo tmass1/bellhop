@@ -4,21 +4,24 @@ Oct 21, 2026 · Tommy Massaro
 
 ## Summary
 
-Valet is a free, open-source Mac menu bar app. It lets you search and run any menu bar icon, and any item inside its menu, from the keyboard. Coat Check's main job, reaching icons the notch hides, is now built into macOS: macOS 27 shipped on Sept 14, 2026 with its own overflow arrow. So Valet competes on what macOS still doesn't do.
+Valet is a free, open-source Mac menu bar app. It keeps your menu bar tidy on any screen: icons you rarely look at tuck away, and every icon stays one click or keystroke away in a vertical list. Horizontal menu bars run out of room on smaller screens; a vertical list doesn't.
+
+macOS 27 (Sept 14, 2026) draws the menu bar as one window with its own overflow arrow, and that broke Bartender, Ice and Hidden Bar. Valet works with the arrow instead of fighting it.
 
 - **Coat Check:** click the hanger, scan a list, hover to find the menu, click the item.
-- **Valet:** press a hotkey, type "awake 1h", press Return.
+- **Valet:** a menu bar with only what you choose, everything else in Valet's menu, and a hotkey to reach any of it.
 
-Valet makes three bets:
+Valet makes four bets:
 
-1. **A command palette over every menu bar menu.** You search menu items, not just apps.
-2. **Live status at a glance.** The palette shows each icon's current value (VPN connected, 84 GB free) without opening anything.
-3. **Scriptable by default.** Every action is available from the CLI, Shortcuts and AI agents (MCP).
+1. **Condense the menu bar.** Valet's divider tucks every icon to its left behind macOS's own overflow arrow. Nothing is dragged or redrawn.
+2. **A vertical home for every icon.** The Valet menu lists all icons, tucked ones first, each with its real menu mirrored.
+3. **A command palette over the menu bar.** Open any icon, or run an item inside its menu, from the keyboard.
+4. **Scriptable by default.** Every action is available from the CLI, Shortcuts and AI agents (MCP). Live status (VPN, sync, usage) comes along for free.
 
 It keeps Coat Check's best traits:
 
 - It asks for one permission, Accessibility.
-- It never moves your icons.
+- It never moves, drags or redraws other apps' icons. It only sizes its own divider.
 - It sends no telemetry.
 - It's MIT licensed.
 
@@ -32,8 +35,8 @@ Every option today is mouse-driven, and macOS 27 broke most of them. The keyboar
 | --- | --- | --- |
 | [macOS 27 overflow arrow](https://www.macstories.net/stories/macos-27-the-macstories-review/3/) | A double arrow appears when icons don't fit. Clicking it slides the hidden icons out to the left of the notch for a moment. | Mouse only. No search, no access to menu items. macOS 27 and later only. |
 | [Coat Check](https://coatcheckformac.com/) | Lists every icon under a hanger, hidden ones first. Mirrors each app's real menu and presses the item you pick. Has a CLI. Free, MIT. | Browse only, with no search or hotkey. Apple silicon only. [macOS 27 support still untested](https://github.com/coreyhaines31/coatcheck/issues/24). |
-| Ice, Bartender, Thaw | Hide and rearrange icons into sections and layouts. | [Broken by macOS 27](https://badgeify.app/macos-27-golden-gate-menu-bar-changes/), which draws the menu bar as one window. Their job is arranging icons, not reaching them. |
-| [Hidden Bar](https://newreleases.io/project/github/dwarvesf/hidden/release/v1.11) | Collapses icons behind an arrow. v1.11 restored macOS 27 support through a private framework. | Hiding only. The App Store build still can't hide icons on macOS 27. |
+| Ice, Bartender, Thaw | Hide and rearrange icons into sections and layouts. | [Broken by macOS 27](https://badgeify.app/macos-27-golden-gate-menu-bar-changes/), which draws the menu bar as one window. Valet condenses through macOS's own overflow instead, so it works on 27 without private APIs. |
+| [Hidden Bar](https://newreleases.io/project/github/dwarvesf/hidden/release/v1.11) | Collapses icons behind an arrow. v1.11 restored macOS 27 support through a private framework. | Hiding only, with no list, search or menu mirroring. Depends on a private framework on 27. |
 | [ChocolateBar](https://www.producthunt.com/p/chocolatebar/chocolatebar) | Adds a second row under the menu bar for overflow icons. | Takes up screen space and is still mouse-driven. |
 
 macOS 27 also changes the ground underneath this kind of app: the menu bar is now drawn as a single window. Coat Check is still checking whether the Accessibility listing it relies on returns every icon on 27, so that is our first spike (see Risks).
@@ -42,8 +45,8 @@ macOS 27 also changes the ground underneath this kind of app: the menu bar is no
 
 These are the tie-breakers when a feature decision is unclear.
 
-1. **Keyboard first, mouse friendly.** Every action is reachable without the trackpad, and the hanger menu still works for people who never touch the hotkey.
-2. **Read, don't rearrange.** Never move, hide or redraw other apps' icons by default. Never capture the screen.
+1. **Keyboard first, mouse friendly.** Every action is reachable without the trackpad, and the Valet menu still works for people who never touch the hotkey.
+2. **Condense, don't rearrange.** Valet only sizes its own divider; macOS decides what collapses. Never move, drag or redraw other apps' icons. Never capture the screen.
 3. **One permission.** Accessibility only. No Screen Recording, no Input Monitoring.
 4. **Idle until summoned.** No polling loops. Do the work when the palette opens, cache it, and go quiet again.
 5. **Native, not themed.** Use AppKit and SwiftUI with system materials. Respect Reduce Motion, Reduce Transparency, and light and dark mode.
@@ -52,12 +55,13 @@ These are the tie-breakers when a feature decision is unclear.
 
 ## Feature scope
 
-The MVP matches Coat Check and adds the command palette. That palette is the reason to switch, so it ships first.
+The MVP condenses the menu bar and gives every icon a vertical home, then adds the palette as its keyboard layer.
 
 | Feature | Phase | Why it matters |
 | --- | --- | --- |
-| Hanger menu: every icon, hidden ones first, real menus mirrored, real item pressed | MVP | Parity with Coat Check, and the mouse path |
-| Command palette on a global hotkey | MVP | The core difference: reach any item without hunting |
+| Divider: tuck every icon left of it behind macOS's overflow; click Valet to show or hide them | MVP | The core reason to install: a tidy menu bar on a small screen |
+| Valet menu: every icon, tucked ones first, real menus mirrored, real item pressed | MVP | The vertical home, and the mouse path |
+| Command palette on a global hotkey | MVP | Reach any icon or item without hunting |
 | Fuzzy search across app names **and** menu item paths | MVP | Typing "awake 1h" finds Midnight Oil › Keep awake for 1 hour |
 | Recents and frecency ranking | MVP | Your top three actions sit at the top before you type |
 | Accessibility onboarding and launch at login | MVP | Without them, first run fails |
@@ -73,11 +77,11 @@ The MVP matches Coat Check and adds the command palette. That palette is the rea
 | Better handling for panel-style apps | Later | Coat Check's main limitation; depends on spike results |
 | Custom aliases for items | Later | "vpn" maps to whichever VPN app you use |
 
-Out of scope: sorting icons into sections, rules based on Wi-Fi or Focus, and a second menu bar. Ice and Hidden Bar cover those.
+Out of scope: more than one divider or section, rules based on Wi-Fi or Focus, and a second menu bar. Reordering icons stays the user's job (⌘-drag, as macOS already allows).
 
 ## Interaction design
 
-The palette is the main surface. The hanger menu and the notch panel are mouse paths into the same data.
+The Valet menu and the divider are the everyday surfaces. The palette is the keyboard layer over the same data, and the notch panel is a v1 shortcut into it.
 
 ### Command palette (MVP)
 
@@ -93,9 +97,16 @@ The palette is the main surface. The hanger menu and the notch panel are mouse p
 - Disabled items appear dimmed. Toggles show their checkmark. Items with their own app shortcut show it in the row.
 - **Destructive items** (Quit, Delete, Sign Out, Reset) need ⌘Return or a second Return, so a mistyped search can't quit something.
 
-### Hanger menu (MVP)
+### Divider (MVP)
 
-- Matches Coat Check, plus a "Search…" row at the top that shows the hotkey. That row teaches the palette to mouse users.
+- Valet adds one extra status item, the divider. Icons to its left are tucked; icons to its right stay in the bar.
+- When collapsed, the divider is wide enough that macOS 27 collapses it and everything left of it behind the overflow arrow. On macOS 14 to 26, the same width pushes those icons off-screen.
+- You place the divider by ⌘-dragging it, like any other icon. Valet never moves other icons.
+
+### Valet menu (MVP)
+
+- Every icon in a vertical list, tucked ones first, each with its real menu as a submenu. Panel apps open on click.
+- A "Search…" row at the top shows the hotkey. That row teaches the palette to mouse users.
 
 ### Notch panel (v1)
 
@@ -108,7 +119,7 @@ The palette is the main surface. The hanger menu and the notch panel are mouse p
 - Launch at login, apps to ignore, CLI install.
 - A plain-language privacy page.
 
-Mock the palette, hanger and notch panel before writing any UI code (milestone 0).
+Mock the palette, Valet menu, divider and notch panel before writing any UI code (milestone 0).
 
 ## Technical architecture
 
@@ -116,7 +127,7 @@ One shared library, ValetCore, does all the Accessibility work. The app, the CLI
 
 ```
 ┌─ Valet.app ─────────┐          ┌─ ValetCore (shared library) ─┐
-│  Hanger menu        │  direct  │  Scanner                     │  read + press   ┌───────────────────┐
+│  Valet menu         │  direct  │  Scanner                     │  read + press   ┌───────────────────┐
 │  Command palette    │ ───────► │  Visibility                  │ ──────────────► │ Accessibility API │
 │  Notch panel        │          │  Menu mirror                 │                 └─────────┬─────────┘
 └─────────────────────┘          │  Search index                │                           │ reads menus
@@ -135,7 +146,8 @@ The app UI calls ValetCore directly. The CLI and MCP reach it through the runnin
 - **Menu mirror.** Walks `AXMenu` children into a tree: title, enabled, checkmark (`AXMenuItemMarkChar`), shortcut (`AXMenuItemCmdChar`) and submenus. It reads the top level up front and submenus only when needed.
 - **Search index.** Turns each tree into paths ("Midnight Oil › Keep awake for 1 hour"), fuzzy-matches them, and ranks results by frecency stored in Application Support.
 - **Action runner.** Calls `AXPress` on the real menu item. For panel-style apps it presses the icon itself, and it reports success or failure to the caller.
-- **Valet.app.** The hanger status item, a non-activating `NSPanel` for the palette, the notch panel, Settings and onboarding.
+- **Divider.** Valet's own second status item. It switches between a normal width and one wide enough to make macOS collapse everything to its left.
+- **Valet.app.** The Valet status item and menu, the divider, a non-activating `NSPanel` for the palette, the notch panel, Settings and onboarding.
 - **Outside callers.** The `valet` CLI and `valet mcp` connect over a Unix socket the app owns. App Intents run inside the app process. Neither needs its own Accessibility permission.
 - **Libraries:** KeyboardShortcuts (sindresorhus) for the hotkey, swift-argument-parser for the CLI, Sparkle 2 for updates, and the official MCP Swift SDK later.
 
@@ -159,9 +171,16 @@ Valet ships outside the Mac App Store, signed with a Developer ID and notarized.
 - Menu titles and usage counts stay on the Mac, in `~/Library/Application Support/Valet/`.
 - The CLI talks to the running app over a local socket that only your user account can access. It never asks for its own permission.
 
-## Risks and spikes
+## Spike results (Oct 21, M5 Max, macOS 27.0.1)
 
-The biggest unknown is whether macOS 27's single-window menu bar still lists every icon through Accessibility. Answer that before building anything else.
+- **Accessibility still lists every icon on macOS 27**, collapsed ones included. Apple's own items now come from `com.apple.MenuBarAgent`, wrapped in an `AXGroup`.
+- **The overflow arrow is visible to Accessibility:** an `AXButton` owned by MenuBarAgent. Icons left of it are collapsed, and report piled-up frames just left of it.
+- **Most menus aren't readable while closed:** 6 of 23 icons. Pressing the rest either opens a menu Valet can read and close (Dropbox), or a panel, which shows up as a new window within about 100 ms (Claude, Burn, PIA).
+- **A divider works on macOS 27.** A wide status item collapses itself and every icon to its left behind the arrow, and removing it restores the bar exactly.
+- **Tucked icons still work through Valet:** it read Dropbox's menu and pressed Tidy › History… while both were collapsed.
+- **Placing the divider through its saved position preference didn't land where intended,** so the user places it by ⌘-dragging.
+
+## Risks and spikes
 
 | Risk | Spike to run first | Fallback |
 | --- | --- | --- |
@@ -171,6 +190,8 @@ The biggest unknown is whether macOS 27's single-window menu bar still lists eve
 | Panel-style apps (popovers) can't be mirrored, and pressing a hidden icon opens the panel in an odd place | Test three popover apps on 27 | On 27, expand Apple's arrow first, then press the icon |
 | An unresponsive app blocks Accessibility calls | Set `AXUIElementSetMessagingTimeout` per app | Skip that app and mark its results stale |
 | Walking every menu of every app is slow | Time a full walk with your real set of apps | Index top-level items eagerly and submenus lazily. Refresh in the background each time the palette opens. |
+| The divider stops collapsing icons in a macOS update, or collapses Valet's own icon | Re-run the divider spike on each macOS beta | Fall back to listing only: the Valet menu still reaches every icon |
+| On macOS 14 to 26 the divider pushes icons off-screen instead, and pressing them opens menus in odd places | Run the divider spike on the M1 | Open the menu from the Valet menu instead of at the icon |
 | A search runs a destructive item by accident | — | Require confirmation for Quit, Delete, Sign Out and Reset (see Interaction design) |
 | The default hotkey collides with Spotlight or Raycast | — | Let the user set it, and pick a less common default |
 
@@ -178,14 +199,14 @@ The biggest unknown is whether macOS 27's single-window menu bar still lists eve
 
 Build in this order. Each milestone ends with something you can run on your own MacBook. No dates yet; they depend on the spike.
 
-0. **Design.** Mock the palette, hanger menu and notch panel.
-   - Done when: you've approved the mocks for all three surfaces, in light and dark mode.
+0. **Design.** Mock the palette, Valet menu, divider and notch panel.
+   - Done when: you've approved the mocks for all four surfaces, in light and dark mode.
 1. **Accessibility probe (spike).** A throwaway command-line tool that dumps every menu bar item, its frame, whether it's hidden, and its menu tree as JSON.
    - Done when: the output matches reality on both MacBooks, one on macOS 27 and one on 26 if possible.
 2. **ValetCore.** Scanner, visibility detection, menu mirroring and the action runner, with unit tests that run against saved JSON snapshots.
    - Done when: `valet list --json` works, and `valet run "Midnight Oil › Keep awake for 1 hour"` presses the real item.
-3. **Hanger menu.** Coat Check parity, plus Accessibility onboarding and launch at login.
-   - Done when: hidden icons are listed first, submenus mirror the real menus, and choosing an item works on 27.
+3. **Valet menu and divider.** The vertical list, the divider, Accessibility onboarding and launch at login.
+   - Done when: the divider tucks icons on 27, tucked icons are listed first, submenus mirror the real menus, and choosing an item works.
 4. **Command palette.** Hotkey, fuzzy search over menu paths, frecency, destructive-item confirmation.
    - Done when: any menu item can be run from the keyboard alone, and the panel feels instant on open (target under 100 ms).
 5. **v0.1 release.** Developer ID signing, notarization, DMG, Sparkle, Homebrew cask, landing page.
@@ -196,7 +217,9 @@ Build in this order. Each milestone ends with something you can run on your own 
 ## Open decisions
 
 - [ ] **Name.** Keep "Valet"? Check the domain, App Store names and trademarks before the landing page.
-- [ ] **Default hotkey.** It must not collide with Spotlight (⌘Space) or Raycast (⌥Space).
+- [ ] **Default hotkey.** It must not collide with Spotlight (⌘Space) or Raycast (⌥Space). The mocks use ⌃⌥Space as a placeholder.
+- [ ] **Divider look.** Invisible, a thin line, or Valet's own icon doubling as the divider?
+- [ ] **Private menus.** Leave clipboard history (CopyClip) and similar menus out of search by default?
 - [ ] **Minimum macOS.** 14 like Coat Check, or 15 to cut testing?
 - [ ] **Test machines.** Which macOS is each MacBook on? Ideally one runs 27 and one runs 26.
 - [ ] **Coat Check's code.** It's MIT, so you can borrow from it with attribution. Or write everything from scratch? Either way, avoid Ice and Thaw, which are GPL.

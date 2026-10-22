@@ -5,7 +5,7 @@ The full plan, including scope, architecture, risks and milestones, is in `docs/
 
 ## Current milestone
 
-**Milestone 2: ValetCore.** Milestone 1 is verified on the M5 Max (macOS 27); the M1 MacBook run is still pending, so keep `valet-probe` until then. Update this line when a milestone is done.
+**Milestone 0: Design** (revising the mocks for the divider). Milestones 1 and 2 are verified on the M5 Max (macOS 27); the M1 MacBook run is still pending, so keep `valet-probe` until then. Update this line when a milestone is done.
 
 ## Stack
 
@@ -30,7 +30,7 @@ The full plan, including scope, architecture, risks and milestones, is in `docs/
 ## Rules
 
 - Accessibility API only. Never use ScreenCaptureKit, `CGWindowListCreateImage` or anything that needs Screen Recording.
-- Never move, hide or drag other apps' icons. Press items with `AXPress`, not synthesized mouse events.
+- Never move, drag or redraw other apps' icons. Valet condenses the bar only by sizing its own divider item, which makes macOS collapse the icons to its left. Press items with `AXPress`, not synthesized mouse events.
 - All AX calls run off the main thread inside an actor, with `AXUIElementSetMessagingTimeout` set per app.
 - Put AX behind a protocol so ValetCore is testable without a live menu bar. Tests use JSON fixtures in `Tests/Fixtures/`, captured from real probe output.
 - No network calls except Sparkle's update check. No analytics.
@@ -45,4 +45,4 @@ The full plan, including scope, architecture, risks and milestones, is in `docs/
 - He tests on real hardware: an M5 Max MacBook Pro and an M1 MacBook Pro. Each time you change UI or Accessibility behavior, give him exact steps to check it.
 - Stop at the end of each milestone and show what's done against its "Done when" line in the plan. Don't start the next milestone without a go-ahead.
 - He's a product designer and design engineer. Keep explanations short. Flag product or UX tradeoffs instead of deciding them silently.
-- Desktop-first UI, native macOS look. Mockups for the palette, hanger and notch panel come before UI code.
+- Desktop-first UI, native macOS look. Mockups for the palette, Valet menu, divider and notch panel come before UI code. They live in `design/mocks/`.
