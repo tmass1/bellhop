@@ -281,6 +281,43 @@
   .np.material .np-foot .cap { background: var(--fill-2); color: var(--label-2); }
   .scene-tip { position: absolute; bottom: 18px; left: 18px; font-size: 12px; color: var(--label-2); background: var(--glass); padding: 6px 10px; border-radius: 8px; box-shadow: 0 0 0 .5px var(--glass-edge); backdrop-filter: blur(20px); }
 
+  /* ─── Keep tab ─── */
+  .mbi.keeper { padding: 0 4px; gap: 4px; cursor: pointer; }
+  .mbi.keeper img, .mbi.keeper .tile-glyph { width: 16px; height: 16px; border-radius: 4px; }
+  .mbi.keeper.mono img, .mbi.keeper.mono .tile-glyph { filter: grayscale(1) brightness(0); opacity: .82; }
+  :root[data-theme="dark"] .mbi.keeper.mono img, :root[data-theme="dark"] .mbi.keeper.mono .tile-glyph { filter: grayscale(1) brightness(0) invert(1); }
+  .mbi.keeper .kt { font-size: 13px; font-variant-numeric: tabular-nums; }
+  .mbi.keeper.open, .mbi.keeper:hover { background: var(--fill-2); }
+  .mbi.keeper.ghost { opacity: .35; }
+  .board {
+    position: absolute; top: 92px; left: 50%; transform: translateX(-50%); width: min(720px, calc(100% - 32px));
+    background: var(--glass); backdrop-filter: blur(40px) saturate(180%); -webkit-backdrop-filter: blur(40px) saturate(180%);
+    border-radius: 18px; box-shadow: var(--shadow), 0 0 0 .5px var(--glass-edge); color: var(--label); padding: 16px 18px 14px;
+  }
+  .board-head { display: flex; align-items: center; gap: 12px; margin-bottom: 12px; }
+  .board-head h2 { margin: 0; font-size: 15px; font-weight: 650; letter-spacing: -.01em; flex: 1; }
+  .board-head .seg button { color: var(--label-2); padding: 3px 10px; }
+  .board-head .seg button[aria-pressed="true"] { background: var(--page-card); color: var(--label); }
+  .zone-label { display: flex; justify-content: space-between; font-size: 11.5px; font-weight: 600; color: var(--label-3); margin: 0 2px 6px; }
+  .zone { border-radius: 12px; padding: 8px; min-height: 62px; transition: background .15s, box-shadow .15s; }
+  .zone.bar { background: var(--menubar); box-shadow: inset 0 0 0 .5px var(--glass-edge); display: flex; align-items: center; gap: 4px; flex-wrap: wrap; margin-bottom: 14px; }
+  .zone.tray { background: var(--fill); display: grid; grid-template-columns: repeat(auto-fill, minmax(92px, 1fr)); gap: 4px; }
+  .zone.over { box-shadow: inset 0 0 0 2px var(--accent); }
+  .tile {
+    display: flex; flex-direction: column; align-items: center; gap: 4px; padding: 8px 4px 6px; border-radius: 10px; cursor: grab;
+    min-width: 0; text-align: center; touch-action: none; user-select: none;
+  }
+  .tile:hover { background: var(--fill-2); }
+  .tile.dragging { opacity: .3; }
+  .tile .nm { font-size: 11.5px; max-width: 100%; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
+  .tile .st { font-size: 10.5px; color: var(--label-3); min-height: 13px; font-variant-numeric: tabular-nums; }
+  .zone.bar .tile { flex-direction: row; padding: 5px 9px 5px 6px; gap: 6px; background: var(--page-card); box-shadow: 0 0 0 .5px var(--glass-edge); }
+  .zone.bar .tile .st { min-height: 0; }
+  .zone.bar .empty, .zone.tray .empty { color: var(--label-3); font-size: 12px; padding: 12px 8px; }
+  .fixed { display: inline-flex; align-items: center; gap: 6px; margin-left: auto; color: var(--label-3); font-size: 11.5px; padding-right: 4px; }
+  .drag-ghost { position: fixed; pointer-events: none; z-index: 1000; opacity: .9; transform: translate(-50%, -50%) scale(1.04); }
+  .board-foot { margin-top: 10px; font-size: 12px; color: var(--label-2); display: flex; justify-content: space-between; gap: 12px; }
+
   /* ─── Divider tab ─── */
   .arrange { position: absolute; top: 96px; left: 50%; transform: translateX(-50%); width: min(680px, calc(100% - 32px)); display: flex; flex-direction: column; gap: 14px; align-items: stretch; }
   .loupe { border-radius: 14px; overflow: hidden; box-shadow: 0 0 0 .5px var(--glass-edge), 0 10px 30px rgba(0,0,0,.12); background: var(--wallpaper); }
@@ -323,6 +360,7 @@
     <div class="seg" role="tablist" aria-label="Surface">
       <button data-tab="menu" aria-pressed="true">Valet menu</button>
       <button data-tab="divider" aria-pressed="false">Divider</button>
+      <button data-tab="keep" aria-pressed="false">Keep</button>
       <button data-tab="palette" aria-pressed="false">Palette</button>
       <button data-tab="notch" aria-pressed="false">Notch panel</button>
     </div>
@@ -475,7 +513,7 @@ function barLayout(available) {
 
 function stripHTML(strip, { activeValet = false } = {}) {
   // The scene's own bar keeps a safety margin: estimated widths can run a few points short of the rendered ones.
-  const room = strip === 'loupe' ? LAPTOP_ROOM : (scene.clientWidth || 1000) / 2 - 100 - 10 - 30 - 24;
+  const room = strip === 'loupe' ? LAPTOP_ROOM : (scene.clientWidth || 1000) / 2 - 100 - 10 - 30 - 8;
   const { visible, collapsed } = barLayout(room);
   const glyphs = visible.map((icon) => {
     if (icon.divider) {
@@ -1069,9 +1107,161 @@ function renderDivider(scene) {
 }
 
 // ═══════════════════════════════════════════════════════════════
+// Keep: tuck everything, pick favorites back
+// ═══════════════════════════════════════════════════════════════
+// Valet's icon sits next to Apple's items, so every third-party icon is tucked. The ones you keep come back as
+// keepers: Valet's own items, in any order, each opening the app's mirrored menu. Valet never moves the real icons.
+const SYSTEM_IDS = new Set(['battery', 'wifi', 'recording', 'spotlight', 'control', 'clock']);
+const thirdParty = searchable.filter((icon) => !SYSTEM_IDS.has(icon.id));
+const keepState = { kept: ['burn', 'mark', 'fritter'], style: 'icon', open: null, drag: null };
+
+function keeperHTML(icon) {
+  const style = keepState.style;
+  const open = keepState.open === icon.id ? ' open' : '';
+  const status = icon.status && icon.status !== icon.name ? icon.status : '';
+  if (style === 'status' && status) return `<span class="mbi keeper${open}" data-keeper="${icon.id}" title="${esc(icon.name)}"><span class="kt">${esc(status)}</span></span>`;
+  const mono = style === 'icon' ? '' : ' mono';
+  const text = style === 'status' && status ? `<span class="kt">${esc(status)}</span>` : '';
+  return `<span class="mbi keeper${mono}${open}" data-keeper="${icon.id}" title="${esc(icon.name)}">${appIcon(icon, 'sm')}${text}</span>`;
+}
+
+/// The right side of the bar with keepers: », the keepers, Valet, then Apple's items.
+function keepGlyphsHTML() {
+  const system = searchable.filter((icon) => SYSTEM_IDS.has(icon.id));
+  const glyph = (icon) => icon.text
+    ? `<span class="mbi text">${esc(icon.text)}</span>`
+    : `<span class="mbi" title="${esc(icon.name)}">${G[icon.system || icon.glyph]}</span>`;
+  const keepers = keepState.kept.map((id) => keeperHTML(byId[id])).join('');
+  return `<div class="glyphs"><span class="mbi overflow-arrow" title="Show Hidden Menu Bar Items">${G.overflow}</span>${keepers}<span class="mbi" title="Valet">${G.valet}</span>${system.map(glyph).join('')}</div>`;
+}
+
+function keepBarHTML() {
+  return `<div class="menubar">
+    <div class="left"><span style="font-size:15px"></span><b>Finder</b><span>File</span><span>Edit</span><span>View</span><span>Go</span><span>Window</span><span>Help</span></div>
+    <div class="right">${keepGlyphsHTML()}</div>
+  </div><div class="notch"></div>`;
+}
+
+function tileHTML(icon, inBar) {
+  const status = icon.status && icon.status !== icon.name ? icon.status : '';
+  return `<div class="tile" data-tile="${icon.id}" data-zone="${inBar ? 'bar' : 'tray'}" title="${inBar ? 'Drag down to tuck away' : 'Drag up to keep in the menu bar'}">
+    ${appIcon(icon, inBar ? 'sm' : '')}<span class="nm">${esc(icon.name)}</span>${inBar ? '' : `<span class="st">${esc(status)}</span>`}
+  </div>`;
+}
+
+function renderKeep(scene) {
+  const s = keepState;
+  scene.innerHTML = keepBarHTML();
+  const tucked = thirdParty.filter((icon) => !s.kept.includes(icon.id));
+  const board = h(`<div class="board">
+    <div class="board-head">
+      <h2>Choose what stays in the menu bar</h2>
+      <span class="seg"><button data-style="icon" aria-pressed="${s.style === 'icon'}">App icon</button><button data-style="mono" aria-pressed="${s.style === 'mono'}">Mono</button><button data-style="status" aria-pressed="${s.style === 'status'}">Status</button></span>
+    </div>
+    <div class="loupe" style="margin-bottom: 14px">
+      <div class="loupe-scroll"><div class="loupe-bar"><span class="loupe-notch"></span><div class="loupe-right">${keepGlyphsHTML()}</div></div></div>
+      <div class="loupe-cap"><span>Your 16-inch MacBook Pro, right of the notch, actual size</span><span>Click a keeper</span></div>
+    </div>
+    <div class="zone-label"><span>In your menu bar</span><span>${s.kept.length} kept · drag to reorder</span></div>
+    <div class="zone bar" data-drop="bar">${s.kept.map((id) => tileHTML(byId[id], true)).join('') || '<span class="empty">Drag icons here to keep them in the menu bar.</span>'}
+      <span class="fixed">${G.valet.replace('viewBox', 'width="14" height="14" viewBox')} Valet, then Apple’s items</span></div>
+    <div class="zone-label"><span>Tucked away</span><span>${tucked.length} · in the Valet menu</span></div>
+    <div class="zone tray" data-drop="tray">${tucked.map((icon) => tileHTML(icon, false)).join('') || '<span class="empty">Everything is in the menu bar.</span>'}</div>
+    <div class="board-foot"><span>Kept icons are Valet’s own items, so they can go in any order. The real icons stay tucked.</span><span>Click a tile to move it</span></div>
+  </div>`);
+  scene.append(board);
+  const scroller = board.querySelector('.loupe-scroll');
+  scroller.scrollLeft = scroller.scrollWidth;
+  board.querySelectorAll('[data-style]').forEach((b) => { b.onclick = () => { s.style = b.dataset.style; renderKeep(scene); }; });
+
+  // Clicking a keeper in the bar opens the app's mirrored menu under it, or presses it for panel apps.
+  scene.querySelectorAll('[data-keeper]').forEach((el) => {
+    el.onclick = () => {
+      const icon = byId[el.dataset.keeper];
+      if (!icon.menu || icon.kind === 'panel' || icon.kind === 'onDemand') { toast(scene, `${appIcon(icon, 'sm')}Opened ${esc(icon.name)}`); return; }
+      s.open = s.open === icon.id ? null : icon.id;
+      s.openIn = el.closest('.loupe') ? 'loupe' : 'bar';
+      renderKeep(scene);
+    };
+  });
+  const openEl = s.open && scene.querySelector(`${s.openIn === 'loupe' ? '.loupe ' : '.menubar '}[data-keeper="${s.open}"]`);
+  if (openEl) {
+    const icon = byId[s.open];
+    const sub = h(`<div class="menu" style="z-index:40">${icon.menu.map((e) => menuItemHTML(e, icon.id)).join('')}</div>`);
+    scene.append(sub);
+    const box = scene.getBoundingClientRect();
+    const r = openEl.getBoundingClientRect();
+    sub.style.left = `${Math.max(8, Math.min(r.left - box.left, box.width - sub.getBoundingClientRect().width - 8))}px`;
+    sub.style.top = `${r.bottom - box.top + 4}px`;
+    sub.querySelectorAll('.mi:not(.dis)').forEach((el) => {
+      el.addEventListener('mouseenter', () => { sub.querySelectorAll('.hl').forEach((x) => x.classList.remove('hl')); el.classList.add('hl'); });
+      el.addEventListener('click', () => { s.open = null; renderKeep(scene); toast(scene, `${appIcon(icon, 'sm')}Ran <span class="path">${esc(icon.name)} › </span>${esc(el.querySelector('.t').textContent)}`); });
+    });
+  }
+
+  board.querySelectorAll('[data-tile]').forEach((tile) => {
+    tile.addEventListener('pointerdown', (event) => startTileDrag(event, tile, scene));
+  });
+}
+
+// Pointer-driven drag: between the two zones, and within the bar to reorder. A click without movement toggles.
+function startTileDrag(event, tile, scene) {
+  event.preventDefault();
+  const s = keepState;
+  const id = tile.dataset.tile;
+  const start = { x: event.clientX, y: event.clientY };
+  let ghost = null;
+  const zones = () => [...document.querySelectorAll('[data-drop]')];
+  const zoneAt = (x, y) => zones().find((z) => { const r = z.getBoundingClientRect(); return x >= r.left && x <= r.right && y >= r.top && y <= r.bottom; });
+  const move = (e) => {
+    if (!ghost && Math.hypot(e.clientX - start.x, e.clientY - start.y) < 4) return;
+    if (!ghost) {
+      ghost = tile.cloneNode(true);
+      ghost.classList.add('drag-ghost');
+      document.body.append(ghost);
+      tile.classList.add('dragging');
+    }
+    ghost.style.left = `${e.clientX}px`;
+    ghost.style.top = `${e.clientY}px`;
+    zones().forEach((z) => z.classList.toggle('over', z === zoneAt(e.clientX, e.clientY)));
+  };
+  const up = (e) => {
+    document.removeEventListener('pointermove', move);
+    document.removeEventListener('pointerup', up);
+    const kept = s.kept.filter((k) => k !== id);
+    if (!ghost) {
+      // A click: move it to the other zone.
+      s.kept = s.kept.includes(id) ? kept : [...kept, id];
+    } else {
+      ghost.remove();
+      const zone = zoneAt(e.clientX, e.clientY);
+      if (zone?.dataset.drop === 'bar') {
+        // Insert before the first kept tile whose center is right of the drop point.
+        const tiles = [...zone.querySelectorAll('[data-tile]')].filter((t) => t.dataset.tile !== id);
+        const index = tiles.findIndex((t) => { const r = t.getBoundingClientRect(); return e.clientX < r.left + r.width / 2; });
+        kept.splice(index < 0 ? kept.length : index, 0, id);
+        s.kept = kept;
+      } else if (zone?.dataset.drop === 'tray') {
+        s.kept = kept;
+      }
+    }
+    if (s.open && !s.kept.includes(s.open)) s.open = null;
+    renderKeep(scene);
+  };
+  document.addEventListener('pointermove', move);
+  document.addEventListener('pointerup', up);
+}
+
+// ═══════════════════════════════════════════════════════════════
 // Page: tabs, appearance, review notes
 // ═══════════════════════════════════════════════════════════════
 const NOTES = {
+  keep: [
+    ['Try it', 'Drag a tile up to keep it, down to tuck it, or along the bar to reorder. Click a keeper in the menu bar to open its mirrored menu.'],
+    ['Why keepers', 'Valet can’t move other apps’ icons, so it tucks all of them and draws its own item for each one you keep. Those it can order freely.'],
+    ['Open: keeper look', 'Valet can’t read an app’s menu bar glyph without Screen Recording. App icon is clear but colorful; Mono reads as native but blobby; Status shows live text like Burn’s 56%.'],
+    ['Open: panel apps', 'Keepers for Claude, Burn or Gemini press the real (tucked) icon, so their panel opens wherever macOS puts it. That placement is still unverified.'],
+  ],
   divider: [
     ['Try it', 'Switch to Showing all, then drag the line left or right. Tucked mode updates both bars and the Valet menu.'],
     ['One rule to explain', '“Everything left of Valet is tucked away.” The divider is a separate item that stays next to Valet’s icon, because a wide item collapses itself.'],
@@ -1111,6 +1301,7 @@ function switchTab(next) {
   if (tab === 'menu') { menuState.open = true; renderMenu(scene); }
   if (tab === 'notch') { notchState.open = true; notchState.appearing = true; renderNotch(scene); }
   if (tab === 'divider') renderDivider(scene);
+  if (tab === 'keep') renderKeep(scene);
   document.getElementById('notes').replaceChildren(...NOTES[tab].map(([title, body]) => h(`<div class="note"><b>${esc(title)}</b><span>${esc(body)}</span></div>`)));
 }
 
@@ -1118,6 +1309,7 @@ function switchTab(next) {
 function refresh() {
   if (tab === 'menu') renderMenu(scene);
   else if (tab === 'divider') renderDivider(scene);
+  else if (tab === 'keep') renderKeep(scene);
   else if (tab === 'notch') renderNotch(scene);
   else { scene.querySelector('.menubar')?.remove(); scene.querySelector('.notch')?.remove(); scene.insertAdjacentHTML('afterbegin', menubarHTML()); }
 }
