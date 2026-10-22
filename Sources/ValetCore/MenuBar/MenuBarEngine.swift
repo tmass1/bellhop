@@ -21,6 +21,10 @@ public actor MenuBarEngine {
     private var noMenu: [String: MenuAvailability] = [:]
     /// Menus read on demand (opened, read, closed). Kept across scans so they're only read once.
     private var loadedMenus: [String: [MenuEntry]] = [:]
+    /// Processes that had no menu bar icon, and when that was seen. Most running processes never have one, so
+    /// they're skipped for a while; a new process (new pid) is always checked.
+    private var withoutIcons: [Int32: Date] = [:]
+    private let recheckWithoutIconsAfter: TimeInterval = 300
 
     private let reader = AXReader()
     private let menuOpenTimeout: Duration = .milliseconds(800)
@@ -32,16 +36,27 @@ public actor MenuBarEngine {
     // MARK: Scanning
 
     /// Reads every menu bar icon. Menus exposed while closed are read too; others are left for `loadMenu`.
-    public func scan(_ env: SystemSnapshot) throws -> MenuBarSnapshot {
+    /// `full` re-checks processes recently seen without icons.
+    public func scan(_ env: SystemSnapshot, full: Bool = false) throws -> MenuBarSnapshot {
         guard system.isTrusted else { throw ValetError.notTrusted }
         let clock = ContinuousClock()
         let start = clock.now
 
         var found: [AXReader.FoundIcon] = []
         var overflowButton: Frame?
+        let now = Date.now
+        let running = Set(env.apps.map(\.pid))
+        withoutIcons = withoutIcons.filter { running.contains($0.key) }
         for app in env.apps {
+            if !full, let seen = withoutIcons[app.pid], now.timeIntervalSince(seen) < recheckWithoutIconsAfter {
+                continue
+            }
             guard case .success(.element(let bar)) = system.application(pid: app.pid).attribute(AXName.extrasMenuBar)
-            else { continue }
+            else {
+                withoutIcons[app.pid] = now
+                continue
+            }
+            withoutIcons[app.pid] = nil
             for element in bar.attributes([AXName.children])[AXName.children]?.elements ?? [] {
                 let icon = reader.read(element, app: app)
                 // macOS 27's "Show Hidden Menu Bar Items" arrow: matched by owner and role, not its localized label.

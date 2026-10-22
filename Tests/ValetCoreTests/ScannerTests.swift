@@ -58,3 +58,18 @@ import Testing
         try await MenuBarEngine(system: system).scan(system.file.system)
     }
 }
+
+@Test func processesWithoutIconsAreSkippedOnTheNextScan() async throws {
+    let system = try FixtureAccessibility("macos27-laptop-overflow")
+    let engine = MenuBarEngine(system: system)
+    let env = system.file.system
+    _ = try await engine.scan(env)
+    let firstScan = system.cache.lookups
+    let second = try await engine.scan(env)
+    let secondScan = system.cache.lookups - firstScan
+    // Only apps with icons (18) are read again, plus the frontmost app's menus.
+    #expect(secondScan < firstScan / 3)
+    #expect(second.icons.count == 22)
+    _ = try await engine.scan(env, full: true)
+    #expect(system.cache.lookups - firstScan - secondScan == firstScan)
+}

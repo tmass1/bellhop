@@ -120,9 +120,14 @@ final class FakeElement: AXElement {
 final class AppCache: @unchecked Sendable {
     private let lock = NSLock()
     private var apps: [Int32: FakeElement] = [:]
+    private var count = 0
+
+    /// How many times an application element was asked for.
+    var lookups: Int { lock.withLock { count } }
 
     func app(_ pid: Int32, build: () -> FakeElement) -> FakeElement {
         lock.withLock {
+            count += 1
             if let app = apps[pid] { return app }
             let app = build()
             apps[pid] = app
@@ -140,7 +145,7 @@ struct FixtureAccessibility: AccessibilitySystem {
 
     let file: ProbeFile
     let log = ActionLog()
-    private let cache = AppCache()
+    let cache = AppCache()
     var isTrusted = true
     var customize: Customize = { _, _, _, _ in }
 
