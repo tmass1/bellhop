@@ -116,6 +116,9 @@
   .mbi.active { background: var(--fill-2); }
   .mbi.clickable { cursor: pointer; }
   .overflow-arrow { flex: none; margin-right: 4px; opacity: 0.85; }
+  .mbi.divider { min-width: 16px; padding: 0 6px; cursor: ew-resize; touch-action: none; }
+  .mbi.divider i { display: block; width: 1.5px; height: 15px; border-radius: 1px; background: currentColor; opacity: 0.5; }
+  .mbi.divider:hover i, .mbi.divider.dragging i { background: var(--accent); opacity: 1; width: 2px; }
   .notch {
     position: absolute; top: 0; left: calc(50% - 92px); width: 185px; height: 32px;
     background: #000; border-radius: 0 0 11px 11px; z-index: 20;
@@ -255,14 +258,14 @@
   .np-neck.material::before, .np-neck.material::after { display: none; }
   .np-neck.material { height: 32px; border-radius: 0 0 11px 11px; }
   .np {
-    position: absolute; top: 33px; left: 50%; width: 420px; transform: translateX(-50%); z-index: 19;
+    position: absolute; top: 33px; left: 50%; width: 480px; transform: translateX(-50%); z-index: 19;
     background: #000; color: #fff; border-radius: 18px 18px 26px 26px; padding: 12px 14px 12px;
     transform-origin: 50% 0;
   }
   .np.appearing { animation: grow 0.24s cubic-bezier(.2, .9, .25, 1); }
   @keyframes grow { from { clip-path: inset(0 calc(50% - 92px) 100% calc(50% - 92px) round 0 0 18px 18px); } to { clip-path: inset(0 0 0 0 round 18px 18px 26px 26px); } }
   .np.material { top: 40px; border-radius: 18px; background: var(--glass); color: var(--label); backdrop-filter: blur(40px) saturate(180%); -webkit-backdrop-filter: blur(40px) saturate(180%); box-shadow: var(--shadow), 0 0 0 .5px var(--glass-edge); }
-  .np-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 4px; }
+  .np-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 2px; }
   .np-tile {
     display: flex; flex-direction: column; align-items: center; gap: 5px; padding: 10px 4px 8px; border-radius: 14px; cursor: pointer;
     text-align: center; min-width: 0;
@@ -278,6 +281,31 @@
   .np.material .np-foot .cap { background: var(--fill-2); color: var(--label-2); }
   .scene-tip { position: absolute; bottom: 18px; left: 18px; font-size: 12px; color: var(--label-2); background: var(--glass); padding: 6px 10px; border-radius: 8px; box-shadow: 0 0 0 .5px var(--glass-edge); backdrop-filter: blur(20px); }
 
+  /* ─── Divider tab ─── */
+  .arrange { position: absolute; top: 96px; left: 50%; transform: translateX(-50%); width: min(680px, calc(100% - 32px)); display: flex; flex-direction: column; gap: 14px; align-items: stretch; }
+  .loupe { border-radius: 14px; overflow: hidden; box-shadow: 0 0 0 .5px var(--glass-edge), 0 10px 30px rgba(0,0,0,.12); background: var(--wallpaper); }
+  .loupe-scroll { overflow-x: auto; scrollbar-width: none; }
+  .loupe-scroll::-webkit-scrollbar { display: none; }
+  .loupe-bar {
+    width: 817px; height: 33px; display: flex; align-items: center; position: relative; color: var(--menubar-text);
+    background: var(--menubar); backdrop-filter: blur(24px) saturate(160%); -webkit-backdrop-filter: blur(24px) saturate(160%);
+  }
+  .loupe-notch { flex: none; width: 46px; height: 32px; align-self: flex-start; background: #000; border-radius: 0 0 11px 0; }
+  .loupe-right { flex: 1; min-width: 0; display: flex; justify-content: flex-end; padding-right: 10px; overflow: hidden; }
+  .loupe-cap { display: flex; justify-content: space-between; padding: 7px 12px; font-size: 11.5px; color: var(--label-2); background: var(--glass); }
+  .arrange-card {
+    background: var(--glass); backdrop-filter: blur(40px) saturate(180%); -webkit-backdrop-filter: blur(40px) saturate(180%);
+    border-radius: 16px; box-shadow: var(--shadow), 0 0 0 .5px var(--glass-edge); padding: 16px 18px; color: var(--label);
+    display: grid; grid-template-columns: 1fr auto; gap: 6px 18px; align-items: center;
+  }
+  .arrange-card h2 { margin: 0; font-size: 15px; font-weight: 650; letter-spacing: -0.01em; }
+  .arrange-card p { margin: 0; color: var(--label-2); grid-column: 1 / -1; }
+  .arrange-card .seg button { color: var(--label-2); }
+  .arrange-card .seg button[aria-pressed="true"] { background: var(--page-card); color: var(--label); }
+  .counts { color: var(--label-2); font-variant-numeric: tabular-nums; }
+  .chips { grid-column: 1 / -1; display: flex; flex-wrap: wrap; gap: 6px; margin-top: 6px; }
+  .chip { display: inline-flex; align-items: center; gap: 6px; padding: 3px 8px 3px 4px; border-radius: 999px; background: var(--fill); font-size: 12px; }
+
   @media (prefers-reduced-motion: reduce) {
     .palette, .np, .toast { animation: none; }
     .toast { animation: none; }
@@ -289,12 +317,13 @@
   <header class="page">
     <div>
       <h1>Valet mocks</h1>
-      <p>Milestone 0 · real data from your menu bar, Oct 21</p>
+      <p>Milestone 0, round 2 · real data from your menu bar, Oct 21</p>
     </div>
     <div class="spacer"></div>
     <div class="seg" role="tablist" aria-label="Surface">
-      <button data-tab="palette" aria-pressed="true">Palette</button>
-      <button data-tab="menu" aria-pressed="false">Valet menu</button>
+      <button data-tab="menu" aria-pressed="true">Valet menu</button>
+      <button data-tab="divider" aria-pressed="false">Divider</button>
+      <button data-tab="palette" aria-pressed="false">Palette</button>
       <button data-tab="notch" aria-pressed="false">Notch panel</button>
     </div>
     <div class="seg" aria-label="Appearance">
@@ -343,18 +372,18 @@ const G = {
 const SEP = { sep: true };
 const it = (title, extra = {}) => ({ title, ...extra });
 const ICONS = [
-  { id: 'burn', name: 'Burn', bundle: 'com.tommymassaro.burn', glyph: 'flame', status: '56%', hidden: true, kind: 'panel' },
-  { id: 'devserver', name: 'Dev Server Manager', bundle: 'com.tommymassaro.dev-server-manager', glyph: 'bolt', hidden: true, kind: 'panel' },
-  { id: 'cc', name: 'Creative Cloud', bundle: 'com.adobe.acc.AdobeCreativeCloud', glyph: 'cloud', hidden: true, kind: 'onDemand', resolvesTo: 'panel' },
-  { id: 'ollama', name: 'Ollama', bundle: 'com.electron.ollama', glyph: 'llama', hidden: true, kind: 'menu', menu: [
+  { id: 'burn', name: 'Burn', bundle: 'com.tommymassaro.burn', glyph: 'flame', status: '56%', kind: 'panel' },
+  { id: 'devserver', name: 'Dev Server Manager', bundle: 'com.tommymassaro.dev-server-manager', glyph: 'bolt', kind: 'panel' },
+  { id: 'cc', name: 'Creative Cloud', bundle: 'com.adobe.acc.AdobeCreativeCloud', glyph: 'cloud', kind: 'onDemand', resolvesTo: 'panel' },
+  { id: 'ollama', name: 'Ollama', bundle: 'com.electron.ollama', glyph: 'llama', kind: 'menu', menu: [
     it('ChatGPT'), SEP, it('Open Ollama'), it('Settings', { key: '⌘,' }), SEP,
     it('An update is available', { disabled: true }), it('Restart to update'), SEP, it('Quit Ollama', { key: '⌘Q' }),
   ] },
-  { id: 'chatgpt', name: 'ChatGPT', bundle: 'com.openai.codex', glyph: 'chat', hidden: true, kind: 'menu', menu: [
+  { id: 'chatgpt', name: 'ChatGPT', bundle: 'com.openai.codex', glyph: 'chat', kind: 'menu', menu: [
     it('Computer Use', { children: [it('No Active Sessions', { disabled: true })] }), SEP, it('Quit ChatGPT'),
   ] },
-  { id: 'pia', name: 'Private Internet Access', bundle: 'com.privateinternetaccess.vpn', glyph: 'shield', hidden: true, kind: 'panel' },
-  { id: 'tidy', name: 'Tidy', bundle: 'com.tommymassaro.tidy', glyph: 'broom', hidden: true, kind: 'menu', menu: [
+  { id: 'pia', name: 'Private Internet Access', bundle: 'com.privateinternetaccess.vpn', glyph: 'shield', kind: 'panel' },
+  { id: 'tidy', name: 'Tidy', bundle: 'com.tommymassaro.tidy', glyph: 'broom', kind: 'menu', menu: [
     it('Clean Up Selection', { key: '⌥⌘C' }), it('Clean Up Clipboard'), SEP, it('History…'), it('Settings…', { key: '⌘,' }), SEP, it('Quit Tidy', { key: '⌘Q' }),
   ] },
   { id: 'dropbox', name: 'Dropbox', bundle: 'com.getdropbox.dropbox', glyph: 'box', kind: 'onDemand', menu: [
@@ -393,6 +422,14 @@ const byId = Object.fromEntries(ICONS.map((icon) => [icon.id, icon]));
 // Warm the image cache so re-rendered rows don't blink.
 ICONS.filter((icon) => icon.bundle).forEach((icon) => { new Image().src = `icons/${icon.bundle}.png`; });
 const searchable = ICONS.filter((icon) => !icon.self);
+
+// ─── The bar: everything left of the Valet icon is tucked away ───
+// Valet keeps its divider just left of its own icon. Tucked, the divider is wide enough that macOS 27 collapses it and
+// everything to its left behind the overflow arrow. Showing all, it's a thin line you can drag.
+const bar = { divider: searchable.findIndex((icon) => icon.id === 'battery'), showing: false, dragging: null };
+const tucked = (icon) => searchable.indexOf(icon) < bar.divider;
+const tuckedIcons = () => searchable.slice(0, bar.divider);
+const barIcons = () => searchable.slice(bar.divider);
 const HOTKEY = '⌃⌥Space';
 
 const DESTRUCTIVE = /^(quit|delete|sign out|log out|reset|erase|remove|restart|shut down|empty)\b/i;
@@ -410,19 +447,77 @@ function appIcon(icon, size = '') {
   return `<img class="appicon ${size}" src="icons/${icon.bundle}.png" alt="" onerror="this.replaceWith(Object.assign(document.createElement('span'),{className:'appicon ${size} tile-glyph',textContent:'${icon.name[0]}'}))">`;
 }
 
-function menubarHTML({ activeValet = false } = {}) {
-  const visible = ICONS.filter((icon) => !icon.hidden);
+const measure = document.createElement('canvas').getContext('2d');
+measure.font = '13px -apple-system, BlinkMacSystemFont, sans-serif';
+function itemWidth(item) {
+  if (item.divider) return bar.showing ? 16 : 0;
+  if (item.text) return Math.ceil(measure.measureText(item.text).width) + 12;
+  return 28;
+}
+
+// Room right of the notch on Tommy's 16-inch MacBook Pro (1728 pt wide, 185 pt notch), less padding and the arrow.
+const LAPTOP_ROOM = 1728 / 2 - 92.5 - 10 - 30;
+
+/// Lays the bar out right to left, as macOS 27 does: the first item that doesn't fit collapses, with everything left of it.
+function barLayout(available) {
+  const order = [...searchable.slice(0, bar.divider), { divider: true }, byId.valet, ...searchable.slice(bar.divider)];
+  const start = bar.showing ? 0 : bar.divider + 1;
+  let used = 0;
+  let first = order.length;
+  for (let i = order.length - 1; i >= start; i--) {
+    const width = itemWidth(order[i]);
+    if (used + width > available) break;
+    used += width;
+    first = i;
+  }
+  return { visible: order.slice(first), collapsed: order.slice(0, first).filter((item) => !item.divider).length };
+}
+
+function stripHTML(strip, { activeValet = false } = {}) {
+  // The scene's own bar keeps a safety margin: estimated widths can run a few points short of the rendered ones.
+  const room = strip === 'loupe' ? LAPTOP_ROOM : (scene.clientWidth || 1000) / 2 - 100 - 10 - 30 - 24;
+  const { visible, collapsed } = barLayout(room);
   const glyphs = visible.map((icon) => {
+    if (icon.divider) {
+      const dragging = bar.dragging === strip ? ' dragging' : '';
+      return `<span class="mbi divider${dragging}" data-divider="${strip}" title="Drag to choose what stays in the menu bar"><i></i></span>`;
+    }
     if (icon.text) return `<span class="mbi text" data-id="${icon.id}">${esc(icon.text)}</span>`;
     const glyph = G[icon.system || icon.glyph];
     const cls = icon.id === 'valet' ? `mbi clickable${activeValet ? ' active' : ''}` : 'mbi';
     return `<span class="${cls}" data-id="${icon.id}" title="${esc(icon.name)}">${glyph}</span>`;
   }).join('');
+  const arrow = collapsed ? `<span class="mbi overflow-arrow" title="Show Hidden Menu Bar Items">${G.overflow}</span>` : '';
+  return `<div class="glyphs" data-strip="${strip}">${arrow}${glyphs}</div>`;
+}
+
+function menubarHTML(options = {}) {
   return `<div class="menubar">
     <div class="left"><span style="font-size:15px"></span><b>Finder</b><span>File</span><span>Edit</span><span>View</span><span>Go</span><span>Window</span><span>Help</span></div>
-    <div class="right"><span class="mbi overflow-arrow" title="Show Hidden Menu Bar Items">${G.overflow}</span><div class="glyphs">${glyphs}</div></div>
+    <div class="right">${stripHTML('main', options)}</div>
   </div><div class="notch"></div>`;
 }
+
+// Dragging the divider (⌘-drag in the real app) moves it, and Valet's icon with it, between icons.
+document.addEventListener('pointerdown', (event) => {
+  const handle = event.target.closest('[data-divider]');
+  if (!handle || !bar.showing) return;
+  event.preventDefault();
+  bar.dragging = handle.dataset.divider;
+  refresh();
+});
+document.addEventListener('pointermove', (event) => {
+  if (!bar.dragging) return;
+  const strip = document.querySelector(`[data-strip="${bar.dragging}"]`);
+  if (!strip) return;
+  const shown = [...strip.querySelectorAll('[data-id]')].filter((el) => el.dataset.id !== 'valet');
+  const shownIds = new Set(shown.map((el) => el.dataset.id));
+  const offBar = searchable.filter((icon) => !shownIds.has(icon.id)).length;
+  const left = shown.filter((el) => { const r = el.getBoundingClientRect(); return r.left + r.width / 2 < event.clientX; }).length;
+  const next = Math.max(0, Math.min(searchable.length, offBar + left));
+  if (next !== bar.divider) { bar.divider = next; refresh(); }
+});
+document.addEventListener('pointerup', () => { if (bar.dragging) { bar.dragging = null; refresh(); } });
 
 function toast(scene, html) {
   scene.querySelector('.toast')?.remove();
@@ -532,9 +627,9 @@ function paletteRows() {
   if (!s.query.trim()) {
     rows.push({ type: 'section', title: 'Pinned' }, ...s.pins.map(rowFromKey).filter(Boolean).map((r) => ({ ...r, pinned: true })));
     rows.push({ type: 'section', title: 'Recent' }, ...s.recent.map(rowFromKey).filter(Boolean));
-    const hidden = searchable.filter((icon) => icon.hidden);
-    rows.push({ type: 'section', title: 'Hidden by the notch', count: hidden.length }, ...hidden.map((icon) => ({ type: 'icon', icon })));
-    rows.push({ type: 'section', title: 'In the menu bar' }, ...searchable.filter((icon) => !icon.hidden).map((icon) => ({ type: 'icon', icon })));
+    const away = tuckedIcons();
+    rows.push({ type: 'section', title: 'Tucked away', count: away.length }, ...away.map((icon) => ({ type: 'icon', icon })));
+    rows.push({ type: 'section', title: 'In the menu bar' }, ...barIcons().map((icon) => ({ type: 'icon', icon })));
     return rows;
   }
 
@@ -628,7 +723,7 @@ function footerHTML(row) {
   if (row.type === 'action') return `<span class="hint">Shown this time only. It stays out of search.</span>${act('Show', ['↩'], true)}`;
   if (row.type === 'icon') {
     const icon = row.icon;
-    const hint = icon.hidden ? 'Hidden by the notch' : icon.kind === 'onDemand' && !s.loaded.has(icon.id)
+    const hint = tucked(icon) ? 'Tucked away' : icon.kind === 'onDemand' && !s.loaded.has(icon.id)
       ? 'Menu is read when you open it' : icon.kind === 'private' ? 'Not indexed: clipboard history' : '';
     const drill = icon.kind === 'menu' || icon.kind === 'onDemand' || icon.kind === 'private';
     return drill
@@ -637,7 +732,7 @@ function footerHTML(row) {
   }
   const destructive = DESTRUCTIVE.test(row.titles.at(-1));
   const pinned = s.pins.includes(keyOf(row));
-  const hint = destructive ? 'Asks before running' : row.icon.hidden ? `${row.icon.name} is hidden by the notch` : '';
+  const hint = destructive ? 'Asks before running' : tucked(row.icon) ? `${row.icon.name} is tucked away` : '';
   return `<span class="hint">${hint}</span>${row.entry.children ? act('Open', ['→']) : ''}${act(pinned ? 'Unpin' : 'Pin', ['⌘', 'P'])}${act('Show in Menu Bar', ['⌘', '↩'])}${act('Run', ['↩'], true)}`;
 }
 
@@ -773,7 +868,7 @@ function paletteKey(event, scene, rows) {
 // ═══════════════════════════════════════════════════════════════
 // Valet menu (the status item's menu)
 // ═══════════════════════════════════════════════════════════════
-const menuState = { open: true, hover: 'ollama', loaded: new Set() };
+const menuState = { open: true, hover: 'mark', loaded: new Set() };
 
 function menuItemHTML(entry, path) {
   if (entry.sep) return '<div class="ms"></div>';
@@ -785,8 +880,14 @@ function menuItemHTML(entry, path) {
 function renderMenu(scene) {
   const s = menuState;
   scene.innerHTML = menubarHTML({ activeValet: s.open });
-  scene.append(h(`<div class="scene-tip">Hover an icon to see its mirrored menu. Click an item to run it.</div>`));
-  scene.querySelector('[data-id="valet"]').onclick = () => { s.open = !s.open; renderMenu(scene); };
+  scene.append(h(`<div class="scene-tip">Hover an icon to see its mirrored menu. ⌥-click Valet to show tucked icons in the bar.</div>`));
+  const valetIcon = scene.querySelector('[data-strip="main"] [data-id="valet"]');
+  if (valetIcon) {
+    valetIcon.onclick = (event) => {
+      if (event.altKey) { bar.showing = !bar.showing; s.open = false; } else s.open = !s.open;
+      renderMenu(scene);
+    };
+  }
   if (!s.open) return;
 
   const row = (icon) => {
@@ -794,16 +895,19 @@ function renderMenu(scene) {
     const right = `${icon.status && icon.status !== icon.name ? `<span>${esc(icon.status)}</span>` : ''}${hasMenu ? G.chevron : ''}`;
     return `<div class="mi${s.hover === icon.id ? ' hl' : ''}" data-icon="${icon.id}">${appIcon(icon, 'sm')}<span class="t">${esc(icon.name)}</span><span class="r">${right}</span></div>`;
   };
-  const hidden = searchable.filter((icon) => icon.hidden);
-  const visible = searchable.filter((icon) => !icon.hidden);
+  const away = tuckedIcons();
+  const inBar = barIcons();
   const menu = h(`<div class="menu" style="width: 272px">
     <div class="mi" data-search>${G.search.replace('viewBox', 'width="14" height="14" viewBox')}<span class="t">Search Menu Bar…</span><span class="r">${HOTKEY}</span></div>
     <div class="ms"></div>
-    <div class="mh">Hidden by the notch</div>
-    ${hidden.map(row).join('')}
+    <div class="mh">Tucked away</div>
+    ${away.length ? away.map(row).join('') : '<div class="mi noicon dis"><span></span><span class="t">Nothing tucked yet</span><span class="r"></span></div>'}
     <div class="ms"></div>
     <div class="mh">In the menu bar</div>
-    ${visible.map(row).join('')}
+    ${inBar.map(row).join('')}
+    <div class="ms"></div>
+    <div class="mi noicon" data-showing><span class="ck">${bar.showing ? '✓' : ''}</span><span class="t">Show Tucked Icons</span><span class="r">⌥-click</span></div>
+    <div class="mi noicon" data-arrange><span></span><span class="t">Arrange Menu Bar…</span><span class="r"></span></div>
     <div class="ms"></div>
     <div class="mi noicon"><span></span><span class="t">Settings…</span><span class="r">⌘,</span></div>
     <div class="mi noicon"><span></span><span class="t">Quit Valet</span><span class="r">⌘Q</span></div>
@@ -811,8 +915,8 @@ function renderMenu(scene) {
   scene.append(menu);
 
   // Anchor under the Valet icon, like a real status item menu.
-  const anchor = scene.querySelector('[data-id="valet"]').getBoundingClientRect();
   const box = scene.getBoundingClientRect();
+  const anchor = valetIcon?.getBoundingClientRect() ?? { left: box.right - 280 };
   const left = Math.max(8, Math.min(anchor.left - box.left - 6, box.width - 272 - 8));
   menu.style.left = `${left}px`;
   menu.style.top = '36px';
@@ -825,6 +929,11 @@ function renderMenu(scene) {
     });
   });
   menu.querySelector('[data-search]').onclick = () => { switchTab('palette'); };
+  menu.querySelector('[data-showing]').onclick = () => { bar.showing = !bar.showing; s.open = false; renderMenu(scene); };
+  menu.querySelector('[data-arrange]').onclick = () => { bar.showing = true; switchTab('divider'); };
+  menu.querySelectorAll('[data-showing], [data-arrange], [data-search]').forEach((el) => {
+    el.addEventListener('mouseenter', () => { menu.querySelectorAll('.hl').forEach((x) => x.classList.remove('hl')); el.classList.add('hl'); s.hover = null; scene.querySelectorAll('.menu + .menu').forEach((x) => x.remove()); });
+  });
 
   const icon = byId[s.hover];
   if (!icon || !['menu', 'onDemand', 'private'].includes(icon.kind)) return;
@@ -868,7 +977,7 @@ const notchState = { open: true, appearing: true, style: 'black', tile: null };
 function renderNotch(scene) {
   const s = notchState;
   scene.innerHTML = menubarHTML();
-  const hidden = searchable.filter((icon) => icon.hidden);
+  const hidden = tuckedIcons();
   const style = h(`<div class="scene-tip" style="display:flex;gap:8px;align-items:center">Panel <span class="seg" style="background:var(--fill)">
     <button data-style="black" aria-pressed="${s.style === 'black'}">Black</button><button data-style="material" aria-pressed="${s.style === 'material'}">Material</button></span>
     <span>· Click the notch to toggle</span></div>`);
@@ -886,7 +995,7 @@ function renderNotch(scene) {
   scene.append(h(`<div class="np-neck ${s.style === 'material' ? 'material' : ''}"></div>`));
   const panel = h(`<div class="np ${s.style === 'material' ? 'material' : ''}${s.appearing ? ' appearing' : ''}">
     <div class="np-grid">${tiles}</div>
-    <div class="np-foot"><span>${hidden.length} icons hidden by the notch</span><span>Search <span class="cap">${HOTKEY}</span></span></div>
+    <div class="np-foot"><span>${hidden.length} icons tucked away</span><span>Search <span class="cap">${HOTKEY}</span></span></div>
   </div>`);
   scene.append(panel);
   s.appearing = false;
@@ -924,9 +1033,51 @@ function renderNotch(scene) {
 }
 
 // ═══════════════════════════════════════════════════════════════
+// Divider
+// ═══════════════════════════════════════════════════════════════
+function renderDivider(scene) {
+  scene.innerHTML = menubarHTML();
+  const away = tuckedIcons();
+  const inBar = barIcons();
+  const chips = away.map((icon) => `<span class="chip">${appIcon(icon, 'sm')}${esc(icon.name)}</span>`).join('');
+  const panel = h(`<div class="arrange">
+    <div class="loupe">
+      <div class="loupe-scroll"><div class="loupe-bar"><span class="loupe-notch"></span><div class="loupe-right">${stripHTML('loupe')}</div></div></div>
+      <div class="loupe-cap"><span>Your 16-inch MacBook Pro, right of the notch, actual size</span><span>${bar.showing ? 'Drag the line' : '» is Apple’s overflow arrow'}</span></div>
+    </div>
+    <div class="arrange-card">
+      <h2>Everything left of Valet is tucked away</h2>
+      <span class="seg"><button data-mode="tucked" aria-pressed="${!bar.showing}">Tucked</button><button data-mode="showing" aria-pressed="${bar.showing}">Showing all</button></span>
+      <p>${bar.showing
+        ? 'Drag the line to choose what stays in the menu bar. In the app you ⌘-drag it, like any icon; Valet’s icon moves with it.'
+        : 'Valet widens its divider until macOS collapses it, and every icon to its left, behind the overflow arrow. Nothing else is moved.'}</p>
+      <span class="counts">${away.length} tucked · ${inBar.length} in the menu bar</span><span></span>
+      <div class="chips">${chips || '<span class="counts">Nothing tucked. Drag the line left of an icon to tuck it.</span>'}</div>
+    </div>
+  </div>`);
+  scene.append(panel);
+  const scroller = panel.querySelector('.loupe-scroll');
+  scroller.scrollLeft = scroller.scrollWidth;
+  panel.querySelectorAll('[data-mode]').forEach((b) => { b.onclick = () => { bar.showing = b.dataset.mode === 'showing'; refresh(); }; });
+  // On a narrow bar even Valet's icon can collapse while showing everything, so it may not be there to click.
+  const valetIcon = scene.querySelector('[data-strip="main"] [data-id="valet"]');
+  if (valetIcon) {
+    valetIcon.onclick = (event) => {
+      if (event.altKey) { bar.showing = !bar.showing; refresh(); } else { menuState.open = true; switchTab('menu'); }
+    };
+  }
+}
+
+// ═══════════════════════════════════════════════════════════════
 // Page: tabs, appearance, review notes
 // ═══════════════════════════════════════════════════════════════
 const NOTES = {
+  divider: [
+    ['Try it', 'Switch to Showing all, then drag the line left or right. Tucked mode updates both bars and the Valet menu.'],
+    ['One rule to explain', '“Everything left of Valet is tucked away.” The divider is a separate item that stays next to Valet’s icon, because a wide item collapses itself.'],
+    ['Open: divider look', 'A thin line, shown only while arranging. When tucked, the divider is invisible and collapsed with the icons it tucks.'],
+    ['Open: keeping them together', 'If you ⌘-drag only Valet’s icon, Valet has to move its divider after it. Placing it from code wasn’t exact in the spike; it needs a second try.'],
+  ],
   palette: [
     ['Try it', 'Type “snooze hour”, “clean up” or “quit”. → opens a menu, ← goes back, ⌘P pins, ⌘↩ opens the real menu at the icon.'],
     ['Destructive items ask twice', 'Return on Quit or Delete turns the row red; Return again runs it. ⌘↩ skips the check, as in the plan.'],
@@ -935,18 +1086,19 @@ const NOTES = {
   ],
   menu: [
     ['Search row first', `It teaches the palette and its hotkey to people who only use the mouse.`],
-    ['Hidden first, then the rest', 'Each icon mirrors its real menu as a submenu. Panel apps (Burn, Claude) open on click and have no arrow.'],
+    ['The main surface', 'Tucked icons first, then what’s still in the bar. Each mirrors its real menu as a submenu; panel apps (Burn, Claude) open on click.'],
+    ['Arranging lives here too', '“Show Tucked Icons” (or ⌥-click Valet) puts them back in the bar for a moment. “Arrange Menu Bar…” opens the divider view.'],
     ['Status on the right', 'Burn’s 56% and Battery’s 84% come from the icon’s own title, so you can read them without opening anything.'],
-    ['Open: Valet’s own position', 'New icons start on the far left, which on a notched Mac means behind the arrow. Onboarding should suggest ⌘-dragging Valet right.'],
+    ['Open: first run', 'New icons start on the far left, so Valet’s icon lands behind the arrow at first. Onboarding should place it, or ask you to ⌘-drag it right.'],
   ],
   notch: [
-    ['Only the hidden icons', 'Seven tiles, the same set as Apple’s overflow arrow, with status where the icon has one.'],
+    ['Only the tucked icons', 'The same set as the Valet menu’s “Tucked away”, with status where the icon has one. Five across fits 17 icons in four rows.'],
     ['Open: black or material', 'Black reads as the notch growing and matches the hardware in both modes. Material matches system menus but looks detached from the notch.'],
     ['Opens on hover or click', 'Off by default on Macs without a notch. Hover needs a short delay so passing the cursor over the notch doesn’t trigger it.'],
   ],
 };
 
-let tab = 'palette';
+let tab = 'menu';
 const scene = document.getElementById('scene');
 
 function switchTab(next) {
@@ -954,11 +1106,20 @@ function switchTab(next) {
   document.querySelectorAll('[data-tab]').forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.tab === tab)));
   scene.innerHTML = '';
   // The Valet menu lists all 23 icons, so its desktop needs to be taller.
-  scene.style.height = tab === 'menu' ? '790px' : '';
+  scene.style.height = tab === 'menu' ? '850px' : '';
   if (tab === 'palette') { scene.innerHTML = menubarHTML(); paletteState.open = true; paletteState.appearing = true; renderPalette(scene); }
   if (tab === 'menu') { menuState.open = true; renderMenu(scene); }
   if (tab === 'notch') { notchState.open = true; notchState.appearing = true; renderNotch(scene); }
+  if (tab === 'divider') renderDivider(scene);
   document.getElementById('notes').replaceChildren(...NOTES[tab].map(([title, body]) => h(`<div class="note"><b>${esc(title)}</b><span>${esc(body)}</span></div>`)));
+}
+
+/// Redraws the current tab without resetting it (used while dragging the divider).
+function refresh() {
+  if (tab === 'menu') renderMenu(scene);
+  else if (tab === 'divider') renderDivider(scene);
+  else if (tab === 'notch') renderNotch(scene);
+  else { scene.querySelector('.menubar')?.remove(); scene.querySelector('.notch')?.remove(); scene.insertAdjacentHTML('afterbegin', menubarHTML()); }
 }
 
 function setTheme(theme) {
