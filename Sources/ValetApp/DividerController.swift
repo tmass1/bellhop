@@ -87,8 +87,7 @@ final class DividerController {
         }
         attachedTo = iconPosition
         // The icon may have moved: re-create every piece next to its new spot.
-        dividers.forEach { NSStatusBar.system.removeStatusItem($0) }
-        dividers = []
+        removeDividers()
         apply([DividerLayout.arrangingWidth])
         resize()
     }
@@ -99,8 +98,8 @@ final class DividerController {
         if widths.count != dividers.count {
             reattaching = true
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) { [weak self] in self?.reattaching = false }
-            dividers.forEach { NSStatusBar.system.removeStatusItem($0) }
-            dividers = widths.indices.map { index in
+            removeDividers()
+            let created = widths.indices.map { index in
                 let name = index == 0 ? Self.dividerName : "\(Self.dividerName) \(index + 1)"
                 if let position = iconPosition {
                     let piece = DividerLayout.dividerPosition(forIcon: position) + 0.1 * Double(index)
@@ -111,11 +110,20 @@ final class DividerController {
                 divider.button?.setAccessibilityLabel("Valet divider")
                 return divider
             }
+            dividers = created
             styleDivider()
         }
         for (divider, width) in zip(dividers, widths) where divider.length != width {
             divider.length = width
         }
+    }
+
+    /// Empties `dividers` before the old items go away: releasing one posts notifications that call back into
+    /// `resize()`, which reads `dividers`.
+    private func removeDividers() {
+        let old = dividers
+        dividers = []
+        old.forEach { NSStatusBar.system.removeStatusItem($0) }
     }
 
     private func styleDivider() {

@@ -65,8 +65,12 @@ final class KeeperController: NSObject {
     /// Re-creates every keeper at its slot. Removing a status item deletes its stored position, so each one is
     /// written fresh right before its item is created.
     private func rebuild(iconPosition: Double?) {
-        items.values.forEach { NSStatusBar.system.removeStatusItem($0) }
+        // Take the old items out before letting them go. Releasing a status item makes AppKit clear its saved
+        // position and post a notification right away; the divider reacts by reading `items`, which must not
+        // be mid-assignment then (Swift aborts on that overlapping access).
+        let old = Array(items.values)
         items = [:]
+        old.forEach { NSStatusBar.system.removeStatusItem($0) }
         let showing = kept.filter { icons[$0] != nil }
         let positions = KeeperLayout.positions(count: showing.count, iconPosition: iconPosition ?? 250)
         for (id, position) in zip(showing, positions) {
