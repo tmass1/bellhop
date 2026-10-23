@@ -128,7 +128,7 @@ cask "bellhop" do
   homepage "https://bellhop.pages.dev"
 
   auto_updates true
-  depends_on macos: ">= :sonoma"
+  depends_on macos: :sonoma
 
   app "Bellhop.app"
   binary "#{appdir}/Bellhop.app/Contents/Helpers/bellhop"
