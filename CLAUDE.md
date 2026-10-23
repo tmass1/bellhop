@@ -5,7 +5,7 @@ The full plan, including scope, architecture, risks and milestones, is in `docs/
 
 ## Current milestone
 
-**Milestone 5: v0.1 release** (v0.1.1 out Oct 23; 0.1.0 found the update on the M5 Max but the install isn't confirmed; the clean install on the M1 is still open). The app was renamed from Valet to Bellhop on Oct 22 (Laravel Valet already installs a `valet` command); the local folder is still `~/Dropbox/Claude/Valet`. Milestones 3 (Bellhop panel, divider, keepers) and 4 (command palette) are done on the M5 Max as of Oct 22; the ⌘-drag test on the Cinema Display and the M1 run are still open, so keep `bellhop-probe` until then. Update this line when a milestone is done.
+**Milestone 5: v0.1 release** (v0.1.1 out Oct 23; the Sparkle update from 0.1.0 worked on the M5 Max; the clean install on the M1 is still open). The app was renamed from Valet to Bellhop on Oct 22 (Laravel Valet already installs a `valet` command); the local folder is still `~/Dropbox/Claude/Valet`. Milestones 3 (Bellhop panel, divider, keepers) and 4 (command palette) are done on the M5 Max as of Oct 22; the ⌘-drag test on the Cinema Display and the M1 run are still open, so keep `bellhop-probe` until then. Update this line when a milestone is done.
 
 ## Stack
 
