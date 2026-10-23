@@ -125,7 +125,7 @@ cask "bellhop" do
   url "https://github.com/$RELEASE_REPO/releases/download/v#{version}/Bellhop.zip"
   name "Bellhop"
   desc "Condense the menu bar and run any of its items from the keyboard"
-  homepage "https://github.com/$RELEASE_REPO"
+  homepage "https://bellhop.pages.dev"
 
   auto_updates true
   depends_on macos: ">= :sonoma"

@@ -1,4 +1,4 @@
-.PHONY: build test lint run package release probe viewer clean
+.PHONY: build test lint run package release site probe viewer clean
 
 # Overridable from the shell. Developer ID keeps the Accessibility grant stable across rebuilds.
 CODESIGN_IDENTITY ?= Developer ID Application: Thomas Massaro (Y5V8Y3BH9A)
@@ -28,6 +28,10 @@ package:
 # Everything: GitHub release with zip, DMG and appcast, and the Homebrew cask. Needs docs/releases/<version>.md.
 release:
 	scripts/release.sh
+
+# The landing page, on Cloudflare Pages.
+site:
+	wrangler pages deploy site --project-name bellhop --branch main --commit-dirty=true
 
 probe:
 	@mkdir -p .build && xattr -w com.dropbox.ignored 1 .build 2>/dev/null || true
