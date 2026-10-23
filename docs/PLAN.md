@@ -232,7 +232,7 @@ Build in this order. Each milestone ends with something you can run on your own 
    - Status (Oct 22): done on the M5 Max. Opens in about 20 ms cold; Tommy's keyboard checks passed.
 5. **v0.1 release.** Developer ID signing, notarization, DMG, Sparkle, Homebrew cask, landing page.
    - Done when: a clean Mac installs Bellhop from the site and receives an update through Sparkle.
-   - Status (Oct 23): v0.1.0 is out: notarized DMG and zip on GitHub releases, signed appcast, `brew install --cask tmass1/tap/bellhop`, and the site at bellhop.pages.dev. On the M5 Max, 0.1.0 in /Applications updated itself to 0.1.1 through Sparkle (offered in the panel's footer, Install and Relaunch). Still open: a clean install from the site on the M1.
+   - Status (Oct 23): v0.1.0 is out: notarized DMG and zip on GitHub releases, signed appcast, `brew install --cask tmass1/tap/bellhop`, and the site at bellhop.pages.dev. On the M5 Max, 0.1.0 in /Applications found 0.1.1 through Sparkle; the install itself isn't confirmed yet. Still open: that install, and a clean install from the site on the M1.
    - Found: a copy run from the DMG or Downloads is translocated by Gatekeeper and can't update itself. Consider a "Move to Applications?" prompt (mock first).
 6. **v1.** Notch panel, pins, status line, App Intents, universal binary.
 7. **Later.** MCP server, hotkeys for individual items, panel-app handling, aliases.
