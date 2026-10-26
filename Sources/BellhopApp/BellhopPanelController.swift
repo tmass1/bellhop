@@ -89,7 +89,8 @@ final class BellhopPanelController: NSObject {
             pendingOpen = open
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.25, execute: open)
         }
-        iconTracker.onExit = { [weak self] in self?.pendingOpen?.cancel() }
+        // No cancelling on exit: macOS 27 sends the icon a spurious exit moments after the pointer arrives, while it
+        // hasn't moved. The dwell checks where the pointer is instead, so passing over the icon still doesn't open it.
         button.addTrackingArea(NSTrackingArea(
             rect: .zero, options: [.mouseEnteredAndExited, .activeAlways, .inVisibleRect], owner: iconTracker
         ))
@@ -333,11 +334,9 @@ final class BellhopPanelController: NSObject {
     }
 }
 
-/// Receives the pointer entering and leaving Bellhop's icon.
+/// Receives the pointer entering Bellhop's icon.
 private final class HoverTracker: NSResponder {
     var onEnter: (() -> Void)?
-    var onExit: (() -> Void)?
 
     override func mouseEntered(with event: NSEvent) { onEnter?() }
-    override func mouseExited(with event: NSEvent) { onExit?() }
 }
