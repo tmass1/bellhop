@@ -116,6 +116,8 @@ gh release create "$TAG" "$ZIP" "$DMG" "$APPCAST" --repo "$RELEASE_REPO" --title
 # `auto_updates` keeps `brew upgrade` from fighting it.
 TAP_DIR=$(mktemp -d)
 gh repo clone "$TAP_REPO" "$TAP_DIR" -- --quiet
+# Commit as this repo does (the GitHub noreply address): GitHub refuses pushes that expose a private email.
+git -C "$TAP_DIR" config user.email "$(git config user.email)"
 mkdir -p "$TAP_DIR/Casks"
 cat > "$TAP_DIR/Casks/bellhop.rb" <<CASK
 cask "bellhop" do
