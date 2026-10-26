@@ -114,7 +114,7 @@ final class KeeperController: NSObject {
     @objc private func keeperClicked(_ sender: NSStatusBarButton) {
         guard let id = sender.identifier?.rawValue else { return }
         hovers[id]?.cancel()
-        open(id)
+        open(id, clicked: true)
     }
 
     /// Resting on a keeper opens its app, as a click does: menus show beside it, panels open under it.
@@ -126,7 +126,7 @@ final class KeeperController: NSObject {
                 MainActor.assumeIsolated { self.clickedElsewhere() }
             }
         }
-        open(id)
+        open(id, clicked: false)
     }
 
     private func clickedElsewhere() {
@@ -135,7 +135,8 @@ final class KeeperController: NSObject {
         clickMonitor = nil
     }
 
-    private func open(_ id: String) {
+    /// Only a click says so when the app ignores Bellhop's press: on hover, an alert would be out of nowhere.
+    private func open(_ id: String, clicked: Bool) {
         guard let icon = icons[id], let button = items[id]?.button else { return }
         if mirror.menu(for: icon) != nil {
             showMirror(of: icon, id: id)
@@ -152,7 +153,11 @@ final class KeeperController: NSObject {
                     icon.name, alignTo: x, screenMaxX: screenMaxX, env: SystemSnapshot.capture()
                 )
                 icons[id] = opened
-                if mirror.menu(for: opened) != nil { showMirror(of: opened, id: id) }
+                if mirror.menu(for: opened) != nil {
+                    showMirror(of: opened, id: id)
+                } else if clicked, opened.menuAvailability == .noResponse {
+                    MenuMirror.alert(BellhopError.noResponse(opened.name).message)
+                }
             } catch let error as BellhopError {
                 MenuMirror.alert(error.message)
             } catch {

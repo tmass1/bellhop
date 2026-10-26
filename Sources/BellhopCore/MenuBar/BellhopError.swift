@@ -38,7 +38,8 @@ public enum BellhopError: Error, Codable, Sendable, Equatable {
         case .panelApp(let name):
             "\(name) opens a panel, not a menu. Run \"\(name)\" on its own to open it."
         case .noResponse(let name):
-            "\(name) didn't respond when Bellhop pressed it. Some apps only react to a real click."
+            "\(name) ignores Bellhop's press and only opens on a real click. Click its icon once (it's behind the « "
+                + "arrow); Bellhop can usually open it after that, until \(name) restarts."
         case .pressFailed(let path, let code):
             "Couldn't press \"\(path)\" (Accessibility error \(code))."
         case .badRequest(let detail):

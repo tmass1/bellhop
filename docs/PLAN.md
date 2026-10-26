@@ -195,6 +195,7 @@ Bellhop ships outside the Mac App Store, signed with a Developer ID and notarize
 - **Accessibility still lists every icon on macOS 27**, collapsed ones included. Apple's own items now come from `com.apple.MenuBarAgent`, wrapped in an `AXGroup`.
 - **The overflow arrow is visible to Accessibility:** an `AXButton` owned by MenuBarAgent. Icons left of it are collapsed, and report piled-up frames just left of it.
 - **Most menus aren't readable while closed:** 6 of 23 icons. Pressing the rest either opens a menu Bellhop can read and close (Dropbox), or a panel, which shows up as a new window within about 100 ms (Claude, Burn, PIA).
+- **Some apps ignore AXPress** (Oct 26). CopyClip, freshly launched, has no menu until a real click, and pressing it through Accessibility does nothing; after one real click its menu stays readable until it restarts. Bellhop says so when you click such an app's keeper or row, rather than synthesizing a click.
 - **A divider works on macOS 27.** A wide status item collapses itself and every icon to its left behind the arrow, and removing it restores the bar exactly.
 - **Tucked icons still work through Bellhop:** it read Dropbox's menu and pressed Tidy › History… while both were collapsed.
 - **Placing the divider through its saved position preference didn't land where intended,** so the user places it by ⌘-dragging.

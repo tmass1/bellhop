@@ -252,6 +252,9 @@ final class BellhopPanelController: NSObject {
                     openCascade(opened)
                 } else {
                     close()
+                    if opened.menuAvailability == .noResponse {
+                        MenuMirror.alert(BellhopError.noResponse(opened.name).message)
+                    }
                 }
             } catch let error as BellhopError {
                 MenuMirror.alert(error.message)
