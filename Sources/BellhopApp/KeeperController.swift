@@ -145,12 +145,13 @@ final class KeeperController: NSObject {
         // A panel, or a menu that only exists while open. The engine reads such a menu once (it then shows here),
         // or presses the real tucked icon and moves its panel under this keeper.
         guard let window = button.window, let screen = window.screen else { return }
-        let x = Double(window.frame.minX)
+        // Panels hang from the keeper's right edge and open to the left, toward the middle of the screen.
+        let x = Double(window.frame.maxX)
         let screenMaxX = Double(screen.frame.maxX)
         Task {
             do {
                 let opened = try await engine.open(
-                    icon.name, alignTo: x, screenMaxX: screenMaxX, env: SystemSnapshot.capture()
+                    icon.name, alignTo: x, growsLeft: true, screenMaxX: screenMaxX, env: SystemSnapshot.capture()
                 )
                 icons[id] = opened
                 if mirror.menu(for: opened) != nil {

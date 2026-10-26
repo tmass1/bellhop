@@ -177,10 +177,10 @@ public actor MenuBarEngine {
 
     /// Opens an icon on Bellhop's behalf (from a keeper or the Bellhop menu). If its menu can be mirrored, it's read
     /// (once, for menus that only exist while open) and returned for Bellhop to show. Otherwise the real icon is
-    /// pressed, and a panel it opens is moved so its left edge sits at `x`, kept left of `screenMaxX`: a tucked
-    /// icon's panel would otherwise open behind the notch.
+    /// pressed, and a panel it opens is moved so its left edge sits at `x` (or, with `growsLeft`, its right edge),
+    /// kept left of `screenMaxX`: a tucked icon's panel would otherwise open behind the notch.
     public func open(
-        _ query: String, alignTo x: Double, screenMaxX: Double, env: SystemSnapshot
+        _ query: String, alignTo x: Double, growsLeft: Bool = false, screenMaxX: Double, env: SystemSnapshot
     ) async throws -> MenuBarIcon {
         var icon = try MenuPaths.resolveIcon(query, in: try snapshot(env).icons)
         if icon.menu != nil, icon.menuAvailability != .panel { return icon }
@@ -213,7 +213,7 @@ public actor MenuBarEngine {
                 noMenu[icon.id] = .panel
                 icon.menuAvailability = .panel
                 update(icon)
-                align(panel(in: now), x: x, screenMaxX: screenMaxX)
+                align(panel(in: now), x: x, growsLeft: growsLeft, screenMaxX: screenMaxX)
                 return icon
             }
             try? await Task.sleep(for: .milliseconds(40))
@@ -233,11 +233,11 @@ public actor MenuBarEngine {
             ?? windows[windows.count - 1]
     }
 
-    /// Moves a panel so its left edge is at `x`, keeping it on screen.
-    private func align(_ panel: any AXElement, x: Double, screenMaxX: Double) {
+    /// Moves a panel so its left edge (or right edge, if it grows left) is at `x`, keeping it on screen.
+    private func align(_ panel: any AXElement, x: Double, growsLeft: Bool, screenMaxX: Double) {
         let values = panel.attributes([AXName.position, AXName.size])
         guard let origin = values[AXName.position]?.point, let size = values[AXName.size]?.size else { return }
-        let left = min(x, screenMaxX - Double(size.width) - 8)
+        let left = min(growsLeft ? x - Double(size.width) : x, screenMaxX - Double(size.width) - 8)
         _ = panel.setPosition(CGPoint(x: left, y: origin.y))
     }
 

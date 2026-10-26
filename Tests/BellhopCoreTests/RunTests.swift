@@ -153,6 +153,13 @@ private let drivePanel: FixtureAccessibility.Customize = { app, icon, appElement
     #expect(system.log.entries.last == "AXWindow:setPosition(1236,33)")
 }
 
+@Test func keepersPanelsCanGrowLeftFromTheirRightEdge() async throws {
+    let (engine, system) = try engine(drivePanel)
+    _ = try await engine.open("Google Drive", alignTo: 1500, growsLeft: true, screenMaxX: 1728, env: system.file.system)
+    // 1500 − 420 = 1080.
+    #expect(system.log.entries.last == "AXWindow:setPosition(1080,33)")
+}
+
 @Test func movedPanelsStayOnScreen() async throws {
     let (engine, system) = try engine(drivePanel)
     _ = try await engine.open("Google Drive", alignTo: 1500, screenMaxX: 1728, env: system.file.system)

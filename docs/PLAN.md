@@ -113,7 +113,7 @@ The Bellhop menu and the divider are the everyday surfaces. The palette is the k
 
 - Bellhop sits next to Apple's items, so every third-party icon is tucked. Each icon you keep comes back as a keeper: an item Bellhop draws itself, just left of Bellhop's icon, in whatever order you choose.
 - A keeper shows the app's icon. Bellhop can't copy an app's real menu bar glyph without Screen Recording. Status text moved to the keeper's tooltip: on its own, "1" or "3" doesn't say which app it is.
-- Resting on a keeper for a quarter second opens its app, as a click does (Oct 26, Tommy's request): the real menu, mirrored, or for panel apps and menus that only exist while open, a press of the real tucked icon. A panel opened this way stays until you click elsewhere (Bellhop can't close another app's panel), and resting on the same keeper again does nothing until then.
+- Resting on a keeper for a quarter second opens its app, as a click does (Oct 26, Tommy's request): the real menu, mirrored, or for panel apps and menus that only exist while open, a press of the real tucked icon. Panels hang from the keeper's right edge and open to the left (Oct 26). A panel opened this way stays until you click elsewhere (Bellhop can't close another app's panel), and resting on the same keeper again does nothing until then.
 - Choose by dragging in the Bellhop panel itself: up into "In the Menu Bar" to keep, down into "Tucked Away" to tuck, along the keepers to reorder. Space does the same from the keyboard.
 - Approved Oct 22: app icon (first tried status text with an icon fallback; changed after seeing it in the bar).
 
