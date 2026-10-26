@@ -15,6 +15,11 @@ final class KeeperController: NSObject {
     private var items: [String: NSStatusItem] = [:]
     private var icons: [String: MenuBarIcon] = [:]
     private var timer: Timer?
+    private var hovers: [String: HoverOpener] = [:]
+    /// The keeper whose app was opened by resting on it, until the next click anywhere. Resting on it again
+    /// meanwhile does nothing: pressing a panel app's icon again would close the panel you just opened.
+    private var openedByHover: String?
+    private var clickMonitor: Any?
     /// Called after keepers are added, removed or reordered, so the divider can resize.
     var onLayoutChange: (() -> Void)?
 
@@ -70,6 +75,7 @@ final class KeeperController: NSObject {
         // be mid-assignment then (Swift aborts on that overlapping access).
         let old = Array(items.values)
         items = [:]
+        hovers = [:]
         old.forEach { NSStatusBar.system.removeStatusItem($0) }
         let showing = kept.filter { icons[$0] != nil }
         let positions = KeeperLayout.positions(count: showing.count, iconPosition: iconPosition ?? 250)
@@ -81,6 +87,9 @@ final class KeeperController: NSObject {
             item.button?.target = self
             item.button?.action = #selector(keeperClicked(_:))
             item.button?.identifier = NSUserInterfaceItemIdentifier(id)
+            if let button = item.button {
+                hovers[id] = HoverOpener(button: button) { [weak self] in self?.hovered(id) }
+            }
             items[id] = item
             style(id)
         }
@@ -103,14 +112,38 @@ final class KeeperController: NSObject {
     }
 
     @objc private func keeperClicked(_ sender: NSStatusBarButton) {
-        guard let id = sender.identifier?.rawValue, let icon = icons[id] else { return }
+        guard let id = sender.identifier?.rawValue else { return }
+        hovers[id]?.cancel()
+        open(id)
+    }
+
+    /// Resting on a keeper opens its app, as a click does: menus show beside it, panels open under it.
+    private func hovered(_ id: String) {
+        guard openedByHover != id, items[id]?.menu == nil else { return }
+        openedByHover = id
+        if clickMonitor == nil {
+            clickMonitor = NSEvent.addGlobalMonitorForEvents(matching: [.leftMouseDown, .rightMouseDown]) { _ in
+                MainActor.assumeIsolated { self.clickedElsewhere() }
+            }
+        }
+        open(id)
+    }
+
+    private func clickedElsewhere() {
+        openedByHover = nil
+        if let clickMonitor { NSEvent.removeMonitor(clickMonitor) }
+        clickMonitor = nil
+    }
+
+    private func open(_ id: String) {
+        guard let icon = icons[id], let button = items[id]?.button else { return }
         if mirror.menu(for: icon) != nil {
             showMirror(of: icon, id: id)
             return
         }
         // A panel, or a menu that only exists while open. The engine reads such a menu once (it then shows here),
         // or presses the real tucked icon and moves its panel under this keeper.
-        guard let window = sender.window, let screen = window.screen else { return }
+        guard let window = button.window, let screen = window.screen else { return }
         let x = Double(window.frame.minX)
         let screenMaxX = Double(screen.frame.maxX)
         Task {
@@ -159,7 +192,9 @@ final class KeeperController: NSObject {
 
 extension KeeperController: NSMenuDelegate {
     func menuDidClose(_ menu: NSMenu) {
-        // Detach so the next click comes back through the keeper's action and gets a fresh mirror.
+        // Detach so the next click comes back through the keeper's action and gets a fresh mirror. A closed menu
+        // can open on hover again.
         items.values.forEach { $0.menu = nil }
+        openedByHover = nil
     }
 }

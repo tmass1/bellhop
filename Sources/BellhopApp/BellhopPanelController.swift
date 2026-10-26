@@ -22,8 +22,7 @@ final class BellhopPanelController: NSObject {
     var onScan: ((MenuBarSnapshot) -> Void)?
 
     // Opening on hover over Bellhop's icon.
-    private let iconTracker = HoverTracker()
-    private var pendingOpen: DispatchWorkItem?
+    private var iconHover: HoverOpener?
     /// Opened by resting on the icon, and the pointer hasn't gone into the panel yet: leaving closes it again.
     private var tentative = false
     private var tentativeWatch: Timer?
@@ -65,7 +64,7 @@ final class BellhopPanelController: NSObject {
 
     /// A click on Bellhop's icon. A click on a panel that only opened on hover keeps it open instead of closing it.
     func toggle(from item: NSStatusItem) {
-        pendingOpen?.cancel()
+        iconHover?.cancel()
         if isOpen, tentative {
             commit()
         } else if isOpen {
@@ -78,22 +77,10 @@ final class BellhopPanelController: NSObject {
     /// Opens the panel when the pointer rests on Bellhop's icon for a moment, so passing over the menu bar doesn't.
     func openOnHover(_ item: NSStatusItem) {
         guard let button = item.button else { return }
-        iconTracker.onEnter = { [weak self, weak item] in
-            guard let self, let item else { return }
-            pendingOpen?.cancel()
-            let open = DispatchWorkItem { [weak self, weak item] in
-                guard let self, let item, !isOpen, NSEvent.pressedMouseButtons == 0,
-                      item.button?.window?.frame.contains(NSEvent.mouseLocation) == true else { return }
-                show(from: item, tentatively: true)
-            }
-            pendingOpen = open
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.25, execute: open)
+        iconHover = HoverOpener(button: button) { [weak self, weak item] in
+            guard let self, let item, !isOpen else { return }
+            show(from: item, tentatively: true)
         }
-        // No cancelling on exit: macOS 27 sends the icon a spurious exit moments after the pointer arrives, while it
-        // hasn't moved. The dwell checks where the pointer is instead, so passing over the icon still doesn't open it.
-        button.addTrackingArea(NSTrackingArea(
-            rect: .zero, options: [.mouseEnteredAndExited, .activeAlways, .inVisibleRect], owner: iconTracker
-        ))
     }
 
     /// Takes a scan made elsewhere (at launch) or by this panel, and refreshes the rows.
@@ -176,7 +163,7 @@ final class BellhopPanelController: NSObject {
     }
 
     func close() {
-        pendingOpen?.cancel()
+        iconHover?.cancel()
         tentative = false
         tentativeWatch?.invalidate()
         tentativeWatch = nil
@@ -332,11 +319,4 @@ final class BellhopPanelController: NSObject {
         }
         return cascade.key(key)
     }
-}
-
-/// Receives the pointer entering Bellhop's icon.
-private final class HoverTracker: NSResponder {
-    var onEnter: (() -> Void)?
-
-    override func mouseEntered(with event: NSEvent) { onEnter?() }
 }
