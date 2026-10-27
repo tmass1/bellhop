@@ -6,6 +6,16 @@ import Testing
     #expect(DividerLayout.dividerPosition(forIcon: 250) == 250.5)
 }
 
+@Test func itemNamesKeepTodaysNamesUntilARename() {
+    #expect(ItemNames.icon(generation: 0) == "Bellhop")
+    #expect(ItemNames.divider(index: 0, generation: 0) == "BellhopDivider")
+    #expect(ItemNames.divider(index: 1, generation: 0) == "BellhopDivider 2")
+    #expect(ItemNames.keeper("com.tommymassaro.burn#0", generation: 0) == "BellhopKeeper com.tommymassaro.burn 0")
+    #expect(ItemNames.icon(generation: 1) == "Bellhop g1")
+    #expect(ItemNames.divider(index: 1, generation: 1) == "BellhopDivider g1 2")
+    #expect(ItemNames.keeper("com.fiplab.clipboard#0", generation: 1) == "BellhopKeeper g1 com.fiplab.clipboard 0")
+}
+
 @Test func tuckingWidthIsJustPastTheRoomLeftOfTheIcon() {
     // Spike geometry: notch ends at x 957, the icon sits at 1330. 373 pt of room, so 413 pt tucks.
     #expect(DividerLayout.tuckingWidth(iconMinX: 1330, leftBoundary: 957) == 413)

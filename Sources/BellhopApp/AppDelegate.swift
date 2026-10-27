@@ -42,6 +42,8 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         divider = DividerController(icon: statusItem, engine: engine)
         divider.leftmostItemMinX = { [weak keepers] in keepers?.leftmostMinX }
         keepers.onLayoutChange = { [weak divider] in divider?.resize() }
+        divider.keeperWindows = { [weak keepers] in keepers?.windows ?? [] }
+        divider.onRename = { [weak keepers, weak divider] in keepers?.renamed(iconPosition: divider?.iconPosition) }
         keepers.onKeptChange = { [weak self] _ in self?.bellhopPanel.keptChanged() }
         bellhopPanel = BellhopPanelController(
             engine: engine, system: system, keepers: keepers, mirror: mirror, divider: divider

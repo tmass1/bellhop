@@ -97,7 +97,15 @@ final class KeeperController: NSObject {
     }
 
     private static func autosaveName(for id: String) -> String {
-        "BellhopKeeper " + id.replacingOccurrences(of: "#", with: " ")
+        ItemNames.keeper(id, generation: DividerController.generation)
+    }
+
+    /// The keepers' windows, for checking where macOS put them.
+    var windows: [NSWindow] { kept.compactMap { items[$0]?.button?.window } }
+
+    /// Bellhop's items were renamed: re-create the keepers under the new names.
+    func renamed(iconPosition: Double?) {
+        rebuild(iconPosition: iconPosition)
     }
 
     /// A keeper shows the app's icon (approved Oct 22, replacing status text: a bare "1" or "3" doesn't say

@@ -5,8 +5,12 @@ import BellhopCore
 /// icon to its left behind the overflow arrow. Arranging, it's a thin line. See `DividerLayout` for the numbers.
 @MainActor
 final class DividerController {
-    static let iconName = "Bellhop"
-    static let dividerName = "BellhopDivider"
+    /// Bumped when macOS misplaces Bellhop's items; see `ItemNames` and `checkOrder()`.
+    static var generation: Int {
+        get { UserDefaults.standard.integer(forKey: "BellhopItemGeneration") }
+        set { UserDefaults.standard.set(newValue, forKey: "BellhopItemGeneration") }
+    }
+    static var iconName: String { ItemNames.icon(generation: generation) }
     /// First-run spot for Bellhop's icon. macOS orders items by this number (larger is further left); on the M5 Max
     /// 250 landed just left of Apple's own items. New items otherwise start far left, which means tucked.
     static let firstRunPosition = 250.0
@@ -22,6 +26,11 @@ final class DividerController {
     /// A re-measure after an app came to the front before its menus were laid out.
     private var pendingMeasure: DispatchWorkItem?
     private var observers: [NSObjectProtocol] = []
+    private var renames = 0
+    /// Keepers' windows, for checking that macOS put them left of the icon.
+    var keeperWindows: (() -> [NSWindow])?
+    /// Called after Bellhop's items were renamed, so keepers re-create theirs under the new names.
+    var onRename: (() -> Void)?
     /// Left edge of Bellhop's leftmost visible item. Keepers sit between the divider and Bellhop's icon, so the room
     /// is measured from the leftmost of them.
     var leftmostItemMinX: (() -> CGFloat?)?
@@ -102,7 +111,7 @@ final class DividerController {
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) { [weak self] in self?.reattaching = false }
             removeDividers()
             let created = widths.indices.map { index in
-                let name = index == 0 ? Self.dividerName : "\(Self.dividerName) \(index + 1)"
+                let name = ItemNames.divider(index: index, generation: Self.generation)
                 if let position = iconPosition {
                     let piece = DividerLayout.dividerPosition(forIcon: position) + 0.1 * Double(index)
                     UserDefaults.standard.set(piece, forKey: Self.key(name))
@@ -114,6 +123,7 @@ final class DividerController {
             }
             dividers = created
             styleDivider()
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) { [weak self] in self?.checkOrder() }
         }
         for (divider, width) in zip(dividers, widths) where divider.length != width {
             divider.length = width
@@ -126,6 +136,31 @@ final class DividerController {
         let old = dividers
         dividers = []
         old.forEach { NSStatusBar.system.removeStatusItem($0) }
+    }
+
+    /// Bellhop's divider and keepers belong left of its icon. If macOS put one right of it, the menu bar agent is
+    /// placing the icon from a stale record of its own (see `ItemNames`), so every item is renamed. Twice at most
+    /// per launch, so this can't loop.
+    private func checkOrder() {
+        guard renames < 2, let iconWindow = icon.button?.window, iconWindow.frame.minX >= 1 else { return }
+        let ours = dividers.compactMap { $0.button?.window } + (keeperWindows?() ?? [])
+        // Collapsed items sit near x 0, and items shown on the other display's bar can't be compared.
+        let misplaced = ours.contains {
+            $0.frame.minX >= 1 && $0.screen == iconWindow.screen && $0.frame.minX > iconWindow.frame.minX
+        }
+        guard misplaced else { return }
+        renames += 1
+        let oldKey = Self.key(Self.iconName)
+        let position = iconPosition ?? Self.firstRunPosition
+        Self.generation += 1
+        UserDefaults.standard.set(position, forKey: Self.key(Self.iconName))
+        UserDefaults.standard.removeObject(forKey: oldKey)
+        icon.autosaveName = Self.iconName
+        attachedTo = position
+        onRename?()
+        removeDividers()
+        apply([DividerLayout.arrangingWidth])
+        resize()
     }
 
     private func styleDivider() {
