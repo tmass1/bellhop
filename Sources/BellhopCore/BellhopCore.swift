@@ -1,4 +1,4 @@
 /// Shared Accessibility work for the app, the CLI and Shortcuts. No UI lives here.
 public enum BellhopCore {
-    public static let version = "0.1.3"
+    public static let version = "0.1.4"
 }
