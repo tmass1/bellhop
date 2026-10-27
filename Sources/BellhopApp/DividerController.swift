@@ -19,6 +19,8 @@ final class DividerController {
     private var attachedTo: Double?
     private var reattaching = false
     private var pendingFollow: DispatchWorkItem?
+    /// A re-measure after an app came to the front before its menus were laid out.
+    private var pendingMeasure: DispatchWorkItem?
     private var observers: [NSObjectProtocol] = []
     /// Left edge of Bellhop's leftmost visible item. Keepers sit between the divider and Bellhop's icon, so the room
     /// is measured from the leftmost of them.
@@ -145,17 +147,23 @@ final class DividerController {
         guard let window = icon.button?.window, let screen = window.screen else { return }
         let iconMinX = min(window.frame.minX, leftmostItemMinX?() ?? window.frame.minX)
         let notchMaxX = screen.auxiliaryTopRightArea.map { Double($0.minX) }
+        let screens = NSScreen.screens.map { Double($0.frame.minX)...Double($0.frame.maxX) }
         Task {
-            var appMenusMaxX: Double?
+            var appMenusWidth: Double?
             if notchMaxX == nil {
                 // Without a notch the app's own menus share the bar. If they can't be read, keep what's there
-                // rather than guess: measuring from the screen's edge makes the dividers far too wide.
+                // rather than guess: dividers that don't fit make macOS re-lay the bar out over and over (the «
+                // arrow flickers). An app that just came to the front may not have laid its menus out yet, so
+                // look again shortly.
                 guard let front = NSWorkspace.shared.frontmostApplication,
-                      let maxX = await engine.appMenusMaxX(pid: front.processIdentifier) else { return }
-                appMenusMaxX = maxX
+                      let menus = await engine.appMenusFrame(pid: front.processIdentifier),
+                      let width = DividerLayout.appMenusWidth(
+                          menusMinX: menus.x, menusMaxX: menus.maxX, screens: screens
+                      ) else { return measureAgain() }
+                appMenusWidth = width
             }
             let boundary = DividerLayout.leftBoundary(
-                screenMinX: screen.frame.minX, notchMaxX: notchMaxX, appMenusMaxX: appMenusMaxX
+                screenMinX: screen.frame.minX, notchMaxX: notchMaxX, appMenusWidth: appMenusWidth
             )
             let widths = DividerLayout.tuckingWidths(
                 iconMinX: iconMinX, leftBoundary: boundary, notched: notchMaxX != nil,
@@ -165,6 +173,16 @@ final class DividerController {
             // If Bellhop's own items have no room to their left, wide dividers can't help; leave one thin one.
             apply(widths ?? [DividerLayout.arrangingWidth])
         }
+    }
+
+    private func measureAgain() {
+        guard pendingMeasure == nil else { return }
+        let work = DispatchWorkItem { [weak self] in
+            self?.pendingMeasure = nil
+            self?.resize()
+        }
+        pendingMeasure = work
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5, execute: work)
     }
 
     // MARK: Following

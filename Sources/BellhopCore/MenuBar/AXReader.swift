@@ -56,17 +56,23 @@ struct AXReader {
         )
     }
 
-    /// Union of an app's own menu titles (File, Edit…), which can cover icons on a narrow menu bar.
+    /// Union of an app's own menu titles (File, Edit…), which can cover icons on a narrow menu bar. Nil while the
+    /// menus aren't laid out: right as an app comes to the front, only the Apple menu has a width (Figma, Oct 27:
+    /// 13 menus, one sized; a second later all of them).
     func appMenusFrame(_ app: any AXElement) -> Frame? {
         guard case .success(.element(let bar)) = app.attribute(AXName.menuBar) else { return nil }
+        let menus = bar.attributes([AXName.children])[AXName.children]?.elements ?? []
         var union: CGRect?
-        for menu in bar.attributes([AXName.children])[AXName.children]?.elements ?? [] {
+        var sized = 0
+        for menu in menus {
             let values = menu.attributes([AXName.position, AXName.size])
             if let origin = values[AXName.position]?.point, let size = values[AXName.size]?.size, size.width > 0 {
                 let rect = CGRect(origin: origin, size: size)
                 union = union.map { $0.union(rect) } ?? rect
+                sized += 1
             }
         }
+        guard sized > 1 || menus.count < 2 else { return nil }
         return union.map(Frame.init)
     }
 

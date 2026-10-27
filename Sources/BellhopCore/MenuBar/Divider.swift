@@ -22,10 +22,19 @@ public enum DividerLayout {
     }
 
     /// Where the room left of Bellhop's icon starts: the notch's right edge on notched screens, otherwise the end
-    /// of the frontmost app's menus (they share the bar), otherwise the screen's left edge.
-    public static func leftBoundary(screenMinX: Double, notchMaxX: Double?, appMenusMaxX: Double?) -> Double {
+    /// of the frontmost app's menus (they share the bar), otherwise the screen's left edge. `appMenusWidth` is
+    /// measured from the left edge of the screen the menus were read on: with two displays, the app's menus are
+    /// read on whichever one is active, and every menu bar shows them at the same offset.
+    public static func leftBoundary(screenMinX: Double, notchMaxX: Double?, appMenusWidth: Double?) -> Double {
         if let notchMaxX { return notchMaxX }
-        return max(screenMinX, appMenusMaxX ?? screenMinX)
+        return screenMinX + max(0, appMenusWidth ?? 0)
+    }
+
+    /// How far an app's menus reach from the left edge of the screen they're on, given the screens' horizontal
+    /// spans. Nil if they aren't on any of them.
+    public static func appMenusWidth(menusMinX: Double, menusMaxX: Double, screens: [ClosedRange<Double>]) -> Double? {
+        guard let screen = screens.first(where: { $0.contains(menusMinX) }) else { return nil }
+        return menusMaxX - screen.lowerBound
     }
 
     /// Space left for the overflow arrow when dividers fill a screen without a notch.
