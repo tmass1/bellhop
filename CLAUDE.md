@@ -2,6 +2,7 @@
 
 Mac menu bar app: search and run any menu bar icon, or any item inside its menu, from the keyboard.
 The full plan, including scope, architecture, risks and milestones, is in `docs/PLAN.md`. Read it before starting a milestone.
+**Read `AGENTS.md` before any deploy or release.** Production goes out only through `make site` and `make release`, with their check run first.
 
 ## Current milestone
 
@@ -26,6 +27,7 @@ The full plan, including scope, architecture, risks and milestones, is in `docs/
 - `make lint`: SwiftLint
 - `make run`: builds `dist/Bellhop.app`, signs it with `$CODESIGN_IDENTITY`, and opens it
 - `make probe`: builds and runs `bellhop-probe`, writing JSON to `probe-output/`
+- `make site-check` / `make release-check`: the production deploy checks (see `AGENTS.md`); `make site` and `make release` deploy
 
 ## Rules
 
