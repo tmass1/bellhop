@@ -7,6 +7,10 @@
 #   scripts/release.sh --skip-notarize → sign and package without notarizing (Gatekeeper will complain; for testing)
 #   scripts/release.sh --dry-run       → build, sign, notarize and package (dist/Bellhop.zip, dist/Bellhop.dmg), but no
 #                                        GitHub release and no tap push: the way to make a build to hand to someone
+#   scripts/release.sh --check         → every check before publishing (scripts/release_guard.py: this branch has
+#                                        everything already released) plus the tests; builds and publishes nothing
+#   scripts/release.sh --yes           → skips the questions and "type release": only after Tommy says yes in chat
+# Publishing goes only through this script (AGENTS.md); docs/DEPLOY.md explains each stop.
 # Notarization reuses Burn's stored credential (same team). To make a new one:
 #   xcrun notarytool store-credentials bellhop-notary --apple-id <apple id> --team-id Y5V8Y3BH9A
 set -euo pipefail
@@ -14,10 +18,15 @@ cd "$(dirname "$0")/.."
 
 NOTARIZE=1
 PUBLISH=1
+CHECK=0
+GUARD_ARGS=()
 for arg in "$@"; do
   case "$arg" in
     --skip-notarize) NOTARIZE=0 ;;
     --dry-run) PUBLISH=0 ;;
+    --check) CHECK=1; GUARD_ARGS+=(--check) ;;
+    --yes) GUARD_ARGS+=(--yes) ;;
+    *) echo "unknown option $arg"; exit 1 ;;
   esac
 done
 
@@ -58,6 +67,17 @@ if [[ $NOTARIZE -eq 1 ]] && ! xcrun notarytool history --keychain-profile "$NOTA
   echo "  xcrun notarytool store-credentials $NOTARY_PROFILE --apple-id <apple id> --team-id Y5V8Y3BH9A"
   exit 1
 fi
+# Publishing: stop if this branch is missing anything already released, ask about side branches, then the tests.
+if [[ $PUBLISH -eq 1 ]]; then
+  python3 scripts/release_guard.py --version "$VERSION" "${GUARD_ARGS[@]}"
+  echo "→ tests"
+  if ! TEST_LOG=$(swift test --quiet 2>&1); then
+    print -r -- "$TEST_LOG" | tail -20
+    echo "STOP: the tests failed; nothing was built or published"; exit 1
+  fi
+  print -r -- "$TEST_LOG" | tail -1
+fi
+[[ $CHECK -eq 0 ]] || { echo "check passed: make release builds and publishes $VERSION"; exit 0; }
 
 # 1. Build both architectures and sign with the Developer ID certificate (hardened runtime, secure timestamp).
 CODESIGN_IDENTITY="$DEVELOPER_ID" scripts/bundle.sh --release --universal
@@ -108,9 +128,10 @@ echo "→ $APPCAST  build $BUILD, signed"
 
 [[ $PUBLISH -eq 1 ]] || { echo "dry run: stopping before the GitHub release and the tap"; exit 0; }
 
-# 5. The GitHub release: the zip, the disk image and the appcast, with the same notes the update window shows.
+# 5. The GitHub release: the zip, the disk image and the appcast, with the same notes the update window shows. The tag
+# goes on the commit that was built (the guard made sure GitHub has it), not on whatever GitHub's main is.
 gh release create "$TAG" "$ZIP" "$DMG" "$APPCAST" --repo "$RELEASE_REPO" --title "Bellhop $VERSION" \
-  --notes-file "$NOTES_FILE"
+  --notes-file "$NOTES_FILE" --target "$(git rev-parse HEAD)"
 
 # 6. The cask: version and checksum, in the tap (Homebrew takes the zip). Bellhop updates itself, so
 # `auto_updates` keeps `brew upgrade` from fighting it.
@@ -146,3 +167,9 @@ git -C "$TAP_DIR" commit -q -m "bellhop $VERSION" || true
 git -C "$TAP_DIR" push -q
 rm -rf "$TAP_DIR"
 echo "→ released $TAG; brew install --cask ${TAP_REPO/homebrew-/}/bellhop"
+echo
+echo "If $VERSION is bad: updates can't be taken back from Macs that already have it, so ship a fixed version."
+echo "Meanwhile, to stop more Macs getting it: on GitHub, edit the previous release and tick \"Set as the latest"
+echo "release\" (Sparkle and the download links follow \"latest\")."
+BRANCH=$(git symbolic-ref --short -q HEAD || echo "this commit")
+[[ "$BRANCH" == main ]] || echo "To do: merge $BRANCH into main. This release came from a side branch."

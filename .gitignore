@@ -6,3 +6,4 @@ probe-output/
 *.xcodeproj
 .DS_Store
 design/mocks/icons/
+__pycache__/
