@@ -37,6 +37,14 @@ public enum DividerLayout {
         return menusMaxX - screen.lowerBound
     }
 
+    /// Where the room for the dividers ends on a screen without a notch: the rightmost divider's own right edge,
+    /// which stays put as the dividers change width. Other apps' icons can sit between it and Bellhop's items (Nov 5:
+    /// Claude, Drive and Passwords, 115 pt), and counting that space makes the pieces too wide, so one collapses and
+    /// the icons left of it stay visible. Falls back to Bellhop's leftmost item while no divider is on screen.
+    public static func roomEnd(leftmostItemMinX: Double, dividerMaxX: Double?) -> Double {
+        min(leftmostItemMinX, dividerMaxX ?? leftmostItemMinX)
+    }
+
     /// Space left for the overflow arrow when dividers fill a screen without a notch.
     public static let arrowAllowance = 40.0
     /// Largest piece, as a share of the screen's width. 1,200 pt worked on a 2,560 pt screen and 1,280 didn't.

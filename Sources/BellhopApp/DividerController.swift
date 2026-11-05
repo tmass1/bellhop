@@ -27,6 +27,9 @@ final class DividerController {
     private var pendingMeasure: DispatchWorkItem?
     private var observers: [NSObjectProtocol] = []
     private var renames = 0
+    /// Looks in a row at a rightmost divider that isn't on screen; see `resize()`.
+    private var placementTries = 0
+    private static let maxPlacementTries = 6
     /// Keepers' windows, for checking that macOS put them left of the icon.
     var keeperWindows: (() -> [NSWindow])?
     /// Called after Bellhop's items were renamed, so keepers re-create theirs under the new names.
@@ -138,17 +141,30 @@ final class DividerController {
         old.forEach { NSStatusBar.system.removeStatusItem($0) }
     }
 
-    /// Bellhop's divider and keepers belong left of its icon. If macOS put one right of it, the menu bar agent is
-    /// placing the icon from a stale record of its own (see `ItemNames`), so every item is renamed. Twice at most
-    /// per launch, so this can't loop.
-    private func checkOrder() {
+    /// Bellhop's divider and keepers belong left of its icon, and every piece of the divider belongs on the bar. If
+    /// macOS put one right of the icon, or keeps a piece collapsed, the menu bar agent is placing it from a stale
+    /// record of its own (see `ItemNames`), so every item is renamed. Twice at most per launch, so this can't loop.
+    private func checkOrder(confirmingStuckPiece: Bool = false) {
         guard renames < 2, let iconWindow = icon.button?.window, iconWindow.frame.minX >= 1 else { return }
+        if !arranging, dividers.dropFirst().contains(where: { $0.button?.window?.screen != iconWindow.screen }) {
+            // The bar may just be re-laying out after an app change, so only a piece that stays collapsed counts.
+            guard confirmingStuckPiece else {
+                DispatchQueue.main.asyncAfter(deadline: .now() + 2) { [weak self] in
+                    self?.checkOrder(confirmingStuckPiece: true)
+                }
+                return
+            }
+            return renameItems()
+        }
         let ours = dividers.compactMap { $0.button?.window } + (keeperWindows?() ?? [])
         // Collapsed items sit near x 0, and items shown on the other display's bar can't be compared.
         let misplaced = ours.contains {
             $0.frame.minX >= 1 && $0.screen == iconWindow.screen && $0.frame.minX > iconWindow.frame.minX
         }
-        guard misplaced else { return }
+        if misplaced { renameItems() }
+    }
+
+    private func renameItems() {
         renames += 1
         let oldKey = Self.key(Self.iconName)
         let position = iconPosition ?? Self.firstRunPosition
@@ -180,8 +196,23 @@ final class DividerController {
             return
         }
         guard let window = icon.button?.window, let screen = window.screen else { return }
-        let iconMinX = min(window.frame.minX, leftmostItemMinX?() ?? window.frame.minX)
+        let leftmostMinX = min(window.frame.minX, leftmostItemMinX?() ?? window.frame.minX)
         let notchMaxX = screen.auxiliaryTopRightArea.map { Double($0.minX) }
+        var dividerMaxX: Double?
+        if notchMaxX == nil {
+            // Without a notch the pieces have to fit, so measure from where they really end. If the rightmost one
+            // isn't on screen (just created, or too wide and collapsed), thin it so it comes back, then look again.
+            if let frame = dividers.first?.button?.window.flatMap({ $0.screen == screen ? $0.frame : nil }),
+               frame.minX >= 1 {
+                dividerMaxX = frame.maxX
+                placementTries = 0
+            } else if placementTries < Self.maxPlacementTries {
+                guard pendingMeasure == nil else { return }
+                placementTries += 1
+                apply([DividerLayout.arrangingWidth])
+                return measureAgain()
+            }
+        }
         let screens = NSScreen.screens.map { Double($0.frame.minX)...Double($0.frame.maxX) }
         Task {
             var appMenusWidth: Double?
@@ -201,8 +232,8 @@ final class DividerController {
                 screenMinX: screen.frame.minX, notchMaxX: notchMaxX, appMenusWidth: appMenusWidth
             )
             let widths = DividerLayout.tuckingWidths(
-                iconMinX: iconMinX, leftBoundary: boundary, notched: notchMaxX != nil,
-                screenWidth: screen.frame.width
+                iconMinX: DividerLayout.roomEnd(leftmostItemMinX: leftmostMinX, dividerMaxX: dividerMaxX),
+                leftBoundary: boundary, notched: notchMaxX != nil, screenWidth: screen.frame.width
             )
             guard !arranging else { return }
             // If Bellhop's own items have no room to their left, wide dividers can't help; leave one thin one.

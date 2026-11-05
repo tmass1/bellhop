@@ -81,3 +81,17 @@ import Testing
         == [460])
     #expect(DividerLayout.tuckingWidths(iconMinX: 420, leftBoundary: 400, notched: false, screenWidth: 1920) == nil)
 }
+
+@Test func roomEndsAtTheDividerNotAtBellhopsItems() {
+    // Nov 5, Cinema Display: Claude, Drive and Passwords sit between the divider (ends at 1950) and Burn's keeper.
+    let end = DividerLayout.roomEnd(leftmostItemMinX: 2065, dividerMaxX: 1950)
+    #expect(end == 1950)
+    #expect(DividerLayout.tuckingWidths(iconMinX: end, leftBoundary: 576, notched: false, screenWidth: 2560)
+        == [667, 667])
+}
+
+@Test func roomEndsAtBellhopsItemsWhileNoDividerIsOnScreen() {
+    #expect(DividerLayout.roomEnd(leftmostItemMinX: 2065, dividerMaxX: nil) == 2065)
+    // A divider that macOS put right of Bellhop's items doesn't widen the room.
+    #expect(DividerLayout.roomEnd(leftmostItemMinX: 2065, dividerMaxX: 2200) == 2065)
+}
